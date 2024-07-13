@@ -13,6 +13,6 @@
 /*スマホ対応*/
 @media screen and (max-width: 640px) {
     .footer {
-        background-color: #0183a0;
+        background-color: rgba(79, 209, 197, 1);
     }
 }

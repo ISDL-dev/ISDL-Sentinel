@@ -78,26 +78,55 @@ make stop
 
 ```mermaid
 erDiagram
-    user ||--o{ entering_history:"1:N"
-    user ||--o{ leaving_history:"1:N"
+    users ||--o{ entering_history:"1:N"
+    users ||--o{ leaving_history:"1:N"
+    status ||--o{ users:"N:1"
+    places ||--o{ users:"N:1"
+    grades ||--o{ users:"N:1"
     
-    user {
+    users ||--o{ lab_asistant_shift:"1:N"
+    
+    users {
         INT id PK
+        INT status_id FK
+        INT place_id FK
+        INT grade_id FK
         VARCHAR name
         VARCHAR mail_address
         VARCHAR password
-        ENUM status
+        INT number_of_coins
+    }
+    
+    status {
+		   INT id PK
+		   VARCHAR status_name
+    }
+    
+    places {
+		   INT id PK
+		   VARCHAR place_name
+    }
+    
+    grades {
+		   INT id PK
+		   VARCHAR grade_name
     }
     
     entering_history　{
 		    INT id PK
-		    INT user_name FK
-		    DATE at_entered
+		    INT user_id FK
+		    DATETIME entered_at
     }
     
     leaving_history　{
 		    INT id PK
-		    INT user_name FK
-		    DATE at_left
+		    INT user_id FK
+		    DATETIME left_at
+    }
+    
+    lab_asistant_shift {
+		    INT id PK
+		    INT user_id FK
+		    DATE shift_day
     }
     

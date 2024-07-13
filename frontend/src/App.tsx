@@ -24,6 +24,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Heading,
 } from '@chakra-ui/react'
 import {
   FiHome,
@@ -73,12 +74,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       w={{ base: 'full', md: 60 }}
       pos="fixed"
       h="full"
-      zIndex="1" // SidebarContentを前面に表示
+      zIndex="0" // SidebarContentを前面に表示
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
@@ -136,11 +134,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
-      bg={useColorModeValue('white', 'gray.900')}
-      borderBottomWidth="1px"
+      bg={useColorModeValue('rgba(79, 209, 197, 1)', 'gray.900')}
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      justifyContent={{ base: 'space-between', md: 'space-between' }}
       {...rest}>
+
       <IconButton
         display={{ base: 'flex', md: 'none' }}
         onClick={onOpen}
@@ -148,15 +146,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         aria-label="open menu"
         icon={<FiMenu />}
       />
-
-      <Text
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold">
-        Logo
-      </Text>
-
+      
+      <Heading as="h1" 
+        fontSize={{ base: 'xl', md: '4xl' }}
+        ml={4}
+        color="white"
+      >
+        ISDL Sentinel
+      </Heading>
+    
       <HStack spacing={{ base: '0', md: '6' }}>
         <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />} />
         <Flex alignItems={'center'}>
@@ -174,7 +172,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">Hayato Oka</Text>
                   <Text fontSize="xs" color="gray.600">
                     Admin
                   </Text>
@@ -188,10 +186,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
+              <MenuItem>Change Password</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem></MenuList>
+              <MenuItem>Sign out</MenuItem>
+            </MenuList>
           </Menu>
         </Flex>
       </HStack>
@@ -218,7 +216,7 @@ const App = () => {
         </Drawer>
         {/* mobilenav */}
         <MobileNav onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 60 }} pt="20">
+        <Box>
           <BrowserRouter>
             <Routes>
               <Route path='/' element={<Home />}/>
