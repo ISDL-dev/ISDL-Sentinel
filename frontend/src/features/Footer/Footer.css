@@ -1,0 +1,18 @@
+.footer {
+    background-color: rgba(79, 209, 197, 1);
+    height: 5vh;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/*スマホ対応*/
+@media screen and (max-width: 640px) {
+    .footer {
+        background-color: #0183a0;
+    }
+}

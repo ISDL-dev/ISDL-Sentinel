@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: ISDL Sentinel API
+  version: 1.0.0
+  license:
+    name: MIT
+servers:
+- url: http://localhost:3000
+paths:
+  /user:
+    post:
+      summary: Add user information
+      operationId: post-user
+      tags:
+        - post-user
+      requestBody:
+        description: request body of user 
+        required: true
+        $ref: '#/components/requestBodies/User'
+      responses:
+        '201':
+          description: successful to add user
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get user infomation
+      operationId: get-user
+      tags:
+        - get-user
+      responses:
+        "200":
+          description: Successful to get user information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+components:
+  requestBodies:
+    User:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              mail_address:
+                type: string
+              password:
+                type: string
+  schemas:
+    UserList:
+      type: array
+      items:
+        type: object
+        properties:
+          user_id:
+            type: integer
+            format: uint64
+          name:
+            type: string
+          mail_address:
+            type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+      - code
+      - message
