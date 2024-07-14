@@ -35,7 +35,11 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
+  FiBarChart,
+  FiBarChart2,
+  FiMapPin,
 } from "react-icons/fi";
+import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
 import { IconType } from "react-icons";
 
 interface LinkItemProps {
@@ -57,10 +61,10 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
+  { name: "Attendee List", icon: FiHome },
+  { name: "Ranking", icon: FiBarChart2 },
+  { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom },
+  { name: "ISDL Map", icon: FiMapPin },
   { name: "Settings", icon: FiSettings },
 ];
 
@@ -113,7 +117,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         {icon && (
           <Icon
             mr="4"
-            fontSize="16"
+            fontSize="20"
             _groupHover={{
               color: "white",
             }}
@@ -129,11 +133,11 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex
-      position="sticky"
+      position="fixed"
       top={0}
       left={0}
       right={0}
-      zIndex="0" // SidebarContentを前面に表示
+      zIndex="2" // SidebarContentを前面に表示
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
@@ -222,6 +226,7 @@ const App = () => {
         <SidebarContent
           onClose={() => onClose}
           display={{ base: "none", md: "block" }}
+          pt={20}
         />
         <Drawer
           isOpen={isOpen}
@@ -235,7 +240,7 @@ const App = () => {
             <SidebarContent onClose={onClose} />
           </DrawerContent>
         </Drawer>
-        <Box pl={64} pr={6} pt={3}>
+        <Box pl={64} pr={6} pt={24}>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
