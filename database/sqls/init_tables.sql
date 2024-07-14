@@ -6,17 +6,24 @@ CREATE TABLE IF NOT EXISTS status(
     status_name VARCHAR(64) NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS places(
+CREATE TABLE IF NOT EXISTS place(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     place_name VARCHAR(64) NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS grades(
+CREATE TABLE IF NOT EXISTS grade(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     grade_name VARCHAR(64) NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS avatar(
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    avatar_name VARCHAR(64) NOT NULL,
+    rarity INT UNSIGNED NOT NULL,
+    img_path VARCHAR(64) NOT NULL
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS user(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     mail_address VARCHAR(64) NOT NULL,
@@ -25,8 +32,8 @@ CREATE TABLE IF NOT EXISTS users(
     place_id INT UNSIGNED,
     grade_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (status_id) REFERENCES status(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (grade_id) REFERENCES grades(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (place_id) REFERENCES place(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (grade_id) REFERENCES grade(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------
@@ -37,21 +44,33 @@ CREATE TABLE IF NOT EXISTS entering_history(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     entered_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS leaving_history(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     left_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS lab_asistant_shift(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     shift_day DATE NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------
+-- Association tables
+-- --------------------------------------
+
+CREATE TABLE IF NOT EXISTS user_possession_avatar(
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    avatar_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------
@@ -63,7 +82,7 @@ INSERT INTO status (status_name) VALUES
 ('Out of Room'),
 ('Overnight');
 
-INSERT INTO places (place_name) VALUES 
+INSERT INTO place (place_name) VALUES 
 ('KC101-small'),
 ('KC101-large'),
 ('KC103'),
@@ -72,14 +91,16 @@ INSERT INTO places (place_name) VALUES
 ('KC116'),
 ('KC119');
 
-INSERT INTO grades (grade_name) VALUES 
+INSERT INTO grade (grade_name) VALUES 
 ('Slave'),
 ('Commoner'),
 ('Noble'),
 ('Royalty'),
 ('Emperor');
 
-INSERT INTO users (name, mail_address, password, status_id, place_id, grade_id) VALUES
+INSERT INTO avatar (avatar_name, rarity, img_path) VALUES ('default', 1, 'default.png');
+
+INSERT INTO user (name, mail_address, password, status_id, place_id, grade_id) VALUES
 ('小野 景子', 'kono@mail.doshisha.ac.jp', 'project443', 1, NULL, 1),
 ('愛智 万莉子', 'aichi.mariko@mikilab.doshisha.ac.jp', 'project443', 1, NULL, 1),
 ('今元 佑', 'imamoto.yu@mikilab.doshisha.ac.jp', 'project443', 1, NULL, 1),
