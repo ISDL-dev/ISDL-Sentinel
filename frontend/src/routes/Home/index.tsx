@@ -17,6 +17,14 @@ import {
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import { inRoom } from "../../models/users/user";
+import { DisableButton } from "../../features/Button/DisableButton";
+import { AbleButton } from "../../features/Button/AbleButton";
+
+const authUser = {
+  id: 2,
+  statusName: inRoom,
+};
 
 dayjs.locale("ja");
 const attendees = [
@@ -61,23 +69,31 @@ function Home() {
           w={"-moz-max-content"}
           column={3}
         >
-          <Button colorScheme="teal" variant="solid" size="lg" width={36}>
-            入室
-          </Button>
-          <Button colorScheme="teal" variant="solid" size="lg" width={36}>
-            退室
-          </Button>
+          {authUser.statusName === inRoom ? (
+            <>
+              <DisableButton placeholder="入室済"></DisableButton>
+              <AbleButton placeholder="退室"></AbleButton>
+            </>
+          ) : (
+            <>
+              <AbleButton placeholder="入室"></AbleButton>
+              <DisableButton placeholder="退室済"></DisableButton>
+            </>
+          )}
         </Grid>
       </Grid>
       <TableContainer
-        overflowX="unset"
-        overflowY="unset"
-        p={14}
-        mt={-6}
+        pb={14}
+        pr={14}
+        pl={14}
+        mt={8}
         outlineOffset={2}
+        overflowX="unset"
+        overflowY="scroll"
+        height="65vh"
       >
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
-          <Thead position="sticky" top={0}>
+          <Thead top={0}>
             <Tr bgColor="#E6EBED">
               <Th w="33%">出席者</Th>
               <Th w="33%">部屋</Th>
