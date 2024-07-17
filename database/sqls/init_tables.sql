@@ -132,3 +132,29 @@ INSERT INTO user (name, mail_address, password, status_id, place_id, grade_id) V
 ('和田 陽暉', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 1, NULL, 1),
 ('吉田 玲音', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 1, NULL, 1);
 
+INSERT INTO entering_history (user_id, entered_at) VALUES 
+(9, '2024-07-16 09:00:00'),
+(9, '2024-07-17 09:00:00'),
+(10, '2024-07-16 09:00:00'),
+(10, '2024-07-17 09:00:00'),
+(14, '2024-07-16 09:00:00'),
+(14, '2024-07-17 09:00:00');
+
+INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time) VALUES 
+(9, 1, '2024-07-16 18:00:00', '09:00:00'),
+(9, 2, '2024-07-17 18:00:00', '09:00:00'),
+(10, 3, '2024-07-16 18:00:00', '09:00:00'),
+(10, 4, '2024-07-17 18:00:00', '09:00:00'),
+(14, 5, '2024-07-16 18:00:00', '09:00:00'),
+(14, 6, '2024-07-17 18:00:00', '09:00:00');
+
+INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES 
+(9, '2024-07-16'),
+(10, '2024-07-17'),
+(14, '2024-07-18');
+
+INSERT INTO user_possession_avatar (user_id, avatar_id) VALUES 
+(9, 1),
+(10, 1),
+(14, 1);
+
