@@ -29,7 +29,9 @@ type UserInformation struct {
 
 	Grade string `json:"grade,omitempty"`
 
-	Avatar string `json:"avatar,omitempty"`
+	AvatarId int32 `json:"avatar_id,omitempty"`
+
+	AvatarImgPath string `json:"avatar_img_path,omitempty"`
 
 	AvatarList []UserInformationAvatarListInner `json:"avatar_list,omitempty"`
 }

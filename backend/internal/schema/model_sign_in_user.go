@@ -9,21 +9,11 @@
 
 package schema
 
-type AttendeesListInner struct {
+type SignInUser struct {
 
 	UserId int32 `json:"user_id,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
-
-	EnteredAt string `json:"entered_at,omitempty"`
-
-	Purpose string `json:"purpose,omitempty"`
-
-	Status string `json:"status,omitempty"`
-
-	Place string `json:"place,omitempty"`
-
-	Grade string `json:"grade,omitempty"`
 
 	AvatarId int32 `json:"avatar_id,omitempty"`
 

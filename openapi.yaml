@@ -26,6 +26,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /status:
+    put:
+      summary: update status
+      operationId: put-status
+      tags:
+        - put-status
+      requestBody:
+        description: request body of update status
+        required: true
+        $ref: '#/components/requestBodies/Status'
+      responses:
+        '200':
+          description: successful to update status
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /access-history:
+    get:
+      summary: Get access history
+      operationId: get-access-history
+      tags:
+        - get-access-history
+      responses:
+        "200":
+          description: Successful to get access-history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessHistory"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /users/{user_id}:
     get:
       summary: Get a user by ID
@@ -46,6 +84,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInformation"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /avatar:
+    put:
+      summary: update avatar
+      operationId: put-avatar
+      tags:
+        - put-avatar
+      requestBody:
+        description: request body of update avatar
+        required: true
+        $ref: '#/components/requestBodies/Avatar'
+      responses:
+        '200':
+          description: successful to update avatar
         default:
           description: unexpected error
           content:
@@ -129,6 +186,10 @@ paths:
       responses:
         '200':
           description: successful to sign in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInUser"
         default:
           description: unexpected error
           content:
@@ -148,6 +209,10 @@ paths:
       responses:
         '200':
           description: successful to sign in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInUser"
         default:
           description: unexpected error
           content:
@@ -175,6 +240,29 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
+    Status:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                format: uint64
+              status:
+                type: string
+    Avatar:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                format: uint64
+              avatar_id:
+                type: integer
+                format: uint64
     SignInUser:
       content:
         application/json:
@@ -230,8 +318,48 @@ components:
             type: string
           grade:
             type: string
-          avatar:
+          avatar_id:
+            type: integer
+            format: uint64
+          avatar_img_path:
             type: string
+    AccessHistory:
+      type: array
+      items:
+        type: object
+        properties:
+          date:
+            type: string
+          entering:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                format: uint64
+              user_name:
+                type: string
+              avatar_id:
+                type: integer
+                format: uint64
+              avatar_img_path:
+                type: string
+              entered_at:
+                type: string
+          leaving:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                format: uint64
+              user_name:
+                type: string
+              avatar_id:
+                type: integer
+                format: uint64
+              avatar_img_path:
+                type: string
+              left_at:
+                type: string
     UserInformation:
       type: object
       properties:
@@ -256,7 +384,10 @@ components:
           type: string
         grade:
           type: string
-        avatar:
+        avatar_id:
+          type: integer
+          format: uint64
+        avatar_img_path:
           type: string
         avatar_list:
           type: array
@@ -283,11 +414,17 @@ components:
             format: uint64
           user_name:
             type: string
+          attendance_days:
+            type: integer
+            format: uint64
           stay_time:
             type: string
           grade:
             type: string
-          avatar:
+          avatar_id:
+            type: integer
+            format: uint64
+          avatar_img_path:
             type: string
     AvatarInformation:
       type: array
@@ -304,6 +441,19 @@ components:
             format: uint64
           img_path:
             type: string
+    SignInUser:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: uint64
+        user_name:
+          type: string
+        avatar_id:
+          type: integer
+          format: uint64
+        avatar_img_path:
+          type: string
     Error:
       type: object
       properties:
