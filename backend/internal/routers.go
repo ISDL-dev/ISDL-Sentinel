@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/controller"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -16,4 +17,5 @@ func SetRoutes(router *gin.Engine) {
 		AllowCredentials: true,
 	}))
 
+	router.PUT("/v1/status", controller.PutStatusHandlerFunc)
 }
