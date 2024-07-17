@@ -5,275 +5,49 @@ info:
   license:
     name: MIT
 servers:
-- url: http://localhost:3000/v1
+- url: http://localhost:3000
 paths:
-  /attendees-list:
-    get:
-      summary: Get attendees list
-      operationId: get-attendees-list
-      tags:
-        - get-attendees-list
-      responses:
-        "200":
-          description: Successful to get attendees list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AttendeesList"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /status:
-    put:
-      summary: update status
-      operationId: put-status
-      tags:
-        - put-status
-      requestBody:
-        description: request body of update status
-        required: true
-        $ref: '#/components/requestBodies/Status'
-      responses:
-        '200':
-          description: successful to update status
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /access-history:
-    get:
-      summary: Get access history
-      operationId: get-access-history
-      tags:
-        - get-access-history
-      responses:
-        "200":
-          description: Successful to get access-history
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AccessHistory"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /users/{user_id}:
-    get:
-      summary: Get a user by ID
-      operationId: get-user-by-id
-      tags:
-        - get-user-by-id
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema:
-            type: integer
-            format: uint64
-      responses:
-        "200":
-          description: Successful to get a user by ID
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserInformation"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /avatar:
-    put:
-      summary: update avatar
-      operationId: put-avatar
-      tags:
-        - put-avatar
-      requestBody:
-        description: request body of update avatar
-        required: true
-        $ref: '#/components/requestBodies/Avatar'
-      responses:
-        '200':
-          description: successful to update avatar
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /ranking:
-    get:
-      summary: Get ranking
-      operationId: get-ranking
-      tags:
-        - get-ranking
-      responses:
-        "200":
-          description: Successful to get ranking
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RankingList"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /avatar/{count}:
-    get:
-      summary: Get an avatar by ID
-      operationId: get-avatar-by-id
-      tags:
-        - get-avatar-by-id
-      parameters:
-        - in: path
-          name: count
-          required: true
-          schema:
-            type: integer
-            format: uint64
-      responses:
-        "200":
-          description: Successful to get an avatar by ID
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AvatarInformation"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /avatar-list:
-    get:
-      summary: Get avatar list
-      operationId: get-avatar-list
-      tags:
-        - get-avatar-list
-      responses:
-        "200":
-          description: Successful to get avatar-list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AvatarInformation"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /sign-in:
+  /user:
     post:
-      summary: Sign in
-      operationId: post-sign-in
+      summary: Add user information
+      operationId: post-user
       tags:
-        - post-sign-in
+        - post-user
       requestBody:
-        description: request body of sign in
+        description: request body of user 
         required: true
-        $ref: '#/components/requestBodies/SignInUser'
+        $ref: '#/components/requestBodies/User'
       responses:
-        '200':
-          description: successful to sign in
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SignInUser"
+        '201':
+          description: successful to add user
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /sign-up:
-    post:
-      summary: Create user information
-      operationId: post-user-information
+    get:
+      summary: Get user infomation
+      operationId: get-user
       tags:
-        - post-user-information
-      requestBody:
-        description: request body of sign up
-        required: true
-        $ref: '#/components/requestBodies/SignUpUser'
+        - get-user
       responses:
-        '200':
-          description: successful to sign in
+        "200":
+          description: Successful to get user information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SignInUser"
+                $ref: "#/components/schemas/UserList"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /password:
-    put:
-      summary: change password
-      operationId: put-change-password
-      tags:
-        - put-change-password
-      requestBody:
-        description: request body of change password
-        required: true
-        $ref: '#/components/requestBodies/Password'
-      responses:
-        '200':
-          description: successful to sign in
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+  
 components:
   requestBodies:
-    Status:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              user_id:
-                type: integer
-                format: uint64
-              status:
-                type: string
-    Avatar:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              user_id:
-                type: integer
-                format: uint64
-              avatar_id:
-                type: integer
-                format: uint64
-    SignInUser:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              mail_address:
-                type: string
-              password:
-                type: string
-    SignUpUser:
+    User:
       content:
         application/json:
           schema:
@@ -285,20 +59,8 @@ components:
                 type: string
               password:
                 type: string
-    Password:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              mail_address:
-                type: string
-              before_password:
-                type: string
-              after_password:
-                type: string
   schemas:
-    AttendeesList:
+    UserList:
       type: array
       items:
         type: object
@@ -306,154 +68,10 @@ components:
           user_id:
             type: integer
             format: uint64
-          user_name:
+          name:
             type: string
-          entered_at:
+          mail_address:
             type: string
-          purpose:
-            type: string
-          status:
-            type: string
-          place:
-            type: string
-          grade:
-            type: string
-          avatar_id:
-            type: integer
-            format: uint64
-          avatar_img_path:
-            type: string
-    AccessHistory:
-      type: array
-      items:
-        type: object
-        properties:
-          date:
-            type: string
-          entering:
-            type: object
-            properties:
-              user_id:
-                type: integer
-                format: uint64
-              user_name:
-                type: string
-              avatar_id:
-                type: integer
-                format: uint64
-              avatar_img_path:
-                type: string
-              entered_at:
-                type: string
-          leaving:
-            type: object
-            properties:
-              user_id:
-                type: integer
-                format: uint64
-              user_name:
-                type: string
-              avatar_id:
-                type: integer
-                format: uint64
-              avatar_img_path:
-                type: string
-              left_at:
-                type: string
-    UserInformation:
-      type: object
-      properties:
-        user_id:
-          type: integer
-          format: uint64
-        user_name:
-          type: string
-        mail_address:
-          type: string
-        number_of_coin:
-          type: integer
-          format: uint64
-        attendance_days:
-          type: integer
-          format: uint64
-        stay_time:
-          type: string
-        status:
-          type: string
-        place:
-          type: string
-        grade:
-          type: string
-        avatar_id:
-          type: integer
-          format: uint64
-        avatar_img_path:
-          type: string
-        avatar_list:
-          type: array
-          items:
-            type: object
-            properties:
-              avatar_id:
-                type: integer
-                format: uint64
-              avatar_name:
-                type: string
-              rarity:
-                type: integer
-                format: uint64
-              img_path:
-                type: string
-    RankingList:
-      type: array
-      items:
-        type: object
-        properties:
-          user_id:
-            type: integer
-            format: uint64
-          user_name:
-            type: string
-          attendance_days:
-            type: integer
-            format: uint64
-          stay_time:
-            type: string
-          grade:
-            type: string
-          avatar_id:
-            type: integer
-            format: uint64
-          avatar_img_path:
-            type: string
-    AvatarInformation:
-      type: array
-      items:
-        type: object
-        properties:
-          avatar_id:
-            type: integer
-            format: uint64
-          avatar_name:
-            type: string
-          rarity:
-            type: integer
-            format: uint64
-          img_path:
-            type: string
-    SignInUser:
-      type: object
-      properties:
-        user_id:
-          type: integer
-          format: uint64
-        user_name:
-          type: string
-        avatar_id:
-          type: integer
-          format: uint64
-        avatar_img_path:
-          type: string
     Error:
       type: object
       properties:
