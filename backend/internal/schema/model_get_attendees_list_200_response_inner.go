@@ -9,15 +9,19 @@
 
 package schema
 
-type RankingListInner struct {
+type GetAttendeesList200ResponseInner struct {
 
 	UserId int32 `json:"user_id,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
 
-	AttendanceDays int32 `json:"attendance_days,omitempty"`
+	EnteredAt string `json:"entered_at,omitempty"`
 
-	StayTime string `json:"stay_time,omitempty"`
+	Purpose string `json:"purpose,omitempty"`
+
+	Status string `json:"status,omitempty"`
+
+	Place string `json:"place,omitempty"`
 
 	Grade string `json:"grade,omitempty"`
 

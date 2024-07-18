@@ -9,10 +9,14 @@
 
 package schema
 
-type PutStatusRequest struct {
+type GetUserById200ResponseAvatarListInner struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	AvatarId int32 `json:"avatar_id,omitempty"`
 
-	Status string `json:"status,omitempty"`
+	AvatarName string `json:"avatar_name,omitempty"`
+
+	Rarity int32 `json:"rarity,omitempty"`
+
+	ImgPath string `json:"img_path,omitempty"`
 }
 

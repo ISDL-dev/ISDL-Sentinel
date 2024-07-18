@@ -9,7 +9,7 @@
 
 package schema
 
-type AccessHistoryInnerLeaving struct {
+type GetAccessHistory200ResponseInnerEntering struct {
 
 	UserId int32 `json:"user_id,omitempty"`
 
@@ -19,6 +19,6 @@ type AccessHistoryInnerLeaving struct {
 
 	AvatarImgPath string `json:"avatar_img_path,omitempty"`
 
-	LeftAt string `json:"left_at,omitempty"`
+	EnteredAt string `json:"entered_at,omitempty"`
 }
 
