@@ -6,9 +6,9 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetUsers(userId int) (userInformation schema.UserInformation, err error) {
-	var avatar schema.UserInformationAvatarListInner
-	var avatarList []schema.UserInformationAvatarListInner
+func GetUsers(userId int) (userInformation schema.GetUserById200Response, err error) {
+	var avatar schema.GetUserById200ResponseAvatarListInner
+	var avatarList []schema.GetUserById200ResponseAvatarListInner
 
 	getUserInfoQuery := `
 		SELECT 
@@ -48,8 +48,7 @@ func GetUsers(userId int) (userInformation schema.UserInformation, err error) {
 		&userInformation.Grade,
 		&userInformation.AvatarId,
 		&userInformation.AvatarImgPath); err != nil {
-		return nil, fmt.Errorf(
-			"failed to execute a query: %v", err)
+		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get user information: %v", err)
 	}
 
 	getMonthStaytimeAndDaysQuery := `
@@ -62,8 +61,7 @@ func GetUsers(userId int) (userInformation schema.UserInformation, err error) {
 			user_id = ?
 			AND DATE_FORMAT(left_at, '%Y-%m') = '2024-07';`
 	if err := db.QueryRow(getMonthStaytimeAndDaysQuery, userId).Scan(&userInformation.AttendanceDays, &userInformation.StayTime); err != nil {
-		return nil, fmt.Errorf(
-			"failed to execute a query: %v", err)
+		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get staytime and attendance days: %v", err)
 	}
 
 	getAvatarListQuery := `
@@ -80,12 +78,12 @@ func GetUsers(userId int) (userInformation schema.UserInformation, err error) {
 			user_possession_avatar.user_id = ?;`
 	rows, err := db.Query(getAvatarListQuery, userId)
 	if err != nil {
-		return nil, fmt.Errorf("getRows db.Query error err:%w", err)
+		return schema.GetUserById200Response{}, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
 	for rows.Next() {
 		err := rows.Scan(&avatar.AvatarId, &avatar.AvatarName, &avatar.Rarity, &avatar.ImgPath)
 		if err != nil {
-			return nil, fmt.Errorf("getRows rows_title.Scan error err:%w", err)
+			return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get avatar list:%w", err)
 		}
 		avatarList = append(avatarList, avatar)
 	}

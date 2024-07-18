@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal"
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/repository"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repository"
 	"github.com/gin-gonic/gin"
 )
 

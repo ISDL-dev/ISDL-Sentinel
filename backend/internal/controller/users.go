@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repository"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,12 +18,11 @@ func GetUsersHandlerFunc(ctx *gin.Context) {
 	userInformation, err := repository.GetUsers(userId)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get user information:%w", err))
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Errorf("failed to get user information:%w", err),
+		ctx.JSON(http.StatusInternalServerError, schema.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
 		})
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"content": userInformation,
-		})
+		ctx.JSON(http.StatusOK, userInformation)
 	}
 }
