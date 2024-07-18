@@ -9,16 +9,20 @@
 
 package schema
 
-type AccessHistoryInnerEntering struct {
+type GetRanking200ResponseInner struct {
 
 	UserId int32 `json:"user_id,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
 
+	AttendanceDays int32 `json:"attendance_days,omitempty"`
+
+	StayTime string `json:"stay_time,omitempty"`
+
+	Grade string `json:"grade,omitempty"`
+
 	AvatarId int32 `json:"avatar_id,omitempty"`
 
 	AvatarImgPath string `json:"avatar_img_path,omitempty"`
-
-	EnteredAt string `json:"entered_at,omitempty"`
 }
 

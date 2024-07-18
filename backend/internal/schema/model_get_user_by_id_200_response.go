@@ -9,7 +9,7 @@
 
 package schema
 
-type UserInformation struct {
+type GetUserById200Response struct {
 
 	UserId int32 `json:"user_id,omitempty"`
 
@@ -33,6 +33,6 @@ type UserInformation struct {
 
 	AvatarImgPath string `json:"avatar_img_path,omitempty"`
 
-	AvatarList []UserInformationAvatarListInner `json:"avatar_list,omitempty"`
+	AvatarList []GetUserById200ResponseAvatarListInner `json:"avatar_list,omitempty"`
 }
 
