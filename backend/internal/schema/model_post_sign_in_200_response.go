@@ -9,14 +9,14 @@
 
 package schema
 
-type UserInformationAvatarListInner struct {
+type PostSignIn200Response struct {
+
+	UserId int32 `json:"user_id,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
 
 	AvatarId int32 `json:"avatar_id,omitempty"`
 
-	AvatarName string `json:"avatar_name,omitempty"`
-
-	Rarity int32 `json:"rarity,omitempty"`
-
-	ImgPath string `json:"img_path,omitempty"`
+	AvatarImgPath string `json:"avatar_img_path,omitempty"`
 }
 
