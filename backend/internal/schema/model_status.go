@@ -9,12 +9,10 @@
 
 package schema
 
-type PostUserRequest struct {
+type Status struct {
 
-	Name string `json:"name,omitempty"`
+	UserId int32 `json:"user_id,omitempty"`
 
-	MailAddress string `json:"mail_address,omitempty"`
-
-	Password string `json:"password,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 

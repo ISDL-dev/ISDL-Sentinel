@@ -9,12 +9,12 @@
 
 package schema
 
-type UserListInner struct {
+type GetAccessHistory200ResponseInner struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	Date string `json:"date,omitempty"`
 
-	Name string `json:"name,omitempty"`
+	Entering GetAccessHistory200ResponseInnerEntering `json:"entering,omitempty"`
 
-	MailAddress string `json:"mail_address,omitempty"`
+	Leaving GetAccessHistory200ResponseInnerLeaving `json:"leaving,omitempty"`
 }
 
