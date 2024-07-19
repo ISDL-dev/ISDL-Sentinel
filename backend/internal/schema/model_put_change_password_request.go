@@ -11,10 +11,10 @@ package schema
 
 type PutChangePasswordRequest struct {
 
-	MailAddress string `json:"mail_address,omitempty"`
+	MailAddress string `json:"mail_address"`
 
-	BeforePassword string `json:"before_password,omitempty"`
+	BeforePassword string `json:"before_password"`
 
-	AfterPassword string `json:"after_password,omitempty"`
+	AfterPassword string `json:"after_password"`
 }
 

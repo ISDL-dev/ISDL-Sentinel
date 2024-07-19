@@ -11,8 +11,8 @@ package schema
 
 type PostSignInRequest struct {
 
-	MailAddress string `json:"mail_address,omitempty"`
+	MailAddress string `json:"mail_address"`
 
-	Password string `json:"password,omitempty"`
+	Password string `json:"password"`
 }
 

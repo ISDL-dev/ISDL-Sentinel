@@ -227,6 +227,9 @@ components:
               avatar_id:
                 type: integer
                 format: uint64
+            required:
+              - user_id
+              - avatar_id
     SignInUser:
       content:
         application/json:
@@ -237,6 +240,9 @@ components:
                 type: string
               password:
                 type: string
+            required:
+              - mail_address
+              - password
     SignUpUser:
       content:
         application/json:
@@ -249,6 +255,10 @@ components:
                 type: string
               password:
                 type: string
+            required:
+              - name
+              - mail_address
+              - password
     Password:
       content:
         application/json:
@@ -261,6 +271,10 @@ components:
                 type: string
               after_password:
                 type: string
+            required:
+              - mail_address
+              - before_password
+              - after_password
   responses:
     AttendeesList:
       description: successful to get attendees list
@@ -291,6 +305,16 @@ components:
                   format: uint64
                 avatar_img_path:
                   type: string
+              required:
+                - user_id
+                - user_name
+                - entered_at
+                - purpose
+                - status
+                - place
+                - grade
+                - avatar_id
+                - avatar_img_path
     AccessHistory:
       description: Successful to get access-history
       content:
@@ -317,6 +341,12 @@ components:
                       type: string
                     entered_at:
                       type: string
+                  required:
+                    - user_id
+                    - user_name
+                    - avatar_id
+                    - avatar_img_path
+                    - entered_at
                 leaving:
                   type: object
                   properties:
@@ -332,6 +362,16 @@ components:
                       type: string
                     left_at:
                       type: string
+                  required:
+                    - user_id
+                    - user_name
+                    - avatar_id
+                    - avatar_img_path
+                    - left_at
+              required:
+                - date
+                - entering
+                - leaving
     UserInformation:
       description: Successful to get a user by ID
       content:
@@ -380,6 +420,24 @@ components:
                       format: uint64
                     img_path:
                       type: string
+                  required:
+                    - avatar_id
+                    - avatar_name
+                    - rarity
+                    - img_path
+            required:
+              - user_id
+              - user_name
+              - mail_address
+              - number_of_coin
+              - attendance_days
+              - stay_time
+              - status
+              - place
+              - grade
+              - avatar_id
+              - avatar_img_path
+              - avatar_list
     AvatarInformation:
       description: Successful to get an avatar by ID
       content:
@@ -399,6 +457,11 @@ components:
                   format: uint64
                 img_path:
                   type: string
+              required:
+                - avatar_id
+                - avatar_name
+                - rarity
+                - img_path
     RankingList:
       description: Successful to get ranking
       content:
@@ -425,6 +488,14 @@ components:
                   format: uint64
                 avatar_img_path:
                   type: string
+              required:
+                - user_id
+                - user_name
+                - attendance_days
+                - stay_time
+                - grade
+                - avatar_id
+                - avatar_img_path
     SignInUser:
       description: successful to sign in
       content:
@@ -442,6 +513,11 @@ components:
                 format: uint64
               avatar_img_path:
                 type: string
+            required:
+              - user_id
+              - user_name
+              - avatar_id
+              - avatar_img_path
   schemas:
     Status:
       type: object
@@ -451,6 +527,9 @@ components:
           format: uint64
         status:
           type: string
+      required:
+        - user_id
+        - status
     Error:
       type: object
       properties:
@@ -460,5 +539,5 @@ components:
         message:
           type: string
       required:
-      - code
-      - message
+        - code
+        - message

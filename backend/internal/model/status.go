@@ -7,5 +7,9 @@ const (
 )
 
 func IsInRoom(status string) bool {
-	return status != IN_ROOM
+	return status == IN_ROOM || status == OVERNIGHT
+}
+type Status struct {
+	id             int32
+	status_name           string
 }

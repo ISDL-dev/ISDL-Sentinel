@@ -50,11 +50,11 @@ const decodeDate = (date: Date) => {
 };
 
 type AuthUser = {
-  id?: number;
-  statusName?: string;
+  id: number;
+  statusName: string;
 };
 const AUTH_USER: AuthUser = {
-  id: 2,
+  id: 4,
   statusName: inRoom,
 };
 
@@ -67,7 +67,6 @@ function Home() {
         status: authUser.statusName,
       });
       setAuthUser({ id: user.data.user_id, statusName: user.data.status });
-      console.log(authUser.statusName);
     } catch (error) {
       console.log(error);
     }

@@ -11,22 +11,22 @@ package schema
 
 type GetAttendeesList200ResponseInner struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	UserId int32 `json:"user_id"`
 
-	UserName string `json:"user_name,omitempty"`
+	UserName string `json:"user_name"`
 
-	EnteredAt string `json:"entered_at,omitempty"`
+	EnteredAt string `json:"entered_at"`
 
-	Purpose string `json:"purpose,omitempty"`
+	Purpose string `json:"purpose"`
 
-	Status string `json:"status,omitempty"`
+	Status string `json:"status"`
 
-	Place string `json:"place,omitempty"`
+	Place string `json:"place"`
 
-	Grade string `json:"grade,omitempty"`
+	Grade string `json:"grade"`
 
-	AvatarId int32 `json:"avatar_id,omitempty"`
+	AvatarId int32 `json:"avatar_id"`
 
-	AvatarImgPath string `json:"avatar_img_path,omitempty"`
+	AvatarImgPath string `json:"avatar_img_path"`
 }
 
