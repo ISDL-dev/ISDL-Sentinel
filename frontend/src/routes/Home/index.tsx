@@ -49,7 +49,11 @@ const decodeDate = (date: Date) => {
   )}）${dayjs(date).format("HH時MM分")}`;
 };
 
-const AUTH_USER = {
+type AuthUser = {
+  id?: number;
+  statusName?: string;
+};
+const AUTH_USER: AuthUser = {
   id: 2,
   statusName: inRoom,
 };
@@ -58,10 +62,12 @@ function Home() {
   const [authUser, setAuthUser] = useState(AUTH_USER);
   const handleStatusChange = async () => {
     try {
-      await putStatusApi.putStatus({
+      const user = await putStatusApi.putStatus({
         user_id: authUser.id,
         status: authUser.statusName,
       });
+      setAuthUser({ id: user.data.user_id, statusName: user.data.status });
+      console.log(authUser.statusName);
     } catch (error) {
       console.log(error);
     }
