@@ -11,14 +11,14 @@ package schema
 
 type GetAccessHistory200ResponseInnerLeaving struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	UserId int32 `json:"user_id"`
 
-	UserName string `json:"user_name,omitempty"`
+	UserName string `json:"user_name"`
 
-	AvatarId int32 `json:"avatar_id,omitempty"`
+	AvatarId int32 `json:"avatar_id"`
 
-	AvatarImgPath string `json:"avatar_img_path,omitempty"`
+	AvatarImgPath string `json:"avatar_img_path"`
 
-	LeftAt string `json:"left_at,omitempty"`
+	LeftAt string `json:"left_at"`
 }
 

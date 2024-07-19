@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repository"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
@@ -12,10 +13,20 @@ import (
 )
 
 func GetUsersHandlerFunc(ctx *gin.Context) {
-	var userId int
+	userIdStr := ctx.Param("user_id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		log.Println(fmt.Errorf("invalid user_id '%s': %w", userIdStr, err))
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
 
-	userId, _ = strconv.Atoi(ctx.Param("user_id"))
-	userInformation, err := repository.GetUsers(userId)
+	now := time.Now()
+	date := now.Format("2006-01")
+
+	userInformation, err := repository.GetUsers(userId, date)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get user information:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{

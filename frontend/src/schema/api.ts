@@ -34,19 +34,19 @@ export interface GetAccessHistory200ResponseInner {
      * @type {string}
      * @memberof GetAccessHistory200ResponseInner
      */
-    'date'?: string;
+    'date': string;
     /**
      * 
      * @type {GetAccessHistory200ResponseInnerEntering}
      * @memberof GetAccessHistory200ResponseInner
      */
-    'entering'?: GetAccessHistory200ResponseInnerEntering;
+    'entering': GetAccessHistory200ResponseInnerEntering;
     /**
      * 
      * @type {GetAccessHistory200ResponseInnerLeaving}
      * @memberof GetAccessHistory200ResponseInner
      */
-    'leaving'?: GetAccessHistory200ResponseInnerLeaving;
+    'leaving': GetAccessHistory200ResponseInnerLeaving;
 }
 /**
  * 
@@ -59,31 +59,31 @@ export interface GetAccessHistory200ResponseInnerEntering {
      * @type {number}
      * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
      * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'entered_at'?: string;
+    'entered_at': string;
 }
 /**
  * 
@@ -96,31 +96,31 @@ export interface GetAccessHistory200ResponseInnerLeaving {
      * @type {number}
      * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
      * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
     /**
      * 
      * @type {string}
      * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'left_at'?: string;
+    'left_at': string;
 }
 /**
  * 
@@ -133,55 +133,55 @@ export interface GetAttendeesList200ResponseInner {
      * @type {number}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'entered_at'?: string;
+    'entered_at': string;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'purpose'?: string;
+    'purpose': string;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'status'?: string;
+    'status': string;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'place'?: string;
+    'place': string;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'grade'?: string;
+    'grade': string;
     /**
      * 
      * @type {number}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetAttendeesList200ResponseInner
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
 }
 /**
  * 
@@ -194,43 +194,43 @@ export interface GetRanking200ResponseInner {
      * @type {number}
      * @memberof GetRanking200ResponseInner
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetRanking200ResponseInner
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
      * @memberof GetRanking200ResponseInner
      */
-    'attendance_days'?: number;
+    'attendance_days': number;
     /**
      * 
      * @type {string}
      * @memberof GetRanking200ResponseInner
      */
-    'stay_time'?: string;
+    'stay_time': string;
     /**
      * 
      * @type {string}
      * @memberof GetRanking200ResponseInner
      */
-    'grade'?: string;
+    'grade': string;
     /**
      * 
      * @type {number}
      * @memberof GetRanking200ResponseInner
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetRanking200ResponseInner
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
 }
 /**
  * 
@@ -243,73 +243,73 @@ export interface GetUserById200Response {
      * @type {number}
      * @memberof GetUserById200Response
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {number}
      * @memberof GetUserById200Response
      */
-    'number_of_coin'?: number;
+    'number_of_coin': number;
     /**
      * 
      * @type {number}
      * @memberof GetUserById200Response
      */
-    'attendance_days'?: number;
+    'attendance_days': number;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'stay_time'?: string;
+    'stay_time': string;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'status'?: string;
+    'status': string;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'place'?: string;
+    'place': string;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'grade'?: string;
+    'grade': string;
     /**
      * 
      * @type {number}
      * @memberof GetUserById200Response
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200Response
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
     /**
      * 
      * @type {Array<GetUserById200ResponseAvatarListInner>}
      * @memberof GetUserById200Response
      */
-    'avatar_list'?: Array<GetUserById200ResponseAvatarListInner>;
+    'avatar_list': Array<GetUserById200ResponseAvatarListInner>;
 }
 /**
  * 
@@ -322,25 +322,25 @@ export interface GetUserById200ResponseAvatarListInner {
      * @type {number}
      * @memberof GetUserById200ResponseAvatarListInner
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200ResponseAvatarListInner
      */
-    'avatar_name'?: string;
+    'avatar_name': string;
     /**
      * 
      * @type {number}
      * @memberof GetUserById200ResponseAvatarListInner
      */
-    'rarity'?: number;
+    'rarity': number;
     /**
      * 
      * @type {string}
      * @memberof GetUserById200ResponseAvatarListInner
      */
-    'img_path'?: string;
+    'img_path': string;
 }
 /**
  * 
@@ -372,25 +372,25 @@ export interface PostSignIn200Response {
      * @type {number}
      * @memberof PostSignIn200Response
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof PostSignIn200Response
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
      * @memberof PostSignIn200Response
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
      * @memberof PostSignIn200Response
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
 }
 /**
  * 
@@ -403,13 +403,13 @@ export interface PostSignInRequest {
      * @type {string}
      * @memberof PostSignInRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PostSignInRequest
      */
-    'password'?: string;
+    'password': string;
 }
 /**
  * 
@@ -422,19 +422,19 @@ export interface PostUserInformationRequest {
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'password'?: string;
+    'password': string;
 }
 /**
  * 
@@ -447,13 +447,13 @@ export interface PutAvatarRequest {
      * @type {number}
      * @memberof PutAvatarRequest
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {number}
      * @memberof PutAvatarRequest
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
 }
 /**
  * 
@@ -466,19 +466,19 @@ export interface PutChangePasswordRequest {
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'before_password'?: string;
+    'before_password': string;
     /**
      * 
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'after_password'?: string;
+    'after_password': string;
 }
 /**
  * 
@@ -491,13 +491,13 @@ export interface Status {
      * @type {number}
      * @memberof Status
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof Status
      */
-    'status'?: string;
+    'status': string;
 }
 
 /**

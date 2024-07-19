@@ -11,8 +11,8 @@ package schema
 
 type PutAvatarRequest struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	UserId int32 `json:"user_id"`
 
-	AvatarId int32 `json:"avatar_id,omitempty"`
+	AvatarId int32 `json:"avatar_id"`
 }
 

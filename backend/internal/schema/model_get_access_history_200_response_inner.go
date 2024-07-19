@@ -11,10 +11,10 @@ package schema
 
 type GetAccessHistory200ResponseInner struct {
 
-	Date string `json:"date,omitempty"`
+	Date string `json:"date"`
 
-	Entering GetAccessHistory200ResponseInnerEntering `json:"entering,omitempty"`
+	Entering GetAccessHistory200ResponseInnerEntering `json:"entering"`
 
-	Leaving GetAccessHistory200ResponseInnerLeaving `json:"leaving,omitempty"`
+	Leaving GetAccessHistory200ResponseInnerLeaving `json:"leaving"`
 }
 

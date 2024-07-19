@@ -11,8 +11,8 @@ package schema
 
 type Status struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	UserId int32 `json:"user_id"`
 
-	Status string `json:"status,omitempty"`
+	Status string `json:"status"`
 }
 
