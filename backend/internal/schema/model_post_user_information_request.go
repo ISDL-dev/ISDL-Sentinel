@@ -11,10 +11,10 @@ package schema
 
 type PostUserInformationRequest struct {
 
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
-	MailAddress string `json:"mail_address,omitempty"`
+	MailAddress string `json:"mail_address"`
 
-	Password string `json:"password,omitempty"`
+	Password string `json:"password"`
 }
 

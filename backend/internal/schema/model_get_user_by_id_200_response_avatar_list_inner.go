@@ -11,12 +11,12 @@ package schema
 
 type GetUserById200ResponseAvatarListInner struct {
 
-	AvatarId int32 `json:"avatar_id,omitempty"`
+	AvatarId int32 `json:"avatar_id"`
 
-	AvatarName string `json:"avatar_name,omitempty"`
+	AvatarName string `json:"avatar_name"`
 
-	Rarity int32 `json:"rarity,omitempty"`
+	Rarity int32 `json:"rarity"`
 
-	ImgPath string `json:"img_path,omitempty"`
+	ImgPath string `json:"img_path"`
 }
 

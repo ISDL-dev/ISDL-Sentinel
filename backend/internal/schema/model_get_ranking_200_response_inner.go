@@ -11,18 +11,18 @@ package schema
 
 type GetRanking200ResponseInner struct {
 
-	UserId int32 `json:"user_id,omitempty"`
+	UserId int32 `json:"user_id"`
 
-	UserName string `json:"user_name,omitempty"`
+	UserName string `json:"user_name"`
 
-	AttendanceDays int32 `json:"attendance_days,omitempty"`
+	AttendanceDays int32 `json:"attendance_days"`
 
-	StayTime string `json:"stay_time,omitempty"`
+	StayTime string `json:"stay_time"`
 
-	Grade string `json:"grade,omitempty"`
+	Grade string `json:"grade"`
 
-	AvatarId int32 `json:"avatar_id,omitempty"`
+	AvatarId int32 `json:"avatar_id"`
 
-	AvatarImgPath string `json:"avatar_img_path,omitempty"`
+	AvatarImgPath string `json:"avatar_img_path"`
 }
 
