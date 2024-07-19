@@ -26,162 +26,321 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
- * @interface AccessHistoryInner
+ * @interface GetAccessHistory200ResponseInner
  */
-export interface AccessHistoryInner {
+export interface GetAccessHistory200ResponseInner {
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInner
+     * @memberof GetAccessHistory200ResponseInner
      */
-    'date'?: string;
+    'date': string;
     /**
      * 
-     * @type {AccessHistoryInnerEntering}
-     * @memberof AccessHistoryInner
+     * @type {GetAccessHistory200ResponseInnerEntering}
+     * @memberof GetAccessHistory200ResponseInner
      */
-    'entering'?: AccessHistoryInnerEntering;
+    'entering': GetAccessHistory200ResponseInnerEntering;
     /**
      * 
-     * @type {AccessHistoryInnerLeaving}
-     * @memberof AccessHistoryInner
+     * @type {GetAccessHistory200ResponseInnerLeaving}
+     * @memberof GetAccessHistory200ResponseInner
      */
-    'leaving'?: AccessHistoryInnerLeaving;
+    'leaving': GetAccessHistory200ResponseInnerLeaving;
 }
 /**
  * 
  * @export
- * @interface AccessHistoryInnerEntering
+ * @interface GetAccessHistory200ResponseInnerEntering
  */
-export interface AccessHistoryInnerEntering {
+export interface GetAccessHistory200ResponseInnerEntering {
     /**
      * 
      * @type {number}
-     * @memberof AccessHistoryInnerEntering
+     * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerEntering
+     * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
-     * @memberof AccessHistoryInnerEntering
+     * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerEntering
+     * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerEntering
+     * @memberof GetAccessHistory200ResponseInnerEntering
      */
-    'entered_at'?: string;
+    'entered_at': string;
 }
 /**
  * 
  * @export
- * @interface AccessHistoryInnerLeaving
+ * @interface GetAccessHistory200ResponseInnerLeaving
  */
-export interface AccessHistoryInnerLeaving {
+export interface GetAccessHistory200ResponseInnerLeaving {
     /**
      * 
      * @type {number}
-     * @memberof AccessHistoryInnerLeaving
+     * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerLeaving
+     * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {number}
-     * @memberof AccessHistoryInnerLeaving
+     * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerLeaving
+     * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
     /**
      * 
      * @type {string}
-     * @memberof AccessHistoryInnerLeaving
+     * @memberof GetAccessHistory200ResponseInnerLeaving
      */
-    'left_at'?: string;
+    'left_at': string;
 }
 /**
  * 
  * @export
- * @interface AttendeesListInner
+ * @interface GetAttendeesList200ResponseInner
  */
-export interface AttendeesListInner {
+export interface GetAttendeesList200ResponseInner {
     /**
      * 
      * @type {number}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'user_name'?: string;
+    'user_name': string;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'entered_at'?: string;
+    'entered_at': string;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'purpose'?: string;
+    'purpose': string;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'status'?: string;
+    'status': string;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'place'?: string;
+    'place': string;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'grade'?: string;
+    'grade': string;
     /**
      * 
      * @type {number}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
     /**
      * 
      * @type {string}
-     * @memberof AttendeesListInner
+     * @memberof GetAttendeesList200ResponseInner
      */
-    'avatar_img_path'?: string;
+    'avatar_img_path': string;
+}
+/**
+ * 
+ * @export
+ * @interface GetRanking200ResponseInner
+ */
+export interface GetRanking200ResponseInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetRanking200ResponseInner
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetRanking200ResponseInner
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetRanking200ResponseInner
+     */
+    'attendance_days': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetRanking200ResponseInner
+     */
+    'stay_time': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetRanking200ResponseInner
+     */
+    'grade': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetRanking200ResponseInner
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetRanking200ResponseInner
+     */
+    'avatar_img_path': string;
+}
+/**
+ * 
+ * @export
+ * @interface GetUserById200Response
+ */
+export interface GetUserById200Response {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200Response
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'mail_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200Response
+     */
+    'number_of_coin': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200Response
+     */
+    'attendance_days': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'stay_time': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'status': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'place': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'grade': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200Response
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200Response
+     */
+    'avatar_img_path': string;
+    /**
+     * 
+     * @type {Array<GetUserById200ResponseAvatarListInner>}
+     * @memberof GetUserById200Response
+     */
+    'avatar_list': Array<GetUserById200ResponseAvatarListInner>;
+}
+/**
+ * 
+ * @export
+ * @interface GetUserById200ResponseAvatarListInner
+ */
+export interface GetUserById200ResponseAvatarListInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200ResponseAvatarListInner
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200ResponseAvatarListInner
+     */
+    'avatar_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUserById200ResponseAvatarListInner
+     */
+    'rarity': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserById200ResponseAvatarListInner
+     */
+    'img_path': string;
 }
 /**
  * 
@@ -205,6 +364,37 @@ export interface ModelError {
 /**
  * 
  * @export
+ * @interface PostSignIn200Response
+ */
+export interface PostSignIn200Response {
+    /**
+     * 
+     * @type {number}
+     * @memberof PostSignIn200Response
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostSignIn200Response
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostSignIn200Response
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostSignIn200Response
+     */
+    'avatar_img_path': string;
+}
+/**
+ * 
+ * @export
  * @interface PostSignInRequest
  */
 export interface PostSignInRequest {
@@ -213,13 +403,13 @@ export interface PostSignInRequest {
      * @type {string}
      * @memberof PostSignInRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PostSignInRequest
      */
-    'password'?: string;
+    'password': string;
 }
 /**
  * 
@@ -232,19 +422,19 @@ export interface PostUserInformationRequest {
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PostUserInformationRequest
      */
-    'password'?: string;
+    'password': string;
 }
 /**
  * 
@@ -257,13 +447,13 @@ export interface PutAvatarRequest {
      * @type {number}
      * @memberof PutAvatarRequest
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {number}
      * @memberof PutAvatarRequest
      */
-    'avatar_id'?: number;
+    'avatar_id': number;
 }
 /**
  * 
@@ -276,228 +466,38 @@ export interface PutChangePasswordRequest {
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'mail_address'?: string;
+    'mail_address': string;
     /**
      * 
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'before_password'?: string;
+    'before_password': string;
     /**
      * 
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'after_password'?: string;
+    'after_password': string;
 }
 /**
  * 
  * @export
- * @interface PutStatusRequest
+ * @interface Status
  */
-export interface PutStatusRequest {
+export interface Status {
     /**
      * 
      * @type {number}
-     * @memberof PutStatusRequest
+     * @memberof Status
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
-     * @memberof PutStatusRequest
+     * @memberof Status
      */
-    'status'?: string;
-}
-/**
- * 
- * @export
- * @interface RankingListInner
- */
-export interface RankingListInner {
-    /**
-     * 
-     * @type {number}
-     * @memberof RankingListInner
-     */
-    'user_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RankingListInner
-     */
-    'user_name'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RankingListInner
-     */
-    'attendance_days'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RankingListInner
-     */
-    'stay_time'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RankingListInner
-     */
-    'grade'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RankingListInner
-     */
-    'avatar_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RankingListInner
-     */
-    'avatar_img_path'?: string;
-}
-/**
- * 
- * @export
- * @interface SignInUser
- */
-export interface SignInUser {
-    /**
-     * 
-     * @type {number}
-     * @memberof SignInUser
-     */
-    'user_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof SignInUser
-     */
-    'user_name'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof SignInUser
-     */
-    'avatar_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof SignInUser
-     */
-    'avatar_img_path'?: string;
-}
-/**
- * 
- * @export
- * @interface UserInformation
- */
-export interface UserInformation {
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformation
-     */
-    'user_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'user_name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'mail_address'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformation
-     */
-    'number_of_coin'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformation
-     */
-    'attendance_days'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'stay_time'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'status'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'place'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'grade'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformation
-     */
-    'avatar_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformation
-     */
-    'avatar_img_path'?: string;
-    /**
-     * 
-     * @type {Array<UserInformationAvatarListInner>}
-     * @memberof UserInformation
-     */
-    'avatar_list'?: Array<UserInformationAvatarListInner>;
-}
-/**
- * 
- * @export
- * @interface UserInformationAvatarListInner
- */
-export interface UserInformationAvatarListInner {
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformationAvatarListInner
-     */
-    'avatar_id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformationAvatarListInner
-     */
-    'avatar_name'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserInformationAvatarListInner
-     */
-    'rarity'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInformationAvatarListInner
-     */
-    'img_path'?: string;
+    'status': string;
 }
 
 /**
@@ -552,7 +552,7 @@ export const GetAccessHistoryApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessHistory(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AccessHistoryInner>>> {
+        async getAccessHistory(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetAccessHistoryApi.getAccessHistory']?.[localVarOperationServerIndex]?.url;
@@ -574,7 +574,7 @@ export const GetAccessHistoryApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory(options?: any): AxiosPromise<Array<AccessHistoryInner>> {
+        getAccessHistory(options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
             return localVarFp.getAccessHistory(options).then((request) => request(axios, basePath));
         },
     };
@@ -653,7 +653,7 @@ export const GetAttendeesListApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AttendeesListInner>>> {
+        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAttendeesList200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAttendeesList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetAttendeesListApi.getAttendeesList']?.[localVarOperationServerIndex]?.url;
@@ -675,7 +675,7 @@ export const GetAttendeesListApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAttendeesList(options?: any): AxiosPromise<Array<AttendeesListInner>> {
+        getAttendeesList(options?: any): AxiosPromise<Array<GetAttendeesList200ResponseInner>> {
             return localVarFp.getAttendeesList(options).then((request) => request(axios, basePath));
         },
     };
@@ -759,7 +759,7 @@ export const GetAvatarByIdApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvatarById(count: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserInformationAvatarListInner>>> {
+        async getAvatarById(count: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetUserById200ResponseAvatarListInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAvatarById(count, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetAvatarByIdApi.getAvatarById']?.[localVarOperationServerIndex]?.url;
@@ -782,7 +782,7 @@ export const GetAvatarByIdApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvatarById(count: number, options?: any): AxiosPromise<Array<UserInformationAvatarListInner>> {
+        getAvatarById(count: number, options?: any): AxiosPromise<Array<GetUserById200ResponseAvatarListInner>> {
             return localVarFp.getAvatarById(count, options).then((request) => request(axios, basePath));
         },
     };
@@ -862,7 +862,7 @@ export const GetAvatarListApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvatarList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserInformationAvatarListInner>>> {
+        async getAvatarList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetUserById200ResponseAvatarListInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAvatarList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetAvatarListApi.getAvatarList']?.[localVarOperationServerIndex]?.url;
@@ -884,7 +884,7 @@ export const GetAvatarListApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvatarList(options?: any): AxiosPromise<Array<UserInformationAvatarListInner>> {
+        getAvatarList(options?: any): AxiosPromise<Array<GetUserById200ResponseAvatarListInner>> {
             return localVarFp.getAvatarList(options).then((request) => request(axios, basePath));
         },
     };
@@ -963,7 +963,7 @@ export const GetRankingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getRanking(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<RankingListInner>>> {
+        async getRanking(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetRanking200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getRanking(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetRankingApi.getRanking']?.[localVarOperationServerIndex]?.url;
@@ -985,7 +985,7 @@ export const GetRankingApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRanking(options?: any): AxiosPromise<Array<RankingListInner>> {
+        getRanking(options?: any): AxiosPromise<Array<GetRanking200ResponseInner>> {
             return localVarFp.getRanking(options).then((request) => request(axios, basePath));
         },
     };
@@ -1069,7 +1069,7 @@ export const GetUserByIdApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserById(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserInformation>> {
+        async getUserById(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserById200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUserById(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GetUserByIdApi.getUserById']?.[localVarOperationServerIndex]?.url;
@@ -1092,7 +1092,7 @@ export const GetUserByIdApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserById(userId: number, options?: any): AxiosPromise<UserInformation> {
+        getUserById(userId: number, options?: any): AxiosPromise<GetUserById200Response> {
             return localVarFp.getUserById(userId, options).then((request) => request(axios, basePath));
         },
     };
@@ -1177,7 +1177,7 @@ export const PostSignInApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignInUser>> {
+        async postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postSignIn(postSignInRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PostSignInApi.postSignIn']?.[localVarOperationServerIndex]?.url;
@@ -1200,7 +1200,7 @@ export const PostSignInApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postSignIn(postSignInRequest?: PostSignInRequest, options?: any): AxiosPromise<SignInUser> {
+        postSignIn(postSignInRequest?: PostSignInRequest, options?: any): AxiosPromise<PostSignIn200Response> {
             return localVarFp.postSignIn(postSignInRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -1285,7 +1285,7 @@ export const PostUserInformationApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignInUser>> {
+        async postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postUserInformation(postUserInformationRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PostUserInformationApi.postUserInformation']?.[localVarOperationServerIndex]?.url;
@@ -1308,7 +1308,7 @@ export const PostUserInformationApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: any): AxiosPromise<SignInUser> {
+        postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: any): AxiosPromise<PostSignIn200Response> {
             return localVarFp.postUserInformation(postUserInformationRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -1561,11 +1561,13 @@ export const PutStatusApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary update status
-         * @param {PutStatusRequest} [putStatusRequest] 
+         * @param {Status} status request body of update status
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putStatus: async (putStatusRequest?: PutStatusRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        putStatus: async (status: Status, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'status' is not null or undefined
+            assertParamExists('putStatus', 'status', status)
             const localVarPath = `/status`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1585,7 +1587,7 @@ export const PutStatusApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(putStatusRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(status, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1605,12 +1607,12 @@ export const PutStatusApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary update status
-         * @param {PutStatusRequest} [putStatusRequest] 
+         * @param {Status} status request body of update status
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putStatus(putStatusRequest?: PutStatusRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putStatus(putStatusRequest, options);
+        async putStatus(status: Status, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Status>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putStatus(status, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PutStatusApi.putStatus']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1628,12 +1630,12 @@ export const PutStatusApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @summary update status
-         * @param {PutStatusRequest} [putStatusRequest] 
+         * @param {Status} status request body of update status
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putStatus(putStatusRequest?: PutStatusRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.putStatus(putStatusRequest, options).then((request) => request(axios, basePath));
+        putStatus(status: Status, options?: any): AxiosPromise<Status> {
+            return localVarFp.putStatus(status, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1648,13 +1650,13 @@ export class PutStatusApi extends BaseAPI {
     /**
      * 
      * @summary update status
-     * @param {PutStatusRequest} [putStatusRequest] 
+     * @param {Status} status request body of update status
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PutStatusApi
      */
-    public putStatus(putStatusRequest?: PutStatusRequest, options?: RawAxiosRequestConfig) {
-        return PutStatusApiFp(this.configuration).putStatus(putStatusRequest, options).then((request) => request(this.axios, this.basePath));
+    public putStatus(status: Status, options?: RawAxiosRequestConfig) {
+        return PutStatusApiFp(this.configuration).putStatus(status, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
