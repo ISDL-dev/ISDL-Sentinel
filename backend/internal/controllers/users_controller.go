@@ -1,18 +1,17 @@
-package controller
+package controllers
 
 import (
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repository"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
-func GetUsersHandlerFunc(ctx *gin.Context) {
+func GetUsersByIdControlller(ctx *gin.Context) {
 	userIdStr := ctx.Param("user_id")
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
@@ -23,10 +22,7 @@ func GetUsersHandlerFunc(ctx *gin.Context) {
 		})
 	}
 
-	now := time.Now()
-	date := now.Format("2006-01")
-
-	userInformation, err := repository.GetUsers(userId, date)
+	userInformation, err := services.GetUsersByIdService(userId)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get user information:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{

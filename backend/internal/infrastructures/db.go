@@ -1,4 +1,4 @@
-package repository
+package infrastructures
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
 func init() {
 	log.Println("connect to database")
@@ -23,7 +23,7 @@ func openDB() {
 	hostName := os.Getenv("MYSQL_HOSTNAME")
 	dbName := os.Getenv("MYSQL_DATABASE")
 
-	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?", user, password, hostName, dbName))
+	DB, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?", user, password, hostName, dbName))
 	if err != nil {
 		log.Fatalf("main sql.Open error err:%v", err)
 	}
@@ -31,5 +31,5 @@ func openDB() {
 
 func CloseDB() {
 	log.Println("disconnect from database")
-	db.Close()
+	DB.Close()
 }

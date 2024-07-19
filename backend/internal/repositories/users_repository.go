@@ -1,12 +1,13 @@
-package repository
+package repositories
 
 import (
 	"fmt"
 
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetUsers(userId int, date string) (userInformation schema.GetUserById200Response, err error) {
+func GetUsersRepository(userId int, date string) (userInformation schema.GetUserById200Response, err error) {
 	var avatar schema.GetUserById200ResponseAvatarListInner
 	var avatarList []schema.GetUserById200ResponseAvatarListInner
 
@@ -33,7 +34,7 @@ func GetUsers(userId int, date string) (userInformation schema.GetUserById200Res
 			avatar ON user.avatar_id = avatar.id
 		WHERE 
 			user.id = ?;`
-	if err := db.QueryRow(
+	if err := infrastructures.DB.QueryRow(
 		getUserInfoQuery,
 		userId,
 	).Scan(
@@ -58,7 +59,7 @@ func GetUsers(userId int, date string) (userInformation schema.GetUserById200Res
 		WHERE 
 			user_id = ?
 			AND DATE_FORMAT(left_at, '%Y-%m') = ?;`
-	if err := db.QueryRow(getMonthStaytimeAndDaysQuery, userId, date).Scan(&userInformation.AttendanceDays, &userInformation.StayTime); err != nil {
+	if err := infrastructures.DB.QueryRow(getMonthStaytimeAndDaysQuery, userId, date).Scan(&userInformation.AttendanceDays, &userInformation.StayTime); err != nil {
 		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get staytime and attendance days: %v", err)
 	}
 
@@ -74,7 +75,7 @@ func GetUsers(userId int, date string) (userInformation schema.GetUserById200Res
 			avatar ON user_possession_avatar.avatar_id = avatar.id 
 		WHERE 
 			user_possession_avatar.user_id = ?;`
-	rows, err := db.Query(getAvatarListQuery, userId)
+	rows, err := infrastructures.DB.Query(getAvatarListQuery, userId)
 	if err != nil {
 		return schema.GetUserById200Response{}, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
