@@ -94,10 +94,17 @@ paths:
       requestBody:
         description: request body of update avatar
         required: true
-        $ref: '#/components/requestBodies/Avatar'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Avatar'
       responses:
-        '204':
+        '200':
           description: successful to update avatar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avatar'
         default:
           description: unexpected error
           content:
@@ -215,21 +222,6 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
-    Avatar:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              user_id:
-                type: integer
-                format: uint64
-              avatar_id:
-                type: integer
-                format: uint64
-            required:
-              - user_id
-              - avatar_id
     SignInUser:
       content:
         application/json:
@@ -530,6 +522,18 @@ components:
       required:
         - user_id
         - status
+    Avatar:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: uint64
+        avatar_id:
+          type: integer
+          format: uint64
+      required:
+        - user_id
+        - avatar_id
     Error:
       type: object
       properties:
