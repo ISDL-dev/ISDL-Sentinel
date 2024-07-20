@@ -1,3 +1,4 @@
+internal/schema/model_avatar.go
 internal/schema/model_error.go
 internal/schema/model_get_access_history_200_response_inner.go
 internal/schema/model_get_access_history_200_response_inner_entering.go
@@ -9,6 +10,5 @@ internal/schema/model_get_user_by_id_200_response_avatar_list_inner.go
 internal/schema/model_post_sign_in_200_response.go
 internal/schema/model_post_sign_in_request.go
 internal/schema/model_post_user_information_request.go
-internal/schema/model_put_avatar_request.go
 internal/schema/model_put_change_password_request.go
 internal/schema/model_status.go
