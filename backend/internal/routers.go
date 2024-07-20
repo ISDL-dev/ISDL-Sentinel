@@ -21,5 +21,6 @@ func SetRoutes(router *gin.Engine) {
 	{
 		v1.GET("/users/:user_id", controllers.GetUsersByIdControlller)
 		v1.PUT("/avatar", controllers.PutAvatarControlller)
+		v1.PUT("/status", controllers.PutStatusController)
 	}
 }
