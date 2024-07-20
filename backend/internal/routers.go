@@ -20,7 +20,7 @@ func SetRoutes(router *gin.Engine) {
 	v1 := router.Group("/v1")
 	{
 		v1.GET("/users/:user_id", controllers.GetUsersByIdControlller)
-		v1.GET("/attendee-list", controllers.GetAttendeesListControlller)
+		v1.GET("/attendees-list", controllers.GetAttendeesListControlller)
 		v1.PUT("/status", controllers.PutStatusController)
 	}
 }
