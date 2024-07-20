@@ -8,7 +8,6 @@ import (
 )
 
 func GetAttendeesListService() (attendeeList []schema.GetAttendeesList200ResponseInner, err error) {
-	// in room のStatusIdを取ってくる
 	inRoomStatusId, err := repositories.GetInRoomStatusIdRepository()
 	if err != nil {
 		return []schema.GetAttendeesList200ResponseInner{}, fmt.Errorf("failed to execute query to get in room status id: %v", err)
