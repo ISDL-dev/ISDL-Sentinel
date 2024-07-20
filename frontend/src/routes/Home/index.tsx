@@ -20,11 +20,8 @@ import "dayjs/locale/ja";
 import { inRoom } from "../../models/users/user";
 import { DisableButton } from "../../features/Button/DisableButton";
 import { AbleButton } from "../../features/Button/AbleButton";
-
-const authUser = {
-  id: 2,
-  statusName: inRoom,
-};
+import { putStatusApi } from "../../api";
+import { useState } from "react";
 
 dayjs.locale("ja");
 const attendees = [
@@ -52,7 +49,28 @@ const decodeDate = (date: Date) => {
   )}）${dayjs(date).format("HH時MM分")}`;
 };
 
+type AuthUser = {
+  id: number;
+  statusName: string;
+};
+const AUTH_USER: AuthUser = {
+  id: 4,
+  statusName: inRoom,
+};
+
 function Home() {
+  const [authUser, setAuthUser] = useState(AUTH_USER);
+  const handleStatusChange = async () => {
+    try {
+      const user = await putStatusApi.putStatus({
+        user_id: authUser.id,
+        status: authUser.statusName,
+      });
+      setAuthUser({ id: user.data.user_id, statusName: user.data.status });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <Grid
@@ -71,13 +89,45 @@ function Home() {
         >
           {authUser.statusName === inRoom ? (
             <>
-              <DisableButton placeholder="入室済"></DisableButton>
-              <AbleButton placeholder="退室"></AbleButton>
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                size="lg"
+                width={36}
+                isDisabled={true}
+              >
+                入室済
+              </Button>
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                size="lg"
+                width={36}
+                onClick={handleStatusChange}
+              >
+                退室
+              </Button>
             </>
           ) : (
             <>
-              <AbleButton placeholder="入室"></AbleButton>
-              <DisableButton placeholder="退室済"></DisableButton>
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                size="lg"
+                width={36}
+                onClick={handleStatusChange}
+              >
+                入室
+              </Button>
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                size="lg"
+                width={36}
+                isDisabled={true}
+              >
+                退室済
+              </Button>
             </>
           )}
         </Grid>
