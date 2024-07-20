@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/model"
+	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
