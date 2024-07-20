@@ -9,7 +9,7 @@
 
 package schema
 
-type PutAvatarRequest struct {
+type Avatar struct {
 
 	UserId int32 `json:"user_id"`
 

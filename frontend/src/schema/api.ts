@@ -26,6 +26,25 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface Avatar
+ */
+export interface Avatar {
+    /**
+     * 
+     * @type {number}
+     * @memberof Avatar
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Avatar
+     */
+    'avatar_id': number;
+}
+/**
+ * 
+ * @export
  * @interface GetAccessHistory200ResponseInner
  */
 export interface GetAccessHistory200ResponseInner {
@@ -435,25 +454,6 @@ export interface PostUserInformationRequest {
      * @memberof PostUserInformationRequest
      */
     'password': string;
-}
-/**
- * 
- * @export
- * @interface PutAvatarRequest
- */
-export interface PutAvatarRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof PutAvatarRequest
-     */
-    'user_id': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PutAvatarRequest
-     */
-    'avatar_id': number;
 }
 /**
  * 
@@ -1345,11 +1345,13 @@ export const PutAvatarApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary update avatar
-         * @param {PutAvatarRequest} [putAvatarRequest] 
+         * @param {Avatar} avatar request body of update avatar
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putAvatar: async (putAvatarRequest?: PutAvatarRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        putAvatar: async (avatar: Avatar, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'avatar' is not null or undefined
+            assertParamExists('putAvatar', 'avatar', avatar)
             const localVarPath = `/avatar`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1369,7 +1371,7 @@ export const PutAvatarApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(putAvatarRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(avatar, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1389,12 +1391,12 @@ export const PutAvatarApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary update avatar
-         * @param {PutAvatarRequest} [putAvatarRequest] 
+         * @param {Avatar} avatar request body of update avatar
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putAvatar(putAvatarRequest?: PutAvatarRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putAvatar(putAvatarRequest, options);
+        async putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Avatar>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putAvatar(avatar, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PutAvatarApi.putAvatar']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1412,12 +1414,12 @@ export const PutAvatarApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @summary update avatar
-         * @param {PutAvatarRequest} [putAvatarRequest] 
+         * @param {Avatar} avatar request body of update avatar
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putAvatar(putAvatarRequest?: PutAvatarRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.putAvatar(putAvatarRequest, options).then((request) => request(axios, basePath));
+        putAvatar(avatar: Avatar, options?: any): AxiosPromise<Avatar> {
+            return localVarFp.putAvatar(avatar, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1432,13 +1434,13 @@ export class PutAvatarApi extends BaseAPI {
     /**
      * 
      * @summary update avatar
-     * @param {PutAvatarRequest} [putAvatarRequest] 
+     * @param {Avatar} avatar request body of update avatar
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PutAvatarApi
      */
-    public putAvatar(putAvatarRequest?: PutAvatarRequest, options?: RawAxiosRequestConfig) {
-        return PutAvatarApiFp(this.configuration).putAvatar(putAvatarRequest, options).then((request) => request(this.axios, this.basePath));
+    public putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig) {
+        return PutAvatarApiFp(this.configuration).putAvatar(avatar, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

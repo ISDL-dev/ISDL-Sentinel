@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUsersByIdControlller(ctx *gin.Context) {
+func GetUsersByIdController(ctx *gin.Context) {
 	userIdStr := ctx.Param("user_id")
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
