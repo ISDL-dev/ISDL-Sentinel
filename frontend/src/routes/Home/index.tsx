@@ -5,8 +5,6 @@ import {
   Flex,
   Grid,
   Table,
-  TableCellProps,
-  TableColumnHeaderProps,
   TableContainer,
   Tbody,
   Td,
@@ -18,32 +16,13 @@ import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { inRoom } from "../../models/users/user";
-import { DisableButton } from "../../features/Button/DisableButton";
-import { AbleButton } from "../../features/Button/AbleButton";
-import { putStatusApi } from "../../api";
-import { useState } from "react";
+import { getAttendeesListApi, putStatusApi } from "../../api";
+import { useEffect, useState } from "react";
 
 dayjs.locale("ja");
-const attendees = [
-  {
-    id: 1,
-    name: "酒部健太郎",
-    placeName: "KC104",
-    enteredAt: new Date(2024, 6, 13),
-    avaterPath:
-      "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9",
-  },
-  {
-    id: 3,
-    name: "岡颯人",
-    placeName: "KC104",
-    enteredAt: new Date(2024, 6, 14),
-    avaterPath:
-      "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9",
-  },
-];
 
-const decodeDate = (date: Date) => {
+const decodeDate = (dateString: string) => {
+  const date = dayjs(dateString);
   return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
     "ddd"
   )}）${dayjs(date).format("HH時MM分")}`;
@@ -53,13 +32,24 @@ type AuthUser = {
   id: number;
   statusName: string;
 };
+type Attendee = {
+  userId: number;
+  userName: string;
+  placeName: string;
+  statusName: string;
+  gradeName: string;
+  avaterId: number;
+  avaterImgPath: string;
+  enteredAt: string;
+};
 const AUTH_USER: AuthUser = {
   id: 4,
   statusName: inRoom,
 };
 
 function Home() {
-  const [authUser, setAuthUser] = useState(AUTH_USER);
+  const [authUser, setAuthUser] = useState<AuthUser>(AUTH_USER);
+  const [attendeeList, setAttendeeList] = useState<Attendee[]>([]);
   const handleStatusChange = async () => {
     try {
       const user = await putStatusApi.putStatus({
@@ -71,6 +61,30 @@ function Home() {
       console.log(error);
     }
   };
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getAttendeesListApi.getAttendeesList();
+        console.log(response.data);
+        setAttendeeList(
+          response.data.map((attendee) => {
+            return {
+              userId: attendee.user_id,
+              userName: attendee.user_name,
+              placeName: attendee.place,
+              statusName: attendee.status,
+              gradeName: attendee.grade,
+              avaterId: attendee.avatar_id,
+              avaterImgPath: attendee.avatar_img_path,
+              enteredAt: attendee.entered_at,
+            };
+          })
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
   return (
     <div>
       <Grid
@@ -151,14 +165,18 @@ function Home() {
             </Tr>
           </Thead>
           <Tbody outline="1px">
-            {attendees.map((attendee) => (
-              <Tr key={attendee.id}>
+            {attendeeList.map((attendee) => (
+              <Tr key={attendee.userId}>
                 <Td>
                   <Flex alignItems={"center"} gap={3}>
-                    <Avatar size={"md"} src={attendee.avaterPath} border="2px">
+                    <Avatar
+                      size={"md"}
+                      src={attendee.avaterImgPath}
+                      border="2px"
+                    >
                       <AvatarBadge boxSize="1.1em" bg="green.500" />
                     </Avatar>
-                    {attendee.name}
+                    {attendee.userName}
                   </Flex>
                 </Td>
                 <Td>{attendee.placeName}</Td>
