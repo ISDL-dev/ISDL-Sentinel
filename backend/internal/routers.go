@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/controllers"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
 )
 
 func SetRoutes(router *gin.Engine) {
@@ -16,15 +16,21 @@ func SetRoutes(router *gin.Engine) {
 		AllowCredentials: true,
 	}))
 
+	v1 := router.Group("/v1")
+	{
+		v1.GET("/users/:user_id", controllers.GetUsersByIdController)
+		v1.PUT("/avatar", controllers.PutAvatarController)
+		v1.GET("/attendees-list", controllers.GetAttendeesListController)
+		v1.PUT("/status", controllers.PutStatusController)
+	}
 
 	public := router.Group("/")
 	{
-		public.POST("/auth/sign-in", controller.DigestAuthSignIn)
+		public.POST("/auth/sign-in", controllers.DigestAuthController)
 	}
 
 	authenticated := router.Group("/")
-	authenticated.Use(controller.DigestAuthMiddleware())
+	authenticated.Use(controllers.DigestAuthMiddleware())
 	{
-		// authenticated.GET("/profile", controller.GetProfile)ßß
 	}
 }

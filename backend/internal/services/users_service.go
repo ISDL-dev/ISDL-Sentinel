@@ -20,25 +20,24 @@ func GetUsersByIdService(userId int) (userInformation schema.GetUserById200Respo
 	return userInformation, nil
 }
 
-func GetAuthUserInfoService() (authUsers map[string]schema.PostUserRequest, error) {
-	authUsers := make(map[string]schema.PostUserRequest)
+func GetAuthUserInfoService() (map[string]schema.PostSignInRequest, error) {
+	authUsers := make(map[string]schema.PostSignInRequest)
 	
-	rows, err = repositories.GetAllUserRepository()
+	rows, err := repositories.GetAllAuthInfoRepository()
 	if err != nil {
-		return schema.PostUserInformationRequest{}, fmt.Errorf("failed to execute query to get auth user information: %v", err)
+		return authUsers, fmt.Errorf("failed to execute query to get auth user information: %v", err)
 	}
 
 	for rows.Next() {
-        var mailAddress, password, name string
-        err := rows.Scan(&mailAddress, &password, &name)
+        var mailAddress, password string
+        err := rows.Scan(&mailAddress, &password)
         if err != nil {
             return nil, err
         }
 
-        authUsers[mailAddress] = schema.PostUserRequest{
+        authUsers[mailAddress] = schema.PostSignInRequest{
             MailAddress: mailAddress,
             Password:    password,
-            Name:        name,
         }
     }
 

@@ -12,12 +12,12 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/schema"
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/services"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
 )
 
 var realm = "@mikilab.doshisha.ac.jp"
-var users map[string]schema.PostUserRequest
+var users map[string]schema.PostSignInRequest
 
 func init() {
 	var err error
@@ -27,19 +27,19 @@ func init() {
 	}
 }
 
-func DigestAuthController(c *gin.Context) {
-    auth := c.GetHeader("Authorization")
+func DigestAuthController(ctx *gin.Context) {
+    auth := ctx.GetHeader("Authorization")
     if auth == "" {
-        challenge(c)
+        challenge(ctx)
         return
     }
 
-    if !validateDigestAuth(auth, c.Request.Method, c.Request.URL.Path) {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+    if !validateDigestAuth(auth, ctx.Request.Method, ctx.Request.URL.Path) {
+        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
         return
     }
 
-	c.JSON(http.StatusOK, gin.H{"message": "Authentication successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Authentication successful"})
 }
 
 func validateDigestAuth(auth, method, uri string) bool {
@@ -60,10 +60,10 @@ func validateDigestAuth(auth, method, uri string) bool {
 	return expectedResponse == params["response"]
 }
 
-func challenge(c *gin.Context) {
+func challenge(ctx *gin.Context) {
 	nonce := generateNonce()
-	c.Header("WWW-Authenticate", fmt.Sprintf(`Digest realm="%s",qop="auth",nonce="%s"`, realm, nonce))
-	c.AbortWithStatus(http.StatusUnauthorized)
+	ctx.Header("WWW-Authenticate", fmt.Sprintf(`Digest realm="%s",qop="auth",nonce="%s"`, realm, nonce))
+	ctx.AbortWithStatus(http.StatusUnauthorized)
 }
 
 func generateNonce() string {
@@ -92,20 +92,20 @@ func md5Hash(text string) string {
 }
 
 func DigestAuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		auth := c.GetHeader("Authorization")
+	return func(ctx *gin.Context) {
+		auth := ctx.GetHeader("Authorization")
 		if auth == "" {
-			challenge(c)
-			c.Abort()
+			challenge(ctx)
+			ctx.Abort()
 			return
 		}
 
-		if !validateDigestAuth(auth, c.Request.Method, c.Request.URL.Path) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
-			c.Abort()
+		if !validateDigestAuth(auth, ctx.Request.Method, ctx.Request.URL.Path) {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+			ctx.Abort()
 			return
 		}
 
-		c.Next()
+		ctx.Next()
 	}
 }

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
@@ -91,10 +92,10 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 	return userInformation, nil
 }
 
-func GetAllUserRepository() (userList *sql.Rows, err error) {
-	userList, err := infrastructures.DB.Query("SELECT id, name, mail_address, password, status_id, place_id, grade_id FROM user")
+func GetAllAuthInfoRepository() (userList *sql.Rows, err error) {
+	getRows, err := infrastructures.DB.Query("SELECT mail_address, password FROM users")//テーブル名userだとエラー出た
 	if err != nil {
 		return nil, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
-	return userList, nil
+	return getRows, nil
 }
