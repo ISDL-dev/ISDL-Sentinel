@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/controller"
+	"github.com/ISDL-dev/ISDL_Sentinel/backend/internal/controllers"
 )
 
 func SetRoutes(router *gin.Engine) {
