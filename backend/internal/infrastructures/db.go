@@ -23,7 +23,7 @@ func openDB() {
 	hostName := os.Getenv("MYSQL_HOSTNAME")
 	dbName := os.Getenv("MYSQL_DATABASE")
 
-	DB, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?", user, password, hostName, dbName))
+	DB, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?parseTime=true", user, password, hostName, dbName))
 	if err != nil {
 		log.Fatalf("main sql.Open error err:%v", err)
 	}

@@ -33,14 +33,31 @@ func SelectApplyStatusId(status string) (id int32, statusName string, err error)
 	return 0, targetStatusName, nil
 }
 
+func SelectApplyPlaceId(targetStatusName string) (applyPlaceId int32, err error){
+	if targetStatusName == model.IN_ROOM {
+		applyPlaceId, err = repositories.GetInRoomPlaceIdRepository() 
+		if err != nil {
+			return 0, fmt.Errorf("failed to execute query to get in room place id: %v", err)
+		}
+	} else {
+		applyPlaceId = 0
+	}
+	return applyPlaceId, nil
+}
+
 func PutStatusService(status schema.Status) (user schema.Status, err error) {
 	var applyStatusId int32
+	var applyPlaceId int32
 	var targetStatusName string
 	applyStatusId, targetStatusName, err = SelectApplyStatusId(status.Status)
 	if err != nil {
 		return schema.Status{}, fmt.Errorf("failed to find target status id: %v", err)
 	}
-	err = repositories.PutStatusRepository(status.UserId, applyStatusId)
+	applyPlaceId, err = SelectApplyPlaceId(targetStatusName)
+	if err != nil {
+		return schema.Status{}, fmt.Errorf("failed to find target place id: %v", err)
+	}
+	err = repositories.PutStatusRepository(status.UserId, applyStatusId, applyPlaceId)
 	if err != nil {
 		return schema.Status{}, fmt.Errorf("failed to change user status: %v", err)
 	}

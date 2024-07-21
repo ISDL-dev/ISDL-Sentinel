@@ -13,3 +13,7 @@ type Status struct {
 	id             int32
 	status_name           string
 }
+
+const (
+	KC104 = "KC104"
+)
