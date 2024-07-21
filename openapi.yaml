@@ -5,12 +5,12 @@ info:
   license:
     name: MIT
 servers:
-- url: http://localhost:3000/v1
+- url: http://localhost:3000
 paths:
-  /attendees-list:
-    get:
-      summary: Get attendees list
-      operationId: get-attendees-list
+  /user:
+    post:
+      summary: Add user information
+      operationId: post-user
       tags:
         - get-attendees-list
       responses:
@@ -29,7 +29,7 @@ paths:
       tags:
         - put-status
       requestBody:
-        description: request body of update status
+        description: request body of user 
         required: true
         content:
           application/json:
@@ -48,12 +48,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /access-history:
     get:
-      summary: Get access history
-      operationId: get-access-history
+      summary: Get user infomation
+      operationId: get-user
       tags:
-        - get-access-history
+        - get-user
       responses:
         "200":
           $ref: "#/components/responses/AccessHistory"

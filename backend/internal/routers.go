@@ -1,19 +1,18 @@
 package internal
 
 import (
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
 )
 
 func SetRoutes(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:4000",
-		},
+		AllowOrigins:     []string{"http://localhost:4000"},
 		AllowOriginFunc:  func(origin string) bool { return true },
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
 
@@ -23,5 +22,15 @@ func SetRoutes(router *gin.Engine) {
 		v1.PUT("/avatar", controllers.PutAvatarController)
 		v1.GET("/attendees-list", controllers.GetAttendeesListController)
 		v1.PUT("/status", controllers.PutStatusController)
+	}
+
+	public := router.Group("/")
+	{
+		public.POST("/auth/sign-in", controllers.DigestAuthController)
+	}
+
+	authenticated := router.Group("/")
+	authenticated.Use(controllers.DigestAuthMiddleware())
+	{
 	}
 }

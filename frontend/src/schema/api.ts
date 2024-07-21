@@ -504,16 +504,16 @@ export interface Status {
  * GetAccessHistoryApi - axios parameter creator
  * @export
  */
-export const GetAccessHistoryApiAxiosParamCreator = function (configuration?: Configuration) {
+export const GetUserApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get access history
+         * @summary Get user infomation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/access-history`;
+        getUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -540,37 +540,37 @@ export const GetAccessHistoryApiAxiosParamCreator = function (configuration?: Co
 };
 
 /**
- * GetAccessHistoryApi - functional programming interface
+ * GetUserApi - functional programming interface
  * @export
  */
-export const GetAccessHistoryApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetAccessHistoryApiAxiosParamCreator(configuration)
+export const GetUserApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GetUserApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary Get access history
+         * @summary Get user infomation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async getAccessHistory(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetAccessHistoryApi.getAccessHistory']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GetUserApi.getUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * GetAccessHistoryApi - factory interface
+ * GetUserApi - factory interface
  * @export
  */
-export const GetAccessHistoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetAccessHistoryApiFp(configuration)
+export const GetUserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GetUserApiFp(configuration)
     return {
         /**
          * 
-         * @summary Get access history
+         * @summary Get user infomation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -581,35 +581,36 @@ export const GetAccessHistoryApiFactory = function (configuration?: Configuratio
 };
 
 /**
- * GetAccessHistoryApi - object-oriented interface
+ * GetUserApi - object-oriented interface
  * @export
- * @class GetAccessHistoryApi
+ * @class GetUserApi
  * @extends {BaseAPI}
  */
-export class GetAccessHistoryApi extends BaseAPI {
+export class GetUserApi extends BaseAPI {
     /**
      * 
-     * @summary Get access history
+     * @summary Get user infomation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof GetAccessHistoryApi
+     * @memberof GetUserApi
      */
-    public getAccessHistory(options?: RawAxiosRequestConfig) {
-        return GetAccessHistoryApiFp(this.configuration).getAccessHistory(options).then((request) => request(this.axios, this.basePath));
+    public getUser(options?: RawAxiosRequestConfig) {
+        return GetUserApiFp(this.configuration).getUser(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 
 /**
- * GetAttendeesListApi - axios parameter creator
+ * PostUserApi - axios parameter creator
  * @export
  */
-export const GetAttendeesListApiAxiosParamCreator = function (configuration?: Configuration) {
+export const PostUserApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get attendees list
+         * @summary Add user information
+         * @param {PostUserRequest} [postUserRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1153,7 +1154,7 @@ export const PostSignInApiAxiosParamCreator = function (configuration?: Configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postSignInRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(postUserRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1164,39 +1165,39 @@ export const PostSignInApiAxiosParamCreator = function (configuration?: Configur
 };
 
 /**
- * PostSignInApi - functional programming interface
+ * PostUserApi - functional programming interface
  * @export
  */
-export const PostSignInApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PostSignInApiAxiosParamCreator(configuration)
+export const PostUserApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PostUserApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary Sign in
-         * @param {PostSignInRequest} [postSignInRequest] 
+         * @summary Add user information
+         * @param {PostUserRequest} [postUserRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postSignIn(postSignInRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PostSignInApi.postSignIn']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PostUserApi.postUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * PostSignInApi - factory interface
+ * PostUserApi - factory interface
  * @export
  */
-export const PostSignInApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PostSignInApiFp(configuration)
+export const PostUserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PostUserApiFp(configuration)
     return {
         /**
          * 
-         * @summary Sign in
-         * @param {PostSignInRequest} [postSignInRequest] 
+         * @summary Add user information
+         * @param {PostUserRequest} [postUserRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1207,16 +1208,16 @@ export const PostSignInApiFactory = function (configuration?: Configuration, bas
 };
 
 /**
- * PostSignInApi - object-oriented interface
+ * PostUserApi - object-oriented interface
  * @export
- * @class PostSignInApi
+ * @class PostUserApi
  * @extends {BaseAPI}
  */
-export class PostSignInApi extends BaseAPI {
+export class PostUserApi extends BaseAPI {
     /**
      * 
-     * @summary Sign in
-     * @param {PostSignInRequest} [postSignInRequest] 
+     * @summary Add user information
+     * @param {PostUserRequest} [postUserRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostSignInApi
