@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAttendeesListControlller(ctx *gin.Context) {
+func GetAttendeesListController(ctx *gin.Context) {
 	attendeeList, err := services.GetAttendeesListService()
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get attendee list:%w", err))
