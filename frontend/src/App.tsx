@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import Home from "./routes/Home";
+import Profile from "./routes/Profile";
 import Footer from "./features/Footer";
 
 import {
@@ -45,10 +46,12 @@ import { IconType } from "react-icons";
 interface LinkItemProps {
   name: string;
   icon: IconType;
+  href: string;
 }
 
 interface NavItemProps extends FlexProps {
   icon: IconType;
+  href: string;
   children: React.ReactNode;
 }
 
@@ -61,11 +64,11 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Attendee List", icon: FiHome },
-  { name: "Ranking", icon: FiBarChart2 },
-  { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom },
-  { name: "ISDL Map", icon: FiMapPin },
-  { name: "Settings", icon: FiSettings },
+  { name: "Attendee List", icon: FiHome, href: "/" },
+  { name: "Ranking", icon: FiBarChart2, href: "/" },
+  { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
+  { name: "ISDL Map", icon: FiMapPin, href: "/" },
+  { name: "Settings", icon: FiSettings, href: "/" },
 ];
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
@@ -85,7 +88,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} href={link.href}>
           {link.name}
         </NavItem>
       ))}
@@ -93,11 +96,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 };
 
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, href, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-      href="#"
+      href={href}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -204,7 +207,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
+              <MenuItem as="a" href="/profile">Profile</MenuItem>
               <MenuItem>Change Password</MenuItem>
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
@@ -240,10 +243,15 @@ const App = () => {
             <SidebarContent onClose={onClose} />
           </DrawerContent>
         </Drawer>
-        <Box pl={64} pr={6} pt={24}>
+        <Box
+          pl={{ base: 2, md: 64 }} 
+          pr={{ base: 2, md: 6 }} 
+          pt={{ base: 2, md: 24 }}
+        >
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </BrowserRouter>
         </Box>
