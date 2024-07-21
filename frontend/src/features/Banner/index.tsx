@@ -32,20 +32,20 @@ export default function Banner(props: {
                 Rank: {grade}
             </Text>
 			<Flex w='max-content' mx='auto' mt={{ base: 20, md: 150 }} >
-				<Flex mx='auto' me='60px' alignItems='center' flexDirection='column'>
+				<Flex mx='auto' me={{ base: 5, md: 20 }} alignItems='center' flexDirection='column'>
 					<Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
 						{attendance_days}
 					</Text>
 					<Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-						出席日数
+						今月の出席日数
 					</Text>
 				</Flex>
-				<Flex mx='auto' me='60px' alignItems='center' flexDirection='column'>
+				<Flex mx='auto' me={{ base: 5, md: 20 }} alignItems='center' flexDirection='column'>
 					<Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
 						{stay_time}
 					</Text>
 					<Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-						滞在時間
+						今月の滞在時間
 					</Text>
 				</Flex>
 				<Flex mx='auto' alignItems='center' flexDirection='column'>
