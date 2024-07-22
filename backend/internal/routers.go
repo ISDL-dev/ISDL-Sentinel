@@ -23,5 +23,6 @@ func SetRoutes(router *gin.Engine) {
 		v1.PUT("/avatar", controllers.PutAvatarController)
 		v1.GET("/attendees-list", controllers.GetAttendeesListController)
 		v1.PUT("/status", controllers.PutStatusController)
+		v1.GET("/access-history/:date", controllers.GetAccessHistoryController)
 	}
 }
