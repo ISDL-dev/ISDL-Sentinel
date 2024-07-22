@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS entering_history(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     entered_at DATETIME NOT NULL,
+    is_first_entering Boolean NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -56,6 +57,7 @@ CREATE TABLE IF NOT EXISTS leaving_history(
     entering_history_id INT UNSIGNED NOT NULL,
     left_at DATETIME NOT NULL,
     stay_time TIME NOT NULL,
+    is_last_leaving Boolean NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (entering_history_id) REFERENCES entering_history(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -138,21 +140,33 @@ INSERT INTO user (name, mail_address, password, number_of_coin, status_id, place
 ('吉田 玲音', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, 3, 1, 5, 1);
 
 
-INSERT INTO entering_history (user_id, entered_at) VALUES 
-(9, '2024-07-16 09:00:00'),
-(9, '2024-07-17 09:00:00'),
-(10, '2024-07-16 09:00:00'),
-(10, '2024-07-17 09:00:00'),
-(14, '2024-07-16 09:00:00'),
-(14, '2024-07-17 09:00:00');
+INSERT INTO entering_history (user_id, entered_at, is_first_entering) VALUES 
+(2, '2024-07-01 09:00:00', true),
+(10, '2024-07-01 09:30:00', false),
+(9, '2024-07-01 10:00:00', false),
+(9, '2024-07-16 09:30:00', true),
+(10, '2024-07-16 10:00:00', false),
+(14, '2024-07-16 11:00:00', false),
+(15, '2024-07-16 13:00:00', true),
+(16, '2024-07-16 14:00:00', false),
+(17, '2024-07-16 15:00:00', false),
+(9, '2024-07-31 09:00:00', true),
+(10, '2024-07-31 10:00:00', false),
+(14, '2024-07-31 11:00:00', false);
 
-INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time) VALUES 
-(9, 1, '2024-07-16 18:00:00', '09:00:00'),
-(9, 2, '2024-07-17 18:00:00', '09:00:00'),
-(10, 3, '2024-07-16 18:00:00', '09:00:00'),
-(10, 4, '2024-07-17 18:00:00', '09:00:00'),
-(14, 5, '2024-07-16 18:00:00', '09:00:00'),
-(14, 6, '2024-07-17 18:00:00', '09:00:00');
+INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving) VALUES 
+(2, 1, '2024-07-01 18:00:00', '09:00:00', false),
+(10, 2, '2024-07-01 18:30:00', '09:00:00', false),
+(9, 3, '2024-07-01 18:40:00', '08:40:00', true),
+(9, 4, '2024-07-16 12:00:00', '02:30:00', false),
+(10, 5, '2024-07-16 12:30:00', '02:30:00', false),
+(14, 6, '2024-07-16 12:40:00', '01:40:00', true),
+(15, 7, '2024-07-16 18:00:00', '05:00:00', false),
+(16, 8, '2024-07-16 19:00:00', '05:00:00', false),
+(17, 9, '2024-07-16 20:00:00', '05:00:00', true),
+(10, 11, '2024-07-31 18:00:00', '08:00:00', false),
+(9, 10, '2024-07-31 18:30:00', '09:30:00', false),
+(14, 12, '2024-07-31 20:00:00', '09:00:00', true);
 
 INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES 
 (9, '2024-07-16'),
