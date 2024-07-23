@@ -43,7 +43,7 @@ type Attendee = {
   enteredAt: string;
 };
 const AUTH_USER: AuthUser = {
-  id: 4,
+  id: 2,
   statusName: inRoom,
 };
 
