@@ -9,6 +9,14 @@ import (
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
 )
 
+func JudgeNoMemberInRoom(kc104PlaceId int32) (isFirstEntering bool, err error) {
+	getRows, err := infrastructures.DB.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
+	if err != nil {
+		return false, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
+	}
+	return !getRows.Next(), nil
+}
+
 func GetAllStatusRepository() (statusList *sql.Rows, err error) {
 	getRows, err := infrastructures.DB.Query("SELECT id, status_name FROM status;")
 	if err != nil {
@@ -17,7 +25,7 @@ func GetAllStatusRepository() (statusList *sql.Rows, err error) {
 	return getRows, nil
 }
 
-func GetInRoomPlaceIdRepository() (getStatusId int32, err error){
+func GetInRoomPlaceIdRepository() (getStatusId int32, err error) {
 	getRows, err := infrastructures.DB.Query("SELECT id FROM place WHERE place_name = ?;", model.KC104)
 	if err != nil {
 		return 0, fmt.Errorf("getRows GetInRoomStatusId Query error err:%w", err)
@@ -52,7 +60,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
 		}
-		getLatestEnteringHistoryQuery :=`
+		getLatestEnteringHistoryQuery := `
 		SELECT 
 			id AS enteringHistoryId, 
 			entered_at AS enteredAt 
@@ -80,20 +88,31 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
 		}
+		isLastLeaving, err := JudgeNoMemberInRoom(placeId)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to find user id from leaving history:%w", err)
+		}
 		insertOutRoomQuery := `
-		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time)
+		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
 		VALUES (
 			?, 
 			?, 
 			NOW(), 
-			TIMEDIFF(NOW(), ?)
+			TIMEDIFF(NOW(), ?),
+			?
 		);`
-		_, err = tx.Exec(insertOutRoomQuery, userId, enteringHistoryId, enteredAt)
+		_, err = tx.Exec(insertOutRoomQuery, userId, enteringHistoryId, enteredAt, isLastLeaving)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("insertOutRoomQuery error err:%w", err)
 		}
 	} else {
+		isFirstEntering, err := JudgeNoMemberInRoom(placeId)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to find user id from entering history table:%w", err)
+		}
 		putInRoomQuery := `
 		UPDATE user 
 		SET 
@@ -107,9 +126,9 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
 		}
 		insertInRoomQuery := `
-		INSERT INTO entering_history (user_id, entered_at)
-		VALUES (?, NOW());`
-		_, err = tx.Exec(insertInRoomQuery, userId)
+		INSERT INTO entering_history (user_id, entered_at, is_first_entering)
+		VALUES (?, NOW(), ?);`
+		_, err = tx.Exec(insertInRoomQuery, userId, isFirstEntering)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("insertInRoomQuery error err:%w", err)
