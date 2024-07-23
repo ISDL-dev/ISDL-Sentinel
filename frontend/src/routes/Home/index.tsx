@@ -25,7 +25,7 @@ const decodeDate = (dateString: string) => {
   const date = dayjs(dateString);
   return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
     "ddd"
-  )}）${dayjs(date).format("HH時MM分")}`;
+  )}）${dayjs(date).format("HH時mm分")}`;
 };
 
 type AuthUser = {
