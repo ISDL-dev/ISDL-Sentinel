@@ -12,7 +12,7 @@ paths:
       summary: Get attendees list
       operationId: get-attendees-list
       tags:
-        - get-attendees-list
+        - Attendees list
       responses:
         "200": 
           $ref: "#/components/responses/AttendeesList"
@@ -27,7 +27,7 @@ paths:
       summary: update status
       operationId: put-status
       tags:
-        - put-status
+        - Attendees list
       requestBody:
         description: request body of update status
         required: true
@@ -48,12 +48,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /access-history:
+  /access-history/{date}:
     get:
       summary: Get access history
       operationId: get-access-history
       tags:
-        - get-access-history
+        - Access history
+      parameters:
+        - in: path
+          name: date
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           $ref: "#/components/responses/AccessHistory"
@@ -68,7 +74,7 @@ paths:
       summary: Get a user by ID
       operationId: get-user-by-id
       tags:
-        - get-user-by-id
+        - Profile
       parameters:
         - in: path
           name: user_id
@@ -87,10 +93,10 @@ paths:
                 $ref: "#/components/schemas/Error"
   /avatar:
     put:
-      summary: update avatar
+      summary: Update my avatar
       operationId: put-avatar
       tags:
-        - put-avatar
+        - Profile
       requestBody:
         description: request body of update avatar
         required: true
@@ -116,7 +122,7 @@ paths:
       summary: Get ranking
       operationId: get-ranking
       tags:
-        - get-ranking
+        - Ranking
       responses:
         "200":
           $ref: "#/components/responses/RankingList"
@@ -128,10 +134,10 @@ paths:
                 $ref: "#/components/schemas/Error"
   /avatar/{count}:
     get:
-      summary: Get an avatar by ID
+      summary: Get an avatar by id
       operationId: get-avatar-by-id
       tags:
-        - get-avatar-by-id
+        - Ranking
       parameters:
         - in: path
           name: count
@@ -153,7 +159,7 @@ paths:
       summary: Get avatar list
       operationId: get-avatar-list
       tags:
-        - get-avatar-list
+        - Avatar list
       responses:
         "200":
           $ref: "#/components/responses/AvatarInformation"
@@ -168,7 +174,7 @@ paths:
       summary: Sign in
       operationId: post-sign-in
       tags:
-        - post-sign-in
+        - Authentication
       requestBody:
         description: request body of sign in
         required: true
@@ -187,7 +193,7 @@ paths:
       summary: Create user information
       operationId: post-user-information
       tags:
-        - post-user-information
+        - Authentication
       requestBody:
         description: request body of sign up
         required: true
@@ -203,10 +209,10 @@ paths:
                 $ref: "#/components/schemas/Error"
   /password:
     put:
-      summary: change password
+      summary: Change password
       operationId: put-change-password
       tags:
-        - put-change-password
+        - Authentication
       requestBody:
         description: request body of change password
         required: true
