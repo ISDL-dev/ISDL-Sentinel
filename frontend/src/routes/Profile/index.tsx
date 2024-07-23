@@ -1,6 +1,6 @@
 import { Box, Grid } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { getUserByIdApi, putAvatarApi } from "../../api";
+import { profileApi } from "../../api";
 import Banner from '../../features/Banner';
 import AvatarList from '../../features/AvatarList';
 import {
@@ -16,7 +16,7 @@ export default function Profile() {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await getUserByIdApi.getUserById(9);
+        const response = await profileApi.getUserById(9);
         setUserData(response.data);
       } catch (err) {
         setError('データの取得に失敗しました');
@@ -34,8 +34,8 @@ export default function Profile() {
             user_id: userId,
             avatar_id: avatarId
           };
-          await putAvatarApi.putAvatar(requestBody);
-      const response = await getUserByIdApi.getUserById(9); // 再取得
+          await profileApi.putAvatar(requestBody);
+      const response = await profileApi.getUserById(9); // 再取得
       setUserData(response.data);
     } catch (err) {
       setError('アバターの更新に失敗しました');

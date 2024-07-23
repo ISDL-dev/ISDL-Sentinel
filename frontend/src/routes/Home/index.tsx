@@ -16,7 +16,7 @@ import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { inRoom } from "../../models/users/user";
-import { getAttendeesListApi, putStatusApi } from "../../api";
+import { attendeesListApi } from "../../api";
 import { useEffect, useState } from "react";
 
 dayjs.locale("ja");
@@ -52,7 +52,7 @@ function Home() {
   const [attendeeList, setAttendeeList] = useState<Attendee[]>([]);
   const handleStatusChange = async () => {
     try {
-      const user = await putStatusApi.putStatus({
+      const user = await attendeesListApi.putStatus({
         user_id: authUser.id,
         status: authUser.statusName,
       });
@@ -64,7 +64,7 @@ function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await getAttendeesListApi.getAttendeesList();
+        const response = await attendeesListApi.getAttendeesList();
         console.log(response.data);
         setAttendeeList(
           response.data.map((attendee) => {
