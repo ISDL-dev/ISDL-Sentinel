@@ -171,11 +171,9 @@ function Home() {
                   <Flex alignItems={"center"} gap={3}>
                     <Avatar
                       size={"md"}
-                      src={attendee.avaterImgPath}
+                      src={`./avatar/${attendee.avaterImgPath}`}
                       border="2px"
-                    >
-                      <AvatarBadge boxSize="1.1em" bg="green.500" />
-                    </Avatar>
+                    ></Avatar>
                     {attendee.userName}
                   </Flex>
                 </Td>
