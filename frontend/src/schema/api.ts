@@ -1128,6 +1128,107 @@ export class AvatarListApi extends BaseAPI {
 
 
 /**
+ * ISDLMAPApi - axios parameter creator
+ * @export
+ */
+export const ISDLMAPApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAttendeesList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/attendees-list`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ISDLMAPApi - functional programming interface
+ * @export
+ */
+export const ISDLMAPApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ISDLMAPApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAttendeesList200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAttendeesList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ISDLMAPApi.getAttendeesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ISDLMAPApi - factory interface
+ * @export
+ */
+export const ISDLMAPApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ISDLMAPApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAttendeesList(options?: any): AxiosPromise<Array<GetAttendeesList200ResponseInner>> {
+            return localVarFp.getAttendeesList(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ISDLMAPApi - object-oriented interface
+ * @export
+ * @class ISDLMAPApi
+ * @extends {BaseAPI}
+ */
+export class ISDLMAPApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get attendees list
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ISDLMAPApi
+     */
+    public getAttendeesList(options?: RawAxiosRequestConfig) {
+        return ISDLMAPApiFp(this.configuration).getAttendeesList(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ProfileApi - axios parameter creator
  * @export
  */

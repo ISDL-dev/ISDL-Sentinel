@@ -13,6 +13,7 @@ paths:
       operationId: get-attendees-list
       tags:
         - Attendees list
+        - ISDL MAP
       responses:
         "200": 
           $ref: "#/components/responses/AttendeesList"
