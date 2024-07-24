@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import Home from "./routes/Home";
+import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
 import Footer from "./features/Footer";
+
 
 import {
   IconButton,
@@ -40,6 +42,7 @@ import {
   FiBarChart2,
   FiMapPin,
 } from "react-icons/fi";
+import { FaHistory } from "react-icons/fa";
 import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
 import { IconType } from "react-icons";
 
@@ -65,6 +68,7 @@ interface SidebarProps extends BoxProps {
 
 const LinkItems: Array<LinkItemProps> = [
   { name: "Attendee List", icon: FiHome, href: "/" },
+  { name: "Access History", icon: FaHistory, href: "/access-history" },
   { name: "Ranking", icon: FiBarChart2, href: "/" },
   { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
   { name: "ISDL Map", icon: FiMapPin, href: "/" },
@@ -251,6 +255,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/access-history" element={<AccessHistory />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>
           </BrowserRouter>

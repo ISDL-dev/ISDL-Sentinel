@@ -1,0 +1,19 @@
+/* access_history.css */
+
+/* DatePicker コンポーネントを含むコンテナのスタイル */
+.date-picker-container {
+  display: flex; /* フレックスレイアウトを使用 */
+  justify-content: flex-end; /* 右寄せ */
+  align-items: center; /* 垂直方向の中央揃え */
+  width: 100%; /* コンテナの幅を100%にして右寄せ */
+}
+
+/* DatePicker コンポーネントのカスタムスタイル */
+.custom-datepicker {
+  display: inline-block; /* インラインブロックでサイズ調整 */
+  padding: 0.25rem 0.5rem; /* 適度なパディング */
+  border-radius: 0.375rem; /* 枠の角を丸める */
+  border: 1px solid #e2e8f0; /* 枠の色 */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); /* 軽い影を付ける */
+  width: auto; /* 自動サイズ調整 */
+}
