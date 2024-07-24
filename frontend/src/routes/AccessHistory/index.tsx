@@ -19,6 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./access_history.css";
 import { accessHistoryApi } from "../../api";
 import { GetAccessHistory200ResponseInner } from "../../schema";
+import { useNavigate } from 'react-router-dom';
 
 export default function AccessHistory() {
   const [accessHistory, setAccessHistoryData] = useState<
@@ -27,6 +28,7 @@ export default function AccessHistory() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const navigate = useNavigate();
 
   // Handle date change from DatePicker
   const handleDateChange = (date: Date | null) => {
@@ -139,8 +141,8 @@ export default function AccessHistory() {
                 </Td>
               </Tr>
             ) : (
-              accessHistory.map((access) => (
-                <Tr key={access.date}>
+              accessHistory.map((access, index) => (
+                <Tr key={index}>
                   <Td>{access.date}</Td>
                   <Td>
                     <Flex alignItems={"center"} gap={3}>
@@ -148,6 +150,7 @@ export default function AccessHistory() {
                         size={"md"}
                         src={`./avatar/${access.entering.avatar_img_path}`}
                         border="2px"
+                        onClick={() => navigate("/profile", { state: { userId: access.entering.user_id } })}
                       />
                       {access.entering.user_name}
                     </Flex>
@@ -159,6 +162,7 @@ export default function AccessHistory() {
                         size={"md"}
                         src={`./avatar/${access.leaving.avatar_img_path}`}
                         border="2px"
+                        onClick={() => navigate("/profile", { state: { userId: access.leaving.user_id } })}
                       />
                       {access.leaving.user_name}
                     </Flex>
