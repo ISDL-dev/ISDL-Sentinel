@@ -21,7 +21,9 @@ import { accessHistoryApi } from "../../api";
 import { GetAccessHistory200ResponseInner } from "../../schema";
 
 export default function AccessHistory() {
-  const [accessHistory, setAccessHistoryData] = useState<GetAccessHistory200ResponseInner[]>([]);
+  const [accessHistory, setAccessHistoryData] = useState<
+    GetAccessHistory200ResponseInner[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -55,7 +57,7 @@ export default function AccessHistory() {
         const response = await accessHistoryApi.getAccessHistory(formattedDate);
         setAccessHistoryData(response.data ?? []);
       } catch (err) {
-        setError('データの取得に失敗しました');
+        setError("データの取得に失敗しました");
       } finally {
         setLoading(false); // Set loading to false when done
       }

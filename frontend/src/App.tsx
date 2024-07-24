@@ -5,7 +5,6 @@ import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
 import Footer from "./features/Footer";
 
-
 import {
   IconButton,
   Avatar,
@@ -211,7 +210,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem as="a" href="/profile">Profile</MenuItem>
+              <MenuItem as="a" href="/profile">
+                Profile
+              </MenuItem>
               <MenuItem>Change Password</MenuItem>
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
@@ -248,8 +249,8 @@ const App = () => {
           </DrawerContent>
         </Drawer>
         <Box
-          pl={{ base: 2, md: 64 }} 
-          pr={{ base: 2, md: 6 }} 
+          pl={{ base: 2, md: 64 }}
+          pr={{ base: 2, md: 6 }}
           pt={{ base: 2, md: 24 }}
         >
           <BrowserRouter>
