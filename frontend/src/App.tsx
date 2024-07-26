@@ -14,6 +14,7 @@ import Footer from "./features/Footer";
 import SidebarContent from "./features/SidebarContent";
 import MobileNav from "./features/MobileNav";
 import { useDisclosure } from "@chakra-ui/react";
+import { Ranking } from "./routes/Ranking";
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
