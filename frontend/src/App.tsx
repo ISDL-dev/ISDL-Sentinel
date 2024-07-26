@@ -42,6 +42,7 @@ import {
 } from "react-icons/fi";
 import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
 import { IconType } from "react-icons";
+import { Ranking } from "./routes/Ranking";
 
 interface LinkItemProps {
   name: string;
@@ -65,7 +66,7 @@ interface SidebarProps extends BoxProps {
 
 const LinkItems: Array<LinkItemProps> = [
   { name: "Attendee List", icon: FiHome, href: "/" },
-  { name: "Ranking", icon: FiBarChart2, href: "/" },
+  { name: "Ranking", icon: FiBarChart2, href: "/ranking" },
   { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
   { name: "ISDL Map", icon: FiMapPin, href: "/" },
   { name: "Settings", icon: FiSettings, href: "/" },
@@ -207,7 +208,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem as="a" href="/profile">Profile</MenuItem>
+              <MenuItem as="a" href="/profile">
+                Profile
+              </MenuItem>
               <MenuItem>Change Password</MenuItem>
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
@@ -244,14 +247,15 @@ const App = () => {
           </DrawerContent>
         </Drawer>
         <Box
-          pl={{ base: 2, md: 64 }} 
-          pr={{ base: 2, md: 6 }} 
+          pl={{ base: 2, md: 64 }}
+          pr={{ base: 2, md: 6 }}
           pt={{ base: 2, md: 24 }}
         >
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/ranking" element={<Ranking />} />
             </Routes>
           </BrowserRouter>
         </Box>
