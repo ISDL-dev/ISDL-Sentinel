@@ -15,7 +15,7 @@ import {
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { inRoom } from "../../models/users/user";
+import { inRoom, outRoom } from "../../models/users/user";
 import { attendeesListApi } from "../../api";
 import { useEffect, useState } from "react";
 
@@ -43,7 +43,7 @@ type Attendee = {
   enteredAt: string;
 };
 const AUTH_USER: AuthUser = {
-  id: 2,
+  id: 1,
   statusName: inRoom,
 };
 
@@ -165,22 +165,30 @@ function Home() {
             </Tr>
           </Thead>
           <Tbody outline="1px">
-            {attendeeList.map((attendee) => (
-              <Tr key={attendee.userId}>
-                <Td>
-                  <Flex alignItems={"center"} gap={3}>
-                    <Avatar
-                      size={"md"}
-                      src={`./avatar/${attendee.avaterImgPath}`}
-                      border="2px"
-                    ></Avatar>
-                    {attendee.userName}
-                  </Flex>
+            {attendeeList.length === 0 ? (
+              <Tr>
+                <Td colSpan={5} textAlign="center">
+                  出席者はいません
                 </Td>
-                <Td>{attendee.placeName}</Td>
-                <Td>{decodeDate(attendee.enteredAt)}</Td>
               </Tr>
-            ))}
+            ) : (
+              attendeeList.map((attendee) => (
+                <Tr key={attendee.userId}>
+                  <Td>
+                    <Flex alignItems={"center"} gap={3}>
+                      <Avatar
+                        size={"md"}
+                        src={`./avatar/${attendee.avaterImgPath}`}
+                        border="2px"
+                      ></Avatar>
+                      {attendee.userName}
+                    </Flex>
+                  </Td>
+                  <Td>{attendee.placeName}</Td>
+                  <Td>{decodeDate(attendee.enteredAt)}</Td>
+                </Tr>
+              ))
+            )}
           </Tbody>
         </Table>
       </TableContainer>
