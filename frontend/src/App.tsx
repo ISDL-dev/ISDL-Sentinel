@@ -10,6 +10,7 @@ import {
 import Home from "./routes/Home";
 import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
+import SignInWebauthn from "./routes/SignInWebauthn";
 import Footer from "./features/Footer";
 import SidebarContent from "./features/SidebarContent";
 import MobileNav from "./features/MobileNav";
@@ -49,6 +50,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/access-history" element={<AccessHistory />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
             </Routes>
           </Box>
         </Box>
