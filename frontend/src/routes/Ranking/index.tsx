@@ -23,8 +23,8 @@ import { RankingList } from "../../features/RankingList";
 
 export const Ranking = () => {
   const colors = useColorModeValue(
-    ["red.50", "teal.50", "blue.50"],
-    ["red.900", "teal.900", "blue.900"]
+    ["red.50", "blue.50"],
+    ["red.900", "blue.900"]
   );
   const [tabIndex, setTabIndex] = useState(0);
   const bg = colors[tabIndex];
@@ -39,7 +39,6 @@ export const Ranking = () => {
       <TabList mb="1em">
         <Tab>滞在時間</Tab>
         <Tab>出席日数</Tab>
-        <Tab>保有コイン</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
@@ -47,9 +46,6 @@ export const Ranking = () => {
         </TabPanel>
         <TabPanel>
           <RankingList placeholder="出席日数"></RankingList>
-        </TabPanel>
-        <TabPanel>
-          <RankingList placeholder="保有コイン"></RankingList>
         </TabPanel>
       </TabPanels>
     </Tabs>
