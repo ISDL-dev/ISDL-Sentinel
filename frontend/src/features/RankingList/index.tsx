@@ -49,7 +49,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
     <>
       <Grid
         templateColumns="repeat(3, 1fr)"
-        templateRows="1fr 2fr 1fr 1fr 10fr"
+        templateRows="1fr 2fr 1fr 1fr 12fr"
         justifyItems={"center"}
         placeItems={"center"}
         alignItems={"center"}
@@ -58,39 +58,29 @@ export const RankingList = (placeholder: { placeholder: string }) => {
         column={3}
         row={4}
       >
-        <Top3Icon rank="1" color="#ffd700"></Top3Icon>
-        <Top3Icon rank="2" color="#c9caca"></Top3Icon>
-        <Top3Icon rank="3" color="#b87333"></Top3Icon>
-        <Image
-          src={`./avatar/default1.png`}
-          alt={"default"}
-          boxSize="64px"
-          cursor="pointer"
-        />
-        <Image
-          src={`./avatar/default1.png`}
-          alt={"default"}
-          boxSize="64px"
-          cursor="pointer"
-        />
-        <Image
-          src={`./avatar/default1.png`}
-          alt={"default"}
-          boxSize="64px"
-          cursor="pointer"
-        />
-        <Text>ユーザ1</Text>
-        <Text>ユーザ2</Text>
-        <Text>ユーザ3</Text>
-        <Heading fontSize="2xl" color="#fa8072">
-          240時間
-        </Heading>
-        <Heading fontSize="2xl" color="#fa8072">
-          210時間
-        </Heading>
-        <Heading fontSize="2xl" color="#fa8072">
-          160時間
-        </Heading>
+        {(() => {
+          const rankUserRender = [];
+          for (var i = 0; i < 3; i++) {
+            rankUserRender.push(
+              <GridItem rowSpan={4} colSpan={1} textAlign={"center"}>
+                <Top3Icon rank={i}></Top3Icon>
+                <Image
+                  src={`./avatar/default1.png`}
+                  alt={"default"}
+                  boxSize="64px"
+                  cursor="pointer"
+                  ml={5}
+                />
+                <Text>{rankingList[i].user_name}</Text>
+                <Heading fontSize="2xl" color="#fa8072">
+                  {rankingList[i].stay_time}
+                </Heading>
+              </GridItem>
+            );
+          }
+          return rankUserRender;
+        })()}
+
         <GridItem rowSpan={1} colSpan={3}>
           <TableContainer
             pb={14}
@@ -99,14 +89,14 @@ export const RankingList = (placeholder: { placeholder: string }) => {
             pt={3}
             overflowX="auto"
             overflowY="scroll"
-            height="45vh"
+            height="48vh"
             width="120vh"
           >
             <Table size="sm">
               <Tbody>
                 {(() => {
                   const rankUserRender = [];
-                  for (var i = 4; i < rankingList.length; i++) {
+                  for (var i = 3; i < rankingList.length; i++) {
                     rankUserRender.push(
                       <Tr key={rankingList[i].user_id}>
                         <Td textAlign="center" w={15}>
@@ -120,7 +110,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                                 column={3}
                                 row={4}
                               >
-                                <Top10Icon rank={`${i}`}></Top10Icon>
+                                <Top10Icon rank={`${i + 1}`}></Top10Icon>
                                 <Image
                                   src={`./avatar/${rankingList[i].avatar_img_path}`}
                                   alt={`${rankingList[i].avatar_id}`}
