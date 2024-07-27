@@ -26,9 +26,11 @@ CREATE TABLE IF NOT EXISTS avatar(
 CREATE TABLE IF NOT EXISTS user(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
+    auth_user_name VARCHAR(64) NOT NULL,
     mail_address VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
     number_of_coin INT NOT NULL,
+    display_name VARCHAR(64),
     status_id INT UNSIGNED NOT NULL,
     place_id INT UNSIGNED,
     grade_id INT UNSIGNED NOT NULL,
@@ -37,6 +39,40 @@ CREATE TABLE IF NOT EXISTS user(
     FOREIGN KEY (place_id) REFERENCES place(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (grade_id) REFERENCES grade(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS credential_authenticator (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    aaguid BLOB NOT NULL,
+    sign_count BIGINT NOT NULL,
+    cloneWarning BOOLEAN NOT NULL,
+    Attachment VARCHAR(64) NOT NULL
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS credential_flags (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_present BOOLEAN NOT NULL,
+    user_verified BOOLEAN NOT NULL,
+    backup_eligible BOOLEAN NOT NULL,
+    backup_state BOOLEAN NOT NULL
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS credential (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    credential_id BLOB NOT NULL,
+    public_key BLOB NOT NULL,
+    attestation_type VARCHAR(64) NOT NULL,
+    flags_id INT UNSIGNED NOT NULL,
+    authenticator_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (flags_id) REFERENCES credential_flags(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (authenticator_id) REFERENCES credential_authenticator(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS session(
+    session_id VARCHAR(255) PRIMARY KEY,
+    session_data JSON NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------
@@ -110,34 +146,35 @@ INSERT INTO avatar (avatar_name, rarity, img_path) VALUES
 ('default1', 1, 'default1.png'),
 ('default2', 2, 'default2.png');
 
-INSERT INTO user (name, mail_address, password, number_of_coin, status_id, place_id, grade_id, avatar_id) VALUES
-('小野 景子', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 1, 3, 2, 1),
-('愛智 万莉子', 'aichi.mariko@mikilab.doshisha.ac.jp', 'project443', 7432, 2, NULL, 4, 1),
-('今元 佑', 'imamoto.yu@mikilab.doshisha.ac.jp', 'project443', 930, 3, 7, 5, 1),
-('井澤 晋', 'izawa.shin@mikilab.doshisha.ac.jp', 'project443', 3451, 1, 5, 1, 1),
-('小西 杏典', 'konishi.kyosuke@mikilab.doshisha.ac.jp', 'project443', 2904, 2, NULL, 3, 1),
-('増田 尚大', 'masuda.naohiro@mikilab.doshisha.ac.jp', 'project443', 6870, 1, 1, 4, 1),
-('森原 涼翔', 'morihara.ryoto@mikilab.doshisha.ac.jp', 'project443', 1203, 3, 4, 5, 1),
-('室塚 翔太', 'murozuka.shota@mikilab.doshisha.ac.jp', 'project443', 4912, 1, 2, 2, 1),
-('岡 颯人', 'oka.hayato@mikilab.doshisha.ac.jp', 'project443', 8775, 3, 6, 1, 1),
-('酒部 健太郎', 'sakabe.kentaro@mikilab.doshisha.ac.jp', 'project443', 1548, 1, 7, 3, 1),
-('関口 湧己', 'sekiguchi.yuki@mikilab.doshisha.ac.jp', 'project443', 3651, 2, NULL, 5, 1),
-('黒木 航汰', 'kuroki.kota@mikilab.doshisha.ac.jp', 'project443', 7429, 3, 3, 4, 1),
-('Matteo Rogora', 'matteo.rogora@mikilab.doshisha.ac.jp', 'project443', 4286, 1, 5, 1, 1),
-('藤本 聖矢', 'fujimoto.akiya@mikilab.doshisha.ac.jp', 'project443', 5950, 2, NULL, 2, 1),
-('川田 俊一', 'kawata.shunichi@mikilab.doshisha.ac.jp', 'project443', 3058, 3, 2, 3, 1),
-('清水 雄介', 'shimizu.yusuke@mikilab.doshisha.ac.jp', 'project443', 8301, 1, 4, 4, 1),
-('辻 皓太', 'tsuji.kota@mikilab.doshisha.ac.jp', 'project443', 2117, 2, NULL, 5, 1),
-('山口 幹文', 'yamaguchi.yoshihisa@mikilab.doshisha.ac.jp', 'project443', 6643, 1, 6, 1, 1),
-('門屋 直樹', 'kadoya.naoki@mikilab.doshisha.ac.jp', 'project443', 5570, 3, 1, 2, 1),
-('倉貫 翔真', 'kuranuki.shoma@mikilab.doshisha.ac.jp', 'project443', 9192, 1, 7, 3, 1),
-('眞家 佳悟', 'maie.keigo@mikilab.doshisha.ac.jp', 'project443', 4018, 2, NULL, 4, 1),
-('永野 喜大', 'nagano.yoshihiro@mikilab.doshisha.ac.jp', 'project443', 2286, 3, 5, 5, 1),
-('奈良 弧虎', 'nara.kotora@mikilab.doshisha.ac.jp', 'project443', 7631, 1, 3, 1, 1),
-('岡畑 優佑', 'okahata.yusuke@mikilab.doshisha.ac.jp', 'project443', 6890, 2, NULL, 2, 1),
-('島本 啄実', 'shimamoto.takumi@mikilab.doshisha.ac.jp', 'project443', 3742, 3, 4, 3, 1),
-('和田 陽暉', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 5827, 1, 2, 4, 1),
-('吉田 玲音', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, 3, 1, 5, 1);
+INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, status_id, place_id, grade_id, avatar_id) VALUES
+('小野 景子', 'kono', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 1, 3, 2, 1),
+('愛智 万莉子', 'maichi', 'aichi.mariko@mikilab.doshisha.ac.jp', 'project443', 7432, 2, NULL, 4, 1),
+('今元 佑', 'yimamoto', 'imamoto.yu@mikilab.doshisha.ac.jp', 'project443', 930, 3, 7, 5, 1),
+('井澤 晋', 'sizawa', 'izawa.shin@mikilab.doshisha.ac.jp', 'project443', 3451, 1, 5, 1, 1),
+('小西 杏典', 'kkonishi', 'konishi.kyosuke@mikilab.doshisha.ac.jp', 'project443', 2904, 2, NULL, 3, 1),
+('増田 尚大', 'nmasuda', 'masuda.naohiro@mikilab.doshisha.ac.jp', 'project443', 6870, 1, 1, 4, 1),
+('森原 涼翔', 'rmorihara', 'morihara.ryoto@mikilab.doshisha.ac.jp', 'project443', 1203, 3, 4, 5, 1),
+('室塚 翔太', 'smurozuka', 'murozuka.shota@mikilab.doshisha.ac.jp', 'project443', 4912, 1, 2, 2, 1),
+('岡 颯人', 'hoka', 'oka.hayato@mikilab.doshisha.ac.jp', 'project443', 8775, 3, 6, 1, 1),
+('酒部 健太郎', 'ksakabe', 'sakabe.kentaro@mikilab.doshisha.ac.jp', 'project443', 1548, 1, 7, 3, 1),
+('関口 湧己', 'ysekiguchi', 'sekiguchi.yuki@mikilab.doshisha.ac.jp', 'project443', 3651, 2, NULL, 5, 1),
+('黒木 航汰', 'kkuroki', 'kuroki.kota@mikilab.doshisha.ac.jp', 'project443', 7429, 3, 3, 4, 1),
+('Matteo Rogora', 'rmatteo', 'matteo.rogora@mikilab.doshisha.ac.jp', 'project443', 4286, 1, 5, 1, 1),
+('藤本 聖矢', 'afujimoto', 'fujimoto.akiya@mikilab.doshisha.ac.jp', 'project443', 5950, 2, NULL, 2, 1),
+('川田 俊一', 'skawata', 'kawata.shunichi@mikilab.doshisha.ac.jp', 'project443', 3058, 3, 2, 3, 1),
+('清水 雄介', 'yshimizu', 'shimizu.yusuke@mikilab.doshisha.ac.jp', 'project443', 8301, 1, 4, 4, 1),
+('辻 皓太', 'ktsuji', 'tsuji.kota@mikilab.doshisha.ac.jp', 'project443', 2117, 2, NULL, 5, 1),
+('山口 幹文', 'yyamaguchi', 'yamaguchi.yoshihisa@mikilab.doshisha.ac.jp', 'project443', 6643, 1, 6, 1, 1),
+('門屋 直樹', 'nkadoya', 'kadoya.naoki@mikilab.doshisha.ac.jp', 'project443', 5570, 3, 1, 2, 1),
+('倉貫 翔真', 'skuranuki', 'kuranuki.shoma@mikilab.doshisha.ac.jp', 'project443', 9192, 1, 7, 3, 1),
+('眞家 佳悟', 'kmaie', 'maie.keigo@mikilab.doshisha.ac.jp', 'project443', 4018, 2, NULL, 4, 1),
+('永野 喜大', 'ynagano', 'nagano.yoshihiro@mikilab.doshisha.ac.jp', 'project443', 2286, 3, 5, 5, 1),
+('奈良 弧虎', 'knara', 'nara.kotora@mikilab.doshisha.ac.jp', 'project443', 7631, 1, 3, 1, 1),
+('岡畑 優佑', 'yokahata', 'okahata.yusuke@mikilab.doshisha.ac.jp', 'project443', 6890, 2, NULL, 2, 1),
+('島本 啄実', 'tshimamoto', 'shimamoto.takumi@mikilab.doshisha.ac.jp', 'project443', 3742, 3, 4, 3, 1),
+('和田 陽暉', 'hwada', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 5827, 1, 2, 4, 1),
+('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, 3, 1, 5, 1);
+
 
 
 INSERT INTO entering_history (user_id, entered_at, is_first_entering) VALUES 
