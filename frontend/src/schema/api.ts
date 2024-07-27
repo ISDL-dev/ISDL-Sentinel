@@ -400,6 +400,12 @@ export interface PostSignIn200Response {
     'user_name': string;
     /**
      * 
+     * @type {string}
+     * @memberof PostSignIn200Response
+     */
+    'status'?: string;
+    /**
+     * 
      * @type {number}
      * @memberof PostSignIn200Response
      */

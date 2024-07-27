@@ -507,6 +507,8 @@ components:
                 format: uint64
               user_name:
                 type: string
+              status:
+                type: string
               avatar_id:
                 type: integer
                 format: uint64

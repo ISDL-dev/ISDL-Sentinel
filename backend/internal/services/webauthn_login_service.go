@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/go-webauthn/webauthn/protocol"
 )
 
@@ -34,36 +35,41 @@ func GetBeginLoginService(userName string, w http.ResponseWriter, r *http.Reques
 	return options, nil
 }
 
-func GetFinishLoginService(userName string, w http.ResponseWriter, r *http.Request) error {
+func GetFinishLoginService(userName string, w http.ResponseWriter, r *http.Request) (loginUserInfo schema.PostSignIn200Response, err error) {
 	userCredential, err := repositories.GetUserCredential(userName)
 	if err != nil {
-		return fmt.Errorf("failed to get user credential for %s: %w", userName, err)
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get user credential for %s: %w", userName, err)
 	}
 
 	cookie, err := r.Cookie("authentication")
 	if err != nil {
-		return fmt.Errorf("failed to get authentication cookie: %w", err)
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get authentication cookie: %w", err)
 	}
 
 	sessionData, err := repositories.GetSession(cookie.Value)
 	if err != nil {
-		return fmt.Errorf("failed to get session for cookie %s: %w", cookie.Value, err)
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get session for cookie %s: %w", cookie.Value, err)
 	}
 
 	credential, err := Wc.FinishLogin(userCredential, *sessionData, r)
 	if err != nil {
-		return fmt.Errorf("failed to finish login: %w", err)
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to finish login: %w", err)
 	}
 
 	if credential.Authenticator.CloneWarning {
-		return fmt.Errorf("cloned key detected")
+		return schema.PostSignIn200Response{}, fmt.Errorf("cloned key detected")
 	}
 
 	err = repositories.DeleteSession(cookie.Value)
 	if err != nil {
-		return fmt.Errorf("failed to delete session for cookie %s: %w", cookie.Value, err)
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to delete session for cookie %s: %w", cookie.Value, err)
 	}
 	log.Printf("User %s finished login successfully", userName)
 
-	return nil
+	loginUserInfo, err = repositories.GetLoginUserInfo(userName)
+	if err != nil {
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get login user info %s: %w", cookie.Value, err)
+	}
+
+	return loginUserInfo, nil
 }

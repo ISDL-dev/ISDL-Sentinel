@@ -28,7 +28,7 @@ func GetBeginRegistrationController(ctx *gin.Context) {
 func GetFinishRegistrationController(ctx *gin.Context) {
 	userName := ctx.Param("user_name")
 
-	err := services.GetFinishRegistrationService(userName, ctx.Writer, ctx.Request)
+	loginUserInfo, err := services.GetFinishRegistrationService(userName, ctx.Writer, ctx.Request)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get public key credential creation options:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{
@@ -36,6 +36,6 @@ func GetFinishRegistrationController(ctx *gin.Context) {
 			Message: err.Error(),
 		})
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Registration Success"})
+		ctx.JSON(http.StatusOK, loginUserInfo)
 	}
 }

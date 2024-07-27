@@ -5,14 +5,13 @@ import (
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/go-webauthn/webauthn/webauthn"
 )
 
 func GetUserCredential(userName string) (userCredential model.UserCredential, err error) {
 	getUserCredentialQuery := `
-		SELECT id, auth_user_name, COALESCE(display_name, auth_user_name)
-		FROM user
-		WHERE auth_user_name = ?
+		SELECT id, auth_user_name, COALESCE(display_name, auth_user_name) FROM user WHERE auth_user_name = ?;
 	`
 
 	if err := infrastructures.DB.QueryRow(getUserCredentialQuery, userName).Scan(&userCredential.Id, &userCredential.Name, &userCredential.DisplayName); err != nil {
@@ -35,7 +34,7 @@ func GetUserCredential(userName string) (userCredential model.UserCredential, er
 		FROM credential c
 		LEFT JOIN credential_flags cf ON c.flags_id = cf.id
 		LEFT JOIN credential_authenticator a ON c.authenticator_id = a.id
-		WHERE c.user_id = ?
+		WHERE c.user_id = ?;
 	`
 	rows, err := infrastructures.DB.Query(getUserCredentialsQuery, userCredential.Id)
 	if err != nil {
@@ -74,8 +73,7 @@ func GetUserCredential(userName string) (userCredential model.UserCredential, er
 
 func UpdateUserCredential(userCredential model.UserCredential) error {
 	insertCredentialQuery := `
-		INSERT INTO credential (user_id, credential_id, public_key, attestation_type, flags_id, authenticator_id)
-		VALUES (?, ?, ?, ?, ?, ?)
+		INSERT INTO credential (user_id, credential_id, public_key, attestation_type, flags_id, authenticator_id) VALUES (?, ?, ?, ?, ?, ?);
 	`
 
 	for _, credential := range userCredential.Credentials {
@@ -110,8 +108,7 @@ func UpdateUserCredential(userCredential model.UserCredential) error {
 
 func insertCredentialFlags(flags webauthn.CredentialFlags) (int64, error) {
 	insertFlagsQuery := `
-		INSERT INTO credential_flags (user_present, user_verified, backup_eligible, backup_state)
-		VALUES (?, ?, ?, ?)
+		INSERT INTO credential_flags (user_present, user_verified, backup_eligible, backup_state) VALUES (?, ?, ?, ?);
 	`
 	result, err := infrastructures.DB.Exec(
 		insertFlagsQuery,
@@ -134,8 +131,7 @@ func insertCredentialFlags(flags webauthn.CredentialFlags) (int64, error) {
 
 func insertAuthenticator(authenticator webauthn.Authenticator) (int64, error) {
 	insertAuthenticatorQuery := `
-		INSERT INTO credential_authenticator (aaguid, sign_count, cloneWarning, Attachment)
-		VALUES (?, ?, ?, ?)
+		INSERT INTO credential_authenticator (aaguid, sign_count, cloneWarning, Attachment) VALUES (?, ?, ?, ?);
 	`
 	result, err := infrastructures.DB.Exec(
 		insertAuthenticatorQuery,
@@ -154,4 +150,30 @@ func insertAuthenticator(authenticator webauthn.Authenticator) (int64, error) {
 	}
 
 	return authenticatorID, nil
+}
+
+func GetLoginUserInfo(userName string) (loginUserInfo schema.PostSignIn200Response, err error) {
+	getLoginUserInfoQuery := `
+        SELECT 
+            u.id AS user_id,
+            u.name AS user_name,
+            s.status_name AS status,
+            u.avatar_id AS avatar_id,
+            a.img_path AS avatar_img_path
+        FROM user u
+        JOIN status s ON u.status_id = s.id
+        LEFT JOIN avatar a ON u.avatar_id = a.id
+        WHERE u.auth_user_name = ?;`
+
+	if err := infrastructures.DB.QueryRow(getLoginUserInfoQuery, userName).Scan(
+		&loginUserInfo.UserId,
+		&loginUserInfo.UserName,
+		&loginUserInfo.Status,
+		&loginUserInfo.AvatarId,
+		&loginUserInfo.AvatarImgPath,
+	); err != nil {
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get login user info: %w", err)
+	}
+
+	return loginUserInfo, nil
 }

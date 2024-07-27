@@ -14,9 +14,7 @@ import (
 // GetSession retrieves the session data from the database using the session ID.
 func GetSession(sessionID string) (*webauthn.SessionData, error) {
 	getSessionQuery := `
-		SELECT session_data
-		FROM session
-		WHERE session_id = ?
+		SELECT session_data FROM session WHERE session_id = ?;
 	`
 
 	var sessionDataJSON string
@@ -40,8 +38,7 @@ func GetSession(sessionID string) (*webauthn.SessionData, error) {
 // DeleteSession deletes the session data from the database using the session ID.
 func DeleteSession(sessionID string) error {
 	deleteSessionQuery := `
-		DELETE FROM session
-		WHERE session_id = ?
+		DELETE FROM session WHERE session_id = ?;
 	`
 
 	_, err := infrastructures.DB.Exec(deleteSessionQuery, sessionID)
@@ -65,8 +62,7 @@ func StartSession(data *webauthn.SessionData) (string, error) {
 	}
 
 	insertSessionQuery := `
-		INSERT INTO session (session_id, session_data)
-		VALUES (?, ?)
+		INSERT INTO session (session_id, session_data) VALUES (?, ?);
 	`
 
 	_, err = infrastructures.DB.Exec(insertSessionQuery, sessionID, sessionDataJSON)

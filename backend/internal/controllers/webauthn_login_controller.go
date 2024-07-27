@@ -28,7 +28,7 @@ func GetBeginLoginController(ctx *gin.Context) {
 func GetFinishLoginController(ctx *gin.Context) {
 	userName := ctx.Param("user_name")
 
-	err := services.GetFinishLoginService(userName, ctx.Writer, ctx.Request)
+	loginUserInfo, err := services.GetFinishLoginService(userName, ctx.Writer, ctx.Request)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to finish login:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{
@@ -36,6 +36,6 @@ func GetFinishLoginController(ctx *gin.Context) {
 			Message: err.Error(),
 		})
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Login Success"})
+		ctx.JSON(http.StatusOK, loginUserInfo)
 	}
 }
