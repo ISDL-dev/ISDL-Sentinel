@@ -17,6 +17,7 @@ func PutStatusController(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	services.PostWebHookTest(schema.Status{UserId: status.UserId, Status: status.Status})
 	user, err := services.PutStatusService(schema.Status{UserId: status.UserId, Status: status.Status})
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get user status:%w", err))
