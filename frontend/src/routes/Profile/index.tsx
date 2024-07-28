@@ -5,21 +5,16 @@ import { profileApi } from "../../api";
 import Banner from "../../features/Banner";
 import AvatarList from "../../features/AvatarList";
 import { GetUserById200Response, Avatar } from "../../schema";
-
-type AuthUser = {
-  id: number;
-};
-
-const AUTH_USER: AuthUser = {
-  id: 9,
-};
+import { useUser } from '../../userContext';
 
 export default function Profile() {
   const [userData, setUserData] = useState<GetUserById200Response | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
-  const userId = (location.state as { userId?: number })?.userId || AUTH_USER.id;
+  const userId = location.state.userId
+  const { authUser, setAuthUser } = useUser();  
+  const authUserId = authUser ? authUser.user_id : undefined;
 
   useEffect(() => {
     async function fetchUserData() {
@@ -37,8 +32,9 @@ export default function Profile() {
   }, [userId]);
 
   const updateUserData = async (userId: number, avatarId: number) => {
+    if (!authUser) return;
     try {
-      if (userId === AUTH_USER.id) {
+      if (userId === authUserId) {
         const requestBody: Avatar = {
           user_id: userId,
           avatar_id: avatarId,
@@ -46,6 +42,11 @@ export default function Profile() {
         await profileApi.putAvatar(requestBody);
         const response = await profileApi.getUserById(userId); // 再取得
         setUserData(response.data);
+        setAuthUser({
+          ...authUser,
+          avatar_id: response.data.avatar_id,
+          avatar_img_path: response.data.avatar_img_path
+        });
       }
     } catch (err) {
       setError("アバターの更新に失敗しました");

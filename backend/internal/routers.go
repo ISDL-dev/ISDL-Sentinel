@@ -17,8 +17,6 @@ func SetRoutes(router *gin.Engine) {
 		AllowCredentials: true,
 	}))
 
-	router.Static("/static", "./templates")
-
 	v1 := router.Group("/v1")
 	{
 		v1.GET("/users/:user_id", controllers.GetUsersByIdController)

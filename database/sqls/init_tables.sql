@@ -147,35 +147,33 @@ INSERT INTO avatar (avatar_name, rarity, img_path) VALUES
 ('default2', 2, 'default2.png');
 
 INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, status_id, place_id, grade_id, avatar_id) VALUES
-('小野 景子', 'kono', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 1, 3, 2, 1),
+('小野 景子', 'kono', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 2, NULL, 2, 1),
 ('愛智 万莉子', 'maichi', 'aichi.mariko@mikilab.doshisha.ac.jp', 'project443', 7432, 2, NULL, 4, 1),
-('今元 佑', 'yimamoto', 'imamoto.yu@mikilab.doshisha.ac.jp', 'project443', 930, 3, 7, 5, 1),
-('井澤 晋', 'sizawa', 'izawa.shin@mikilab.doshisha.ac.jp', 'project443', 3451, 1, 5, 1, 1),
+('今元 佑', 'yimamoto', 'imamoto.yu@mikilab.doshisha.ac.jp', 'project443', 930, 2, NULL, 5, 1),
+('井澤 晋', 'sizawa', 'izawa.shin@mikilab.doshisha.ac.jp', 'project443', 3451, 2, NULL, 1, 1),
 ('小西 杏典', 'kkonishi', 'konishi.kyosuke@mikilab.doshisha.ac.jp', 'project443', 2904, 2, NULL, 3, 1),
-('増田 尚大', 'nmasuda', 'masuda.naohiro@mikilab.doshisha.ac.jp', 'project443', 6870, 1, 1, 4, 1),
-('森原 涼翔', 'rmorihara', 'morihara.ryoto@mikilab.doshisha.ac.jp', 'project443', 1203, 3, 4, 5, 1),
-('室塚 翔太', 'smurozuka', 'murozuka.shota@mikilab.doshisha.ac.jp', 'project443', 4912, 1, 2, 2, 1),
-('岡 颯人', 'hoka', 'oka.hayato@mikilab.doshisha.ac.jp', 'project443', 8775, 3, 6, 1, 1),
-('酒部 健太郎', 'ksakabe', 'sakabe.kentaro@mikilab.doshisha.ac.jp', 'project443', 1548, 1, 7, 3, 1),
+('増田 尚大', 'nmasuda', 'masuda.naohiro@mikilab.doshisha.ac.jp', 'project443', 6870, 2, NULL, 4, 1),
+('森原 涼翔', 'rmorihara', 'morihara.ryoto@mikilab.doshisha.ac.jp', 'project443', 1203, 2, NULL, 5, 1),
+('室塚 翔太', 'smurozuka', 'murozuka.shota@mikilab.doshisha.ac.jp', 'project443', 4912, 2, NULL, 2, 1),
+('岡 颯人', 'hoka', 'oka.hayato@mikilab.doshisha.ac.jp', 'project443', 8775, 2, NULL, 1, 1),
+('酒部 健太郎', 'ksakabe', 'sakabe.kentaro@mikilab.doshisha.ac.jp', 'project443', 1548, 2, NULL, 3, 1),
 ('関口 湧己', 'ysekiguchi', 'sekiguchi.yuki@mikilab.doshisha.ac.jp', 'project443', 3651, 2, NULL, 5, 1),
-('黒木 航汰', 'kkuroki', 'kuroki.kota@mikilab.doshisha.ac.jp', 'project443', 7429, 3, 3, 4, 1),
-('Matteo Rogora', 'rmatteo', 'matteo.rogora@mikilab.doshisha.ac.jp', 'project443', 4286, 1, 5, 1, 1),
+('黒木 航汰', 'kkuroki', 'kuroki.kota@mikilab.doshisha.ac.jp', 'project443', 7429, 2, NULL, 4, 1),
+('Matteo Rogora', 'rmatteo', 'matteo.rogora@mikilab.doshisha.ac.jp', 'project443', 4286, 2, NULL, 1, 1),
 ('藤本 聖矢', 'afujimoto', 'fujimoto.akiya@mikilab.doshisha.ac.jp', 'project443', 5950, 2, NULL, 2, 1),
-('川田 俊一', 'skawata', 'kawata.shunichi@mikilab.doshisha.ac.jp', 'project443', 3058, 3, 2, 3, 1),
-('清水 雄介', 'yshimizu', 'shimizu.yusuke@mikilab.doshisha.ac.jp', 'project443', 8301, 1, 4, 4, 1),
+('川田 俊一', 'skawata', 'kawata.shunichi@mikilab.doshisha.ac.jp', 'project443', 3058, 2, NULL, 3, 1),
+('清水 雄介', 'yshimizu', 'shimizu.yusuke@mikilab.doshisha.ac.jp', 'project443', 8301, 2, NULL, 4, 1),
 ('辻 皓太', 'ktsuji', 'tsuji.kota@mikilab.doshisha.ac.jp', 'project443', 2117, 2, NULL, 5, 1),
-('山口 幹文', 'yyamaguchi', 'yamaguchi.yoshihisa@mikilab.doshisha.ac.jp', 'project443', 6643, 1, 6, 1, 1),
-('門屋 直樹', 'nkadoya', 'kadoya.naoki@mikilab.doshisha.ac.jp', 'project443', 5570, 3, 1, 2, 1),
-('倉貫 翔真', 'skuranuki', 'kuranuki.shoma@mikilab.doshisha.ac.jp', 'project443', 9192, 1, 7, 3, 1),
+('山口 幹文', 'yyamaguchi', 'yamaguchi.yoshihisa@mikilab.doshisha.ac.jp', 'project443', 6643, 2, NULL, 1, 1),
+('門屋 直樹', 'nkadoya', 'kadoya.naoki@mikilab.doshisha.ac.jp', 'project443', 5570, 2, NULL, 2, 1),
+('倉貫 翔真', 'skuranuki', 'kuranuki.shoma@mikilab.doshisha.ac.jp', 'project443', 9192, 2, NULL, 3, 1),
 ('眞家 佳悟', 'kmaie', 'maie.keigo@mikilab.doshisha.ac.jp', 'project443', 4018, 2, NULL, 4, 1),
-('永野 喜大', 'ynagano', 'nagano.yoshihiro@mikilab.doshisha.ac.jp', 'project443', 2286, 3, 5, 5, 1),
-('奈良 弧虎', 'knara', 'nara.kotora@mikilab.doshisha.ac.jp', 'project443', 7631, 1, 3, 1, 1),
+('永野 喜大', 'ynagano', 'nagano.yoshihiro@mikilab.doshisha.ac.jp', 'project443', 2286, 2, NULL, 5, 1),
+('奈良 弧虎', 'knara', 'nara.kotora@mikilab.doshisha.ac.jp', 'project443', 7631, 2, NULL, 1, 1),
 ('岡畑 優佑', 'yokahata', 'okahata.yusuke@mikilab.doshisha.ac.jp', 'project443', 6890, 2, NULL, 2, 1),
-('島本 啄実', 'tshimamoto', 'shimamoto.takumi@mikilab.doshisha.ac.jp', 'project443', 3742, 3, 4, 3, 1),
-('和田 陽暉', 'hwada', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 5827, 1, 2, 4, 1),
-('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, 3, 1, 5, 1);
-
-
+('島本 啄実', 'tshimamoto', 'shimamoto.takumi@mikilab.doshisha.ac.jp', 'project443', 3742, 2, NULL, 3, 1),
+('和田 陽暉', 'hwada', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 5827, 2, NULL, 4, 1),
+('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, 2, NULL, 5, 1);
 
 INSERT INTO entering_history (user_id, entered_at, is_first_entering) VALUES 
 (2, '2024-07-01 09:00:00', true),
@@ -187,9 +185,9 @@ INSERT INTO entering_history (user_id, entered_at, is_first_entering) VALUES
 (15, '2024-07-16 13:00:00', true),
 (16, '2024-07-16 14:00:00', false),
 (17, '2024-07-16 15:00:00', false),
-(9, '2024-07-31 09:00:00', true),
-(10, '2024-07-31 10:00:00', false),
-(14, '2024-07-31 11:00:00', false);
+(9, '2024-07-27 09:00:00', true),
+(10, '2024-07-27 10:00:00', false),
+(14, '2024-07-27 11:00:00', false);
 
 INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving) VALUES 
 (2, 1, '2024-07-01 18:00:00', '09:00:00', false),
@@ -201,9 +199,9 @@ INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, i
 (15, 7, '2024-07-16 18:00:00', '05:00:00', false),
 (16, 8, '2024-07-16 19:00:00', '05:00:00', false),
 (17, 9, '2024-07-16 20:00:00', '05:00:00', true),
-(10, 11, '2024-07-31 18:00:00', '08:00:00', false),
-(9, 10, '2024-07-31 18:30:00', '09:30:00', false),
-(14, 12, '2024-07-31 20:00:00', '09:00:00', true);
+(10, 11, '2024-07-27 18:00:00', '08:00:00', false),
+(9, 10, '2024-07-27 18:30:00', '09:30:00', false),
+(14, 12, '2024-07-27 20:00:00', '09:00:00', true);
 
 INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES 
 (9, '2024-07-16'),
