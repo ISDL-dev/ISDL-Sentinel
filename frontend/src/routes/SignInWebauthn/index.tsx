@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
   Box,
   Button,
@@ -14,6 +15,9 @@ import {
   Link as ChakraLink
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../userContext';
+
+const baseURL = process.env.REACT_APP_BACKEND_ENDPOINT;
 
 const bufferDecode = (value: string) => {
   const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -46,154 +50,152 @@ const bufferEncode = (value: ArrayBuffer) => {
     .replace(/=/g, "");
 };
 
-const registerUser = async (username: string, toast: any, navigate: any) => {
-    try {
-      const response = await fetch(`http://localhost:3000/v1/webauthn/register-begin/${username}`, {
-        method: "GET",
-        credentials: "include", // これを追加
-      });
-      const credentialCreationOptions = await response.json();
-  
-      credentialCreationOptions.publicKey.challenge = bufferDecode(
-        credentialCreationOptions.publicKey.challenge
-      );
-      credentialCreationOptions.publicKey.user.id = bufferDecode(
-        credentialCreationOptions.publicKey.user.id
-      );
-      if (credentialCreationOptions.publicKey.excludeCredentials) {
-        credentialCreationOptions.publicKey.excludeCredentials.forEach((item: any) => {
-          item.id = bufferDecode(item.id);
-        });
-      }
-  
-      const credential = await navigator.credentials.create({
-        publicKey: credentialCreationOptions.publicKey,
-      });
-  
-      if (!credential) throw new Error('Error creating credential');
-  
-      const attestationObject = (credential as any).response.attestationObject;
-      const clientDataJSON = (credential as any).response.clientDataJSON;
-      const rawId = (credential as any).rawId;
-  
-      const finishResponse = await fetch(`http://localhost:3000/v1/webauthn/register-finish/${username}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          id: credential.id,
-          rawId: bufferEncode(rawId),
-          type: credential.type,
-          response: {
-            attestationObject: bufferEncode(attestationObject),
-            clientDataJSON: bufferEncode(clientDataJSON),
-          },
-        }),
-      });
-  
-      const finishData = await finishResponse.json();
-      console.log("Register finish response data:", finishData);
-  
-      toast({
-        title: "Registration successful",
-        description: `Successfully registered ${username}!`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-      
-      navigate('/');  // ここでホームに遷移します
-    } catch (error) {
-      console.error("Register error:", error);
-      toast({
-        title: "Registration failed",
-        description: `Failed to register ${username}`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
+const registerUser = async (username: string, toast: any, navigate: any, setAuthUser: any) => {
+  try {
+    const response = await axios.get(`${baseURL}/webauthn/register-begin/${username}`, {
+      withCredentials: true, // これを追加
+    });
+    const credentialCreationOptions = response.data;
+
+    credentialCreationOptions.publicKey.challenge = bufferDecode(
+      credentialCreationOptions.publicKey.challenge
+    );
+    credentialCreationOptions.publicKey.user.id = bufferDecode(
+      credentialCreationOptions.publicKey.user.id
+    );
+    if (credentialCreationOptions.publicKey.excludeCredentials) {
+      credentialCreationOptions.publicKey.excludeCredentials.forEach((item: any) => {
+        item.id = bufferDecode(item.id);
       });
     }
-  };
-  
-  const loginUser = async (username: string, toast: any, navigate: any) => {
-    try {
-      const response = await fetch(`http://localhost:3000/v1/webauthn/login-begin/${username}`, {
-        method: "GET",
-        credentials: "include", // これを追加
-      });
-      const credentialRequestOptions = await response.json();
-  
-      credentialRequestOptions.publicKey.challenge = bufferDecode(
-        credentialRequestOptions.publicKey.challenge
-      );
-      if (credentialRequestOptions.publicKey.allowCredentials) {
-        credentialRequestOptions.publicKey.allowCredentials.forEach((item: any) => {
-          item.id = bufferDecode(item.id);
-        });
-      }
-  
-      const assertion = await navigator.credentials.get({
-        publicKey: credentialRequestOptions.publicKey,
-      });
-  
-      if (!assertion) throw new Error('Error getting credential');
-  
-      const authData = (assertion as any).response.authenticatorData;
-      const clientDataJSON = (assertion as any).response.clientDataJSON;
-      const rawId = (assertion as any).rawId;
-      const sig = (assertion as any).response.signature;
-      const userHandle = (assertion as any).response.userHandle;
-  
-      const finishResponse = await fetch(`http://localhost:3000/v1/webauthn/login-finish/${username}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          id: assertion.id,
-          rawId: bufferEncode(rawId),
-          type: assertion.type,
-          response: {
-            authenticatorData: bufferEncode(authData),
-            clientDataJSON: bufferEncode(clientDataJSON),
-            signature: bufferEncode(sig),
-            userHandle: bufferEncode(userHandle),
-          },
-        }),
-      });
-  
-      const finishData = await finishResponse.json();
-      console.log("Login finish response data:", finishData);
-  
-      toast({
-        title: "Login successful",
-        description: `Successfully logged in ${username}!`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-  
-      navigate('/');  // ここでホームに遷移します
-    } catch (error) {
-      console.error("Login error:", error);
-      toast({
-        title: "Login failed",
-        description: `Failed to login ${username}`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
+
+    const credential = await navigator.credentials.create({
+      publicKey: credentialCreationOptions.publicKey,
+    });
+
+    if (!credential) throw new Error('Error creating credential');
+
+    const attestationObject = (credential as any).response.attestationObject;
+    const clientDataJSON = (credential as any).response.clientDataJSON;
+    const rawId = (credential as any).rawId;
+
+    const finishResponse = await axios.post(`${baseURL}/webauthn/register-finish/${username}`, {
+      id: credential.id,
+      rawId: bufferEncode(rawId),
+      type: credential.type,
+      response: {
+        attestationObject: bufferEncode(attestationObject),
+        clientDataJSON: bufferEncode(clientDataJSON),
+      },
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+
+    const finishData = finishResponse.data;
+    console.log("Register finish response data:", finishData);
+
+    setAuthUser(finishData);
+
+    toast({
+      title: "Registration successful",
+      description: `Successfully registered ${username}!`,
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
+    navigate('/');  // ここでホームに遷移します
+  } catch (error) {
+    console.error("Register error:", error);
+    toast({
+      title: "Registration failed",
+      description: `Failed to register ${username}`,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+    });
+  }
+};
+
+const loginUser = async (username: string, toast: any, navigate: any, setAuthUser: any) => {
+  try {
+    const response = await axios.get(`${baseURL}/webauthn/login-begin/${username}`, {
+      withCredentials: true, // これを追加
+    });
+    const credentialRequestOptions = response.data;
+
+    credentialRequestOptions.publicKey.challenge = bufferDecode(
+      credentialRequestOptions.publicKey.challenge
+    );
+    if (credentialRequestOptions.publicKey.allowCredentials) {
+      credentialRequestOptions.publicKey.allowCredentials.forEach((item: any) => {
+        item.id = bufferDecode(item.id);
       });
     }
-  };
-  
+
+    const assertion = await navigator.credentials.get({
+      publicKey: credentialRequestOptions.publicKey,
+    });
+
+    if (!assertion) throw new Error('Error getting credential');
+
+    const authData = (assertion as any).response.authenticatorData;
+    const clientDataJSON = (assertion as any).response.clientDataJSON;
+    const rawId = (assertion as any).rawId;
+    const sig = (assertion as any).response.signature;
+    const userHandle = (assertion as any).response.userHandle;
+
+    const finishResponse = await axios.post(`${baseURL}/webauthn/login-finish/${username}`, {
+      id: assertion.id,
+      rawId: bufferEncode(rawId),
+      type: assertion.type,
+      response: {
+        authenticatorData: bufferEncode(authData),
+        clientDataJSON: bufferEncode(clientDataJSON),
+        signature: bufferEncode(sig),
+        userHandle: bufferEncode(userHandle),
+      },
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+
+    const finishData = finishResponse.data;
+    console.log("Login finish response data:", finishData);
+
+    setAuthUser(finishData);
+
+    toast({
+      title: "Login successful",
+      description: `Successfully logged in ${username}!`,
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
+    navigate('/');  // ここでホームに遷移します
+  } catch (error) {
+    console.error("Login error:", error);
+    toast({
+      title: "Login failed",
+      description: `Failed to login ${username}`,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+    });
+  }
+};
 
 export default function SignInWebauthn() {
   const [username, setUsername] = React.useState("");
   const toast = useToast();
-  const navigate = useNavigate();  // useNavigate フックを使用
+  const navigate = useNavigate(); 
+  const { setAuthUser } = useUser();
 
   const handleRegister = () => {
     if (username === "") {
@@ -206,7 +208,7 @@ export default function SignInWebauthn() {
       });
       return;
     }
-    registerUser(username, toast, navigate);  // navigate を渡す
+    registerUser(username, toast, navigate, setAuthUser);
   };
 
   const handleLogin = () => {
@@ -220,7 +222,7 @@ export default function SignInWebauthn() {
       });
       return;
     }
-    loginUser(username, toast, navigate);  // navigate を渡す
+    loginUser(username, toast, navigate, setAuthUser);
   };
 
   return (

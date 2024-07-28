@@ -2,7 +2,11 @@ version: '3'
 services: 
   frontend:
     container_name: isdl-sentinel-frontend
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - "BACKEND_ENDPOINT=${BACKEND_ENDPOINT}"
     env_file:
       - .env
     tty: true
