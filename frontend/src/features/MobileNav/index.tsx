@@ -29,9 +29,6 @@ interface MobileProps extends FlexProps {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const { authUser, setAuthUser } = useUser();  
-
-  console.log("auth_user: ", authUser);
-
   const bg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 

@@ -14,7 +14,7 @@ import {
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { inRoom, outRoom } from "../../models/users/user";
+import { inRoom } from "../../models/users/user";
 import { attendeesListApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
@@ -32,8 +32,17 @@ const decodeDate = (dateString: string) => {
 
 function Home() {
   const { authUser, setAuthUser } = useUser();
-  const [attendeeList, setAttendeeList] = useState<GetAttendeesList200ResponseInner[]>([]);
+  const [attendeeList, setAttendeeList] = useState<GetAttendeesList200ResponseInner[] | null>(null);
   const navigate = useNavigate();
+
+  const fetchAttendeesList = async () => {
+    try {
+      const response = await attendeesListApi.getAttendeesList();
+      setAttendeeList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleStatusChange = async () => {
     if (!authUser) return;
@@ -46,21 +55,14 @@ function Home() {
         ...authUser,
         status: user.data.status
       });
+      await fetchAttendeesList(); // ここでリストを再取得
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await attendeesListApi.getAttendeesList();
-        console.log(response.data);
-        setAttendeeList(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    fetchAttendeesList();
   }, []);
 
   return (
@@ -145,7 +147,7 @@ function Home() {
             </Tr>
           </Thead>
           <Tbody outline="1px">
-            {attendeeList.length === 0 ? (
+            {attendeeList === null ? (
               <Tr>
                 <Td colSpan={5} textAlign="center">
                   出席者はいません
