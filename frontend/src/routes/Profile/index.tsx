@@ -13,7 +13,7 @@ export default function Profile() {
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const userId = location.state.userId
-  const { authUser } = useUser();  
+  const { authUser, setAuthUser } = useUser();  
   const authUserId = authUser ? authUser.user_id : undefined;
 
   useEffect(() => {
@@ -32,6 +32,7 @@ export default function Profile() {
   }, [userId]);
 
   const updateUserData = async (userId: number, avatarId: number) => {
+    if (!authUser) return;
     try {
       if (userId === authUserId) {
         const requestBody: Avatar = {
@@ -41,6 +42,11 @@ export default function Profile() {
         await profileApi.putAvatar(requestBody);
         const response = await profileApi.getUserById(userId); // 再取得
         setUserData(response.data);
+        setAuthUser({
+          ...authUser,
+          avatar_id: response.data.avatar_id,
+          avatar_img_path: response.data.avatar_img_path
+        });
       }
     } catch (err) {
       setError("アバターの更新に失敗しました");
