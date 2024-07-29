@@ -59,7 +59,10 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                 <Image
                   src={`./avatar/default1.png`}
                   alt={"default"}
-                  boxSize="64px"
+                  boxSize={{
+                    base: "48px",
+                    md: "64px",
+                  }}
                   cursor="pointer"
                   ml={5}
                 />
@@ -121,7 +124,10 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                                   <Image
                                     src={`./avatar/${rankingList[i].avatar_img_path}`}
                                     alt={`${rankingList[i].avatar_id}`}
-                                    boxSize="50px"
+                                    boxSize={{
+                                      base: "36px",
+                                      md: "50px",
+                                    }}
                                     cursor="pointer"
                                   />
                                 </GridItem>

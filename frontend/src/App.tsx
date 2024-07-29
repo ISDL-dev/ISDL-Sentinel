@@ -25,7 +25,11 @@ const App = () => {
     <ChakraProvider>
       <UserProvider>
         <BrowserRouter>
-          <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+          <Box
+            minH="100vh"
+            bg={useColorModeValue("gray.100", "gray.900")}
+            overflowX={"hidden"}
+          >
             <MobileNav onOpen={onOpen} />
             <SidebarContent
               onClose={onClose}
