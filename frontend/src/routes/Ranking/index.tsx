@@ -35,6 +35,7 @@ export const Ranking = () => {
       bg={bg}
       border={"2px"}
       borderColor="gray.200"
+      mt={{ base: 20, md: 0 }}
     >
       <TabList mb="1em">
         <Tab>滞在時間</Tab>

@@ -1,12 +1,6 @@
 import {
-  Avatar,
-  AvatarBadge,
-  Box,
-  Button,
   Card,
   CardBody,
-  Center,
-  Flex,
   Grid,
   GridItem,
   Heading,
@@ -16,8 +10,6 @@ import {
   Tbody,
   Td,
   Text,
-  Th,
-  Thead,
   Tr,
 } from "@chakra-ui/react";
 import { Top3Icon } from "../RankIcon/Top3Icon";
@@ -72,7 +64,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                   ml={5}
                 />
                 <Text>{rankingList[i].user_name}</Text>
-                <Heading fontSize="2xl" color="#fa8072">
+                <Heading fontSize={{ base: "xl", md: "2xl" }} color="#fa8072">
                   {rankingList[i].stay_time}
                 </Heading>
               </GridItem>
@@ -89,8 +81,14 @@ export const RankingList = (placeholder: { placeholder: string }) => {
             pt={3}
             overflowX="auto"
             overflowY="scroll"
-            height="48vh"
-            width="120vh"
+            height={{
+              base: "50vh",
+              md: "48vh",
+            }}
+            width={{
+              base: "120vw",
+              md: "60vw",
+            }}
           >
             <Table size="sm">
               <Tbody>
@@ -103,25 +101,40 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                           <Card>
                             <CardBody>
                               <Grid
-                                templateColumns="1fr 1fr 1fr 5fr"
+                                templateColumns="auto auto 1fr auto"
                                 alignItems={"center"}
                                 height={"20%"}
                                 w={"-moz-max-content"}
-                                column={3}
-                                row={4}
+                                gap={4}
                               >
-                                <Top10Icon rank={`${i + 1}`}></Top10Icon>
-                                <Image
-                                  src={`./avatar/${rankingList[i].avatar_img_path}`}
-                                  alt={`${rankingList[i].avatar_id}`}
-                                  boxSize="50px"
-                                  cursor="pointer"
-                                />
-                                <Text fontSize="large">
-                                  {rankingList[i].user_name}
-                                </Text>
-                                <GridItem colEnd={6}>
-                                  <Heading fontSize="2xl" color="#fa8072">
+                                <GridItem
+                                  justifySelf="start"
+                                  marginRight={{ base: 12, md: 20 }}
+                                  paddingTop={14}
+                                >
+                                  <Top10Icon rank={`${i + 1}`} />
+                                </GridItem>
+                                <GridItem
+                                  justifySelf="start"
+                                  marginRight={{ base: 0, md: 8 }}
+                                >
+                                  <Image
+                                    src={`./avatar/${rankingList[i].avatar_img_path}`}
+                                    alt={`${rankingList[i].avatar_id}`}
+                                    boxSize="50px"
+                                    cursor="pointer"
+                                  />
+                                </GridItem>
+                                <GridItem justifySelf="start">
+                                  <Text fontSize="large">
+                                    {rankingList[i].user_name}
+                                  </Text>
+                                </GridItem>
+                                <GridItem justifySelf="end">
+                                  <Heading
+                                    fontSize={{ base: "xl", md: "2xl" }}
+                                    color="#fa8072"
+                                  >
                                     {rankingList[i].stay_time}
                                   </Heading>
                                 </GridItem>
