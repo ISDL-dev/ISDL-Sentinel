@@ -19,7 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./access_history.css";
 import { accessHistoryApi } from "../../api";
 import { GetAccessHistory200ResponseInner } from "../../schema";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function AccessHistory() {
   const [accessHistory, setAccessHistoryData] = useState<
@@ -30,30 +30,26 @@ export default function AccessHistory() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const navigate = useNavigate();
 
-  // Handle date change from DatePicker
   const handleDateChange = (date: Date | null) => {
     if (date) {
       setSelectedDate(date);
     }
   };
 
-  // Format date as 'yyyy/MM'
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     return `${year}-${month}`;
   };
 
-  // Extract time from date string in '2024-07-01T09:00:00Z' format
   const formatTime = (dateTime: string) => {
     const date = new Date(dateTime);
     return date.toISOString().substring(11, 19);
   };
 
-  // Fetch data based on the selected date
   useEffect(() => {
     const fetchUserData = async (date: Date) => {
-      setLoading(true); // Set loading to true when fetching data
+      setLoading(true);
       try {
         const formattedDate = formatDate(date);
         const response = await accessHistoryApi.getAccessHistory(formattedDate);
@@ -61,21 +57,18 @@ export default function AccessHistory() {
       } catch (err) {
         setError("データの取得に失敗しました");
       } finally {
-        setLoading(false); // Set loading to false when done
+        setLoading(false);
       }
     };
 
-    // Fetch data with initial date
     fetchUserData(selectedDate);
-  }, [selectedDate]); // Dependency array includes selectedDate
+  }, [selectedDate]); 
 
-  // Initialize selectedDate to the current month
   useEffect(() => {
     const now = new Date();
-    // Set to the first day of the current month
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     setSelectedDate(currentMonth);
-  }, []); // Empty dependency array ensures this runs only on initial render
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -115,7 +108,7 @@ export default function AccessHistory() {
       </Grid>
       <TableContainer
         pb={14}
-        pr={{ base: 2, md: 14 }} // Reduced padding on mobile
+        pr={{ base: 2, md: 14 }}
         pl={{ base: 2, md: 14 }}
         mt={8}
         outlineOffset={2}
@@ -146,28 +139,45 @@ export default function AccessHistory() {
                   <Td>{access.date}</Td>
                   <Td>
                     <Flex alignItems={"center"} gap={3}>
-                      <Avatar
-                        size={"md"}
-                        src={`./avatar/${access.entering.avatar_img_path}`}
-                        border="2px"
-                        onClick={() => navigate("/profile", { state: { userId: access.entering.user_id } })}
-                      />
+                      {access.entering.avatar_img_path && (
+                        <Avatar
+                          size={"md"}
+                          src={`./avatar/${access.entering.avatar_img_path}`}
+                          border="2px"
+                          onClick={() =>
+                            navigate("/profile", {
+                              state: { userId: access.entering.user_id },
+                            })
+                          }
+                        />
+                      )}
                       {access.entering.user_name}
                     </Flex>
                   </Td>
                   <Td>{formatTime(access.entering.entered_at)}</Td>
                   <Td>
-                    <Flex alignItems={"center"} gap={3}>
-                      <Avatar
-                        size={"md"}
-                        src={`./avatar/${access.leaving.avatar_img_path}`}
-                        border="2px"
-                        onClick={() => navigate("/profile", { state: { userId: access.leaving.user_id } })}
-                      />
-                      {access.leaving.user_name}
-                    </Flex>
+                    {access.leaving.left_at &&
+                    access.leaving.avatar_img_path ? (
+                      <Flex alignItems={"center"} gap={3}>
+                        <Avatar
+                          size={"md"}
+                          src={`./avatar/${access.leaving.avatar_img_path}`}
+                          border="2px"
+                          onClick={() =>
+                            navigate("/profile", {
+                              state: { userId: access.leaving.user_id },
+                            })
+                          }
+                        />
+                        {access.leaving.user_name}
+                      </Flex>
+                    ) : null}
                   </Td>
-                  <Td>{formatTime(access.leaving.left_at)}</Td>
+                  <Td>
+                    {access.leaving.left_at
+                      ? formatTime(access.leaving.left_at)
+                      : null}
+                  </Td>
                 </Tr>
               ))
             )}
