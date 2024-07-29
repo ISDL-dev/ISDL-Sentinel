@@ -155,6 +155,61 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /lab-asistant-member:
+    get:
+      summary: Get lab asistant member
+      operationId: get-lab-asistant-member
+      tags:
+        - LA
+      responses:
+        "200":
+          $ref: "#/components/responses/LabAsistantMember"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /lab-asistant/{date}:
+    get:
+      summary: Get lab asistant schedule
+      operationId: get-lab-asistant-schedule
+      tags:
+        - LA
+      parameters:
+        - in: path
+          name: date
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/LabAsistantSchedule"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /lab-asistant:
+    post:
+      summary: Resister lab asistant schedule
+      operationId: post-lab-asistant-schedule
+      tags:
+        - LA
+      requestBody:
+        description: request body of lab asistant
+        required: true
+        $ref: '#/components/requestBodies/LabAsistantSchedule'
+      responses:
+        '200':
+          $ref: "#/components/responses/LabAsistantSchedule"           
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /avatar-list:
     get:
       summary: Get avatar list
@@ -229,6 +284,22 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
+    LabAsistantSchedule:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: uint64
+                shift_date:
+                  type: string
+              required:
+                - user_id
+                - shift_date
     SignInUser:
       content:
         application/json:
@@ -495,6 +566,39 @@ components:
                 - grade
                 - avatar_id
                 - avatar_img_path
+    LabAsistantMember:
+      description: Successful to get lab asistant member
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: uint64
+                user_name:
+                  type: string
+              required:
+                - user_id
+                - user_name
+    LabAsistantSchedule:
+      description: Successful to get lab asistant schedule
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                shift_date:
+                  type: string
+              required:
+                - user_name
+                - shift_date
     SignInUser:
       description: successful to sign in
       content:
@@ -517,6 +621,7 @@ components:
             required:
               - user_id
               - user_name
+              - status
               - avatar_id
               - avatar_img_path
   schemas:
