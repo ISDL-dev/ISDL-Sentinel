@@ -1,21 +1,9 @@
 import {
-  Avatar,
-  AvatarBadge,
-  Button,
-  Flex,
-  Grid,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  Table,
-  TableContainer,
   Tabs,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
