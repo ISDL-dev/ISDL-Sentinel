@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useUser } from '../../userContext';
+import { useUser } from "../../userContext";
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
@@ -28,13 +28,13 @@ interface MobileProps extends FlexProps {
 
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
-  const { authUser, setAuthUser } = useUser();  
+  const { authUser, setAuthUser } = useUser();
   const bg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   const handleSignOut = () => {
-    setAuthUser(undefined);  
-    navigate('/sign-in-webauthn');
+    setAuthUser(undefined);
+    navigate("/sign-in-webauthn");
   };
 
   return (
@@ -44,6 +44,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       left={0}
       right={0}
       zIndex="2"
+      width="100vw"
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
@@ -97,11 +98,14 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   </Box>
                 </HStack>
               </MenuButton>
-              <MenuList
-                bg={bg}
-                borderColor={borderColor}
-              >
-                <MenuItem onClick={() => navigate("/profile", { state: { userId: authUser.user_id } })}>
+              <MenuList bg={bg} borderColor={borderColor}>
+                <MenuItem
+                  onClick={() =>
+                    navigate("/profile", {
+                      state: { userId: authUser.user_id },
+                    })
+                  }
+                >
                   Profile
                 </MenuItem>
                 <MenuItem>Change Password</MenuItem>
@@ -114,23 +118,32 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       ) : (
         <Stack
           flex={{ base: 1, md: 0 }}
-          justify={'flex-end'}
-          direction={'row'}
-          spacing={6}>
-          <Button as={'a'} display={{ base: 'none', md: 'inline-flex' }} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}>
+          justify={"flex-end"}
+          direction={"row"}
+          spacing={6}
+        >
+          <Button
+            as={"a"}
+            display={{ base: "none", md: "inline-flex" }}
+            fontSize={"sm"}
+            fontWeight={400}
+            variant={"link"}
+            href={"#"}
+          >
             Sign Up
           </Button>
           <Button
-            as={'a'}
-            display={'inline-flex' }
-            fontSize={'sm'}
+            as={"a"}
+            display={"inline-flex"}
+            fontSize={"sm"}
             fontWeight={600}
-            color={'white'}
-            bg={'pink.400'}
-            href={'/sign-in-webauthn'}
+            color={"white"}
+            bg={"pink.400"}
+            href={"/sign-in-webauthn"}
             _hover={{
-              bg: 'pink.300',
-            }}>
+              bg: "pink.300",
+            }}
+          >
             Sign In
           </Button>
         </Stack>

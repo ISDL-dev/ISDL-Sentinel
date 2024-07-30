@@ -15,6 +15,7 @@ import Footer from "./features/Footer";
 import SidebarContent from "./features/SidebarContent";
 import MobileNav from "./features/MobileNav";
 import { useDisclosure } from "@chakra-ui/react";
+import { Ranking } from "./routes/Ranking";
 import { UserProvider } from "./userContext"; // Import UserProvider
 
 const App = () => {
@@ -24,7 +25,11 @@ const App = () => {
     <ChakraProvider>
       <UserProvider>
         <BrowserRouter>
-          <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+          <Box
+            minH="100vh"
+            bg={useColorModeValue("gray.100", "gray.900")}
+            overflowX={"hidden"}
+          >
             <MobileNav onOpen={onOpen} />
             <SidebarContent
               onClose={onClose}
@@ -52,6 +57,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/access-history" element={<AccessHistory />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/ranking" element={<Ranking />} />
                 <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
               </Routes>
             </Box>

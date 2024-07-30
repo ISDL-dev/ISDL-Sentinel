@@ -14,7 +14,7 @@ interface SidebarProps extends BoxProps {
 const LinkItems: Array<{ name: string; icon: IconType; href: string }> = [
   { name: "Attendee List", icon: FiHome, href: "/" },
   { name: "Access History", icon: FaHistory, href: "/access-history" },
-  { name: "Ranking", icon: FiBarChart2, href: "/" },
+  { name: "Ranking", icon: FiBarChart2, href: "/ranking" },
   { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
   { name: "ISDL Map", icon: FiMapPin, href: "/" },
   { name: "Settings", icon: FiSettings, href: "/" },
