@@ -1348,15 +1348,15 @@ export const LAApiAxiosParamCreator = function (configuration?: Configuration) {
         /**
          * 
          * @summary Get lab asistant schedule
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLabAsistantSchedule: async (date: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'date' is not null or undefined
-            assertParamExists('getLabAsistantSchedule', 'date', date)
-            const localVarPath = `/lab-asistant/{date}`
-                .replace(`{${"date"}}`, encodeURIComponent(String(date)));
+        getLabAsistantSchedule: async (month: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('getLabAsistantSchedule', 'month', month)
+            const localVarPath = `/lab-asistant/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1382,12 +1382,16 @@ export const LAApiAxiosParamCreator = function (configuration?: Configuration) {
         /**
          * 
          * @summary Resister lab asistant schedule
+         * @param {string} month 
          * @param {Array<PostLabAsistantScheduleRequestInner>} [postLabAsistantScheduleRequestInner] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postLabAsistantSchedule: async (postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/lab-asistant`;
+        postLabAsistantSchedule: async (month: string, postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('postLabAsistantSchedule', 'month', month)
+            const localVarPath = `/lab-asistant/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1438,12 +1442,12 @@ export const LAApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get lab asistant schedule
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLabAsistantSchedule(date: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLabAsistantSchedule(date, options);
+        async getLabAsistantSchedule(month: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLabAsistantSchedule(month, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LAApi.getLabAsistantSchedule']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1451,12 +1455,13 @@ export const LAApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Resister lab asistant schedule
+         * @param {string} month 
          * @param {Array<PostLabAsistantScheduleRequestInner>} [postLabAsistantScheduleRequestInner] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postLabAsistantSchedule(postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postLabAsistantSchedule(postLabAsistantScheduleRequestInner, options);
+        async postLabAsistantSchedule(month: string, postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postLabAsistantSchedule(month, postLabAsistantScheduleRequestInner, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LAApi.postLabAsistantSchedule']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1483,22 +1488,23 @@ export const LAApiFactory = function (configuration?: Configuration, basePath?: 
         /**
          * 
          * @summary Get lab asistant schedule
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLabAsistantSchedule(date: string, options?: any): AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>> {
-            return localVarFp.getLabAsistantSchedule(date, options).then((request) => request(axios, basePath));
+        getLabAsistantSchedule(month: string, options?: any): AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>> {
+            return localVarFp.getLabAsistantSchedule(month, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Resister lab asistant schedule
+         * @param {string} month 
          * @param {Array<PostLabAsistantScheduleRequestInner>} [postLabAsistantScheduleRequestInner] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postLabAsistantSchedule(postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: any): AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>> {
-            return localVarFp.postLabAsistantSchedule(postLabAsistantScheduleRequestInner, options).then((request) => request(axios, basePath));
+        postLabAsistantSchedule(month: string, postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: any): AxiosPromise<Array<GetLabAsistantSchedule200ResponseInner>> {
+            return localVarFp.postLabAsistantSchedule(month, postLabAsistantScheduleRequestInner, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1524,25 +1530,26 @@ export class LAApi extends BaseAPI {
     /**
      * 
      * @summary Get lab asistant schedule
-     * @param {string} date 
+     * @param {string} month 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LAApi
      */
-    public getLabAsistantSchedule(date: string, options?: RawAxiosRequestConfig) {
-        return LAApiFp(this.configuration).getLabAsistantSchedule(date, options).then((request) => request(this.axios, this.basePath));
+    public getLabAsistantSchedule(month: string, options?: RawAxiosRequestConfig) {
+        return LAApiFp(this.configuration).getLabAsistantSchedule(month, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Resister lab asistant schedule
+     * @param {string} month 
      * @param {Array<PostLabAsistantScheduleRequestInner>} [postLabAsistantScheduleRequestInner] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LAApi
      */
-    public postLabAsistantSchedule(postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: RawAxiosRequestConfig) {
-        return LAApiFp(this.configuration).postLabAsistantSchedule(postLabAsistantScheduleRequestInner, options).then((request) => request(this.axios, this.basePath));
+    public postLabAsistantSchedule(month: string, postLabAsistantScheduleRequestInner?: Array<PostLabAsistantScheduleRequestInner>, options?: RawAxiosRequestConfig) {
+        return LAApiFp(this.configuration).postLabAsistantSchedule(month, postLabAsistantScheduleRequestInner, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

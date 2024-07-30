@@ -11,9 +11,9 @@ import (
 )
 
 func GetLabAsistantScheduleController(ctx *gin.Context) {
-	date := ctx.Param("date")
+	month := ctx.Param("month")
 
-	labAsistantSchedule, err := services.GetLabAsistantScheduleService(date)
+	labAsistantSchedule, err := services.GetLabAsistantScheduleService(month)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get lab asistant schedule:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{
