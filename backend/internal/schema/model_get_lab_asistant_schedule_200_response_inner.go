@@ -14,7 +14,5 @@ type GetLabAsistantSchedule200ResponseInner struct {
 	UserName string `json:"user_name"`
 
 	ShiftDate string `json:"shift_date"`
-
-	Count int32 `json:"count"`
 }
 

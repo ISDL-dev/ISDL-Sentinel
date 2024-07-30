@@ -220,6 +220,24 @@ export interface GetLabAsistantMember200ResponseInner {
      * @memberof GetLabAsistantMember200ResponseInner
      */
     'user_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAsistantMember200ResponseInner
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetLabAsistantMember200ResponseInner
+     */
+    'avatar_img_path': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAsistantMember200ResponseInner
+     */
+    'count': number;
 }
 /**
  * 
@@ -239,12 +257,6 @@ export interface GetLabAsistantSchedule200ResponseInner {
      * @memberof GetLabAsistantSchedule200ResponseInner
      */
     'shift_date': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof GetLabAsistantSchedule200ResponseInner
-     */
-    'count': number;
 }
 /**
  * 

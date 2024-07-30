@@ -580,9 +580,20 @@ components:
                   format: uint64
                 user_name:
                   type: string
+                avatar_id:
+                  type: integer
+                  format: uint64
+                avatar_img_path:
+                  type: string
+                count:
+                  type: integer
+                  format: uint64
               required:
                 - user_id
                 - user_name
+                - avatar_id
+                - avatar_img_path
+                - count
     LabAsistantSchedule:
       description: Successful to get lab asistant schedule
       content:
@@ -596,13 +607,9 @@ components:
                   type: string
                 shift_date:
                   type: string
-                count:
-                  type: integer
-                  format: uint64
               required:
                 - user_name
                 - shift_date
-                - count
     SignInUser:
       description: successful to sign in
       content:
