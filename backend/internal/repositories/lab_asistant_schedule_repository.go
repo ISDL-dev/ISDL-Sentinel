@@ -46,3 +46,23 @@ func GetLabAsistantScheduleRepository(month string) (labAsistantSchedule []schem
 
 	return labAsistantSchedule, nil
 }
+
+func PostLabAsistantScheduleRepository(month string, labAsistantScheduleRequest []schema.PostLabAsistantScheduleRequestInner) (err error) {
+	deleteLabAsistantScheduleQuery := `DELETE FROM lab_asistant_shift WHERE DATE_FORMAT(shift_day, '%Y-%m') = ?;`
+
+	_, err = infrastructures.DB.Exec(deleteLabAsistantScheduleQuery, month)
+	if err != nil {
+		return fmt.Errorf("failed to execute query to delete lab asistant schedule: %v", err)
+	}
+
+	postLabAsistantScheduleQuery := `INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES (?, ?);`
+
+	for _, schedule := range labAsistantScheduleRequest {
+		_, err = infrastructures.DB.Exec(postLabAsistantScheduleQuery, schedule.UserId, schedule.ShiftDate)
+		if err != nil {
+			return fmt.Errorf("failed to execute query to insert lab asistant schedule: %v", err)
+		}
+	}
+
+	return nil
+}

@@ -25,7 +25,8 @@ func SetRoutes(router *gin.Engine) {
 		v1.PUT("/status", controllers.PutStatusController)
 		v1.GET("/access-history/:date", controllers.GetAccessHistoryController)
 		v1.GET("/lab-asistant-member", controllers.GetLabAsistantMemberController)
-		v1.GET("/lab-asistant/:date", controllers.GetLabAsistantScheduleController)
+		v1.GET("/lab-asistant/:month", controllers.GetLabAsistantScheduleController)
+		v1.POST("/lab-asistant/:month", controllers.PostLabAsistantScheduleController)
 
 		webauthn := v1.Group("/webauthn")
 		{
