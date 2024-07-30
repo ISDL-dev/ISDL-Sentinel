@@ -32,10 +32,10 @@ export const Ranking = () => {
       </TabList>
       <TabPanels>
         <TabPanel>
-          <RankingList placeholder="滞在時間"></RankingList>
+          <RankingList placeholder="stay_time"></RankingList>
         </TabPanel>
         <TabPanel>
-          <RankingList placeholder="出席日数"></RankingList>
+          <RankingList placeholder="attendance_days"></RankingList>
         </TabPanel>
       </TabPanels>
     </Tabs>

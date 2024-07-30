@@ -1,8 +1,9 @@
 import axios from "axios";
-import { 
-  AttendeesListApi, 
-  ProfileApi, 
+import {
+  AttendeesListApi,
+  ProfileApi,
   AccessHistoryApi,
+  RankingApi,
 } from "./schema";
 
 const baseURL = process.env.REACT_APP_BACKEND_ENDPOINT;
@@ -13,9 +14,6 @@ const api = axios.create({
 const attendeesListApi = new AttendeesListApi(undefined, baseURL, api);
 const profileApi = new ProfileApi(undefined, baseURL, api);
 const accessHistoryApi = new AccessHistoryApi(undefined, baseURL, api);
+const rankingApi = new RankingApi(undefined, baseURL, api);
 
-export {
-  attendeesListApi,
-  profileApi,
-  accessHistoryApi,
-}
+export { attendeesListApi, profileApi, accessHistoryApi, rankingApi };
