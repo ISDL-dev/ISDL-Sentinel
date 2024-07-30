@@ -239,6 +239,12 @@ export interface GetLabAsistantSchedule200ResponseInner {
      * @memberof GetLabAsistantSchedule200ResponseInner
      */
     'shift_date': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAsistantSchedule200ResponseInner
+     */
+    'count': number;
 }
 /**
  * 
