@@ -8,7 +8,7 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetLabAsistantScheduleRepository(date string) (labAsistantSchedule []schema.GetLabAsistantSchedule200ResponseInner, err error) {
+func GetLabAsistantScheduleRepository(month string) (labAsistantSchedule []schema.GetLabAsistantSchedule200ResponseInner, err error) {
 	var labAsistantScheduleInner schema.GetLabAsistantSchedule200ResponseInner
 
 	getLabAsistantScheduleQuery := `
@@ -22,7 +22,7 @@ func GetLabAsistantScheduleRepository(date string) (labAsistantSchedule []schema
 		WHERE 
 			DATE_FORMAT(las.shift_day, '%Y-%m') = ?
 	`
-	getLabAsistantScheduleRows, err := infrastructures.DB.Query(getLabAsistantScheduleQuery, date)
+	getLabAsistantScheduleRows, err := infrastructures.DB.Query(getLabAsistantScheduleQuery, month)
 	if err != nil {
 		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %w", err)
 	}

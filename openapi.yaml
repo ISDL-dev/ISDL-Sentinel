@@ -170,7 +170,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /lab-asistant/{date}:
+  /lab-asistant/{month}:
     get:
       summary: Get lab asistant schedule
       operationId: get-lab-asistant-schedule
@@ -178,7 +178,7 @@ paths:
         - LA
       parameters:
         - in: path
-          name: date
+          name: month
           required: true
           schema:
             type: string
@@ -191,12 +191,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /lab-asistant:
     post:
       summary: Resister lab asistant schedule
       operationId: post-lab-asistant-schedule
       tags:
         - LA
+      parameters:
+        - in: path
+          name: month
+          required: true
+          schema:
+            type: string
       requestBody:
         description: request body of lab asistant
         required: true
