@@ -10,7 +10,7 @@ import (
 func GetRankingService() (rankingList []schema.GetRanking200ResponseInner, err error) {
 	rankingList, err = repositories.GetRankingRepository()
 	if err != nil {
-		return []schema.GetRanking200ResponseInner{}, fmt.Errorf("failed to execute query to get in room user list: %v", err)
+		return []schema.GetRanking200ResponseInner{}, fmt.Errorf("failed to execute query to get ranking list: %v", err)
 	}
 
 	return rankingList, nil
