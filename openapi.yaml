@@ -155,25 +155,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /lab-asistant-member:
+  /lab-assistant-member:
     get:
-      summary: Get lab asistant member
-      operationId: get-lab-asistant-member
+      summary: Get lab assistant member
+      operationId: get-lab-assistant-member
       tags:
         - LA
       responses:
         "200":
-          $ref: "#/components/responses/LabAsistantMember"
+          $ref: "#/components/responses/LabAssistantMember"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /lab-asistant/{month}:
+  /lab-assistant/{month}:
     get:
-      summary: Get lab asistant schedule
-      operationId: get-lab-asistant-schedule
+      summary: Get lab assistant schedule
+      operationId: get-lab-assistant-schedule
       tags:
         - LA
       parameters:
@@ -184,7 +184,7 @@ paths:
             type: string
       responses:
         "200":
-          $ref: "#/components/responses/LabAsistantSchedule"
+          $ref: "#/components/responses/LabAssistantSchedule"
         default:
           description: unexpected error
           content:
@@ -192,8 +192,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
-      summary: Resister lab asistant schedule
-      operationId: post-lab-asistant-schedule
+      summary: Resister lab assistant schedule
+      operationId: post-lab-assistant-schedule
       tags:
         - LA
       parameters:
@@ -203,12 +203,12 @@ paths:
           schema:
             type: string
       requestBody:
-        description: request body of lab asistant
+        description: request body of lab assistant
         required: true
-        $ref: '#/components/requestBodies/LabAsistantSchedule'
+        $ref: '#/components/requestBodies/LabAssistantSchedule'
       responses:
         '200':
-          $ref: "#/components/responses/LabAsistantSchedule"           
+          $ref: "#/components/responses/LabAssistantSchedule"           
         default:
           description: unexpected error
           content:
@@ -289,7 +289,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
-    LabAsistantSchedule:
+    LabAssistantSchedule:
       content:
         application/json:
           schema:
@@ -571,8 +571,8 @@ components:
                 - grade
                 - avatar_id
                 - avatar_img_path
-    LabAsistantMember:
-      description: Successful to get lab asistant member
+    LabAssistantMember:
+      description: Successful to get lab assistant member
       content:
         application/json:
           schema:
@@ -599,8 +599,8 @@ components:
                 - avatar_id
                 - avatar_img_path
                 - count
-    LabAsistantSchedule:
-      description: Successful to get lab asistant schedule
+    LabAssistantSchedule:
+      description: Successful to get lab assistant schedule
       content:
         application/json:
           schema:

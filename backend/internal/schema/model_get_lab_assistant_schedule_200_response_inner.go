@@ -9,16 +9,10 @@
 
 package schema
 
-type GetLabAsistantMember200ResponseInner struct {
-
-	UserId int32 `json:"user_id"`
+type GetLabAssistantSchedule200ResponseInner struct {
 
 	UserName string `json:"user_name"`
 
-	AvatarId int32 `json:"avatar_id"`
-
-	AvatarImgPath string `json:"avatar_img_path"`
-
-	Count int32 `json:"count"`
+	ShiftDate string `json:"shift_date"`
 }
 
