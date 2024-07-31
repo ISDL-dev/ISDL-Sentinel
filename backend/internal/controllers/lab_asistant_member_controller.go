@@ -10,15 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetLabAsistantMemberController(ctx *gin.Context) {
-	labAsistantMemberList, err := services.GetLabAsistantMemberService()
+func GetLabAssistantMemberController(ctx *gin.Context) {
+	labAssistantMemberList, err := services.GetLabAssistantMemberService()
 	if err != nil {
-		log.Println(fmt.Errorf("failed to get lab asistant member:%w", err))
+		log.Println(fmt.Errorf("failed to get lab assistant member:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 	} else {
-		ctx.JSON(http.StatusOK, labAsistantMemberList)
+		ctx.JSON(http.StatusOK, labAssistantMemberList)
 	}
 }

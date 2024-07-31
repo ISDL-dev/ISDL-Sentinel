@@ -7,11 +7,11 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetLabAsistantMemberService() (labAsistantMemberList []schema.GetLabAsistantMember200ResponseInner, err error) {
-	labAsistantMemberList, err = repositories.GetLabAsistantMemberRepository()
+func GetLabAssistantMemberService() (labAssistantMemberList []schema.GetLabAssistantMember200ResponseInner, err error) {
+	labAssistantMemberList, err = repositories.GetLabAssistantMemberRepository()
 	if err != nil {
-		return []schema.GetLabAsistantMember200ResponseInner{}, fmt.Errorf("failed to execute query to get lab asistant member: %v", err)
+		return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant member: %v", err)
 	}
 
-	return labAsistantMemberList, nil
+	return labAssistantMemberList, nil
 }

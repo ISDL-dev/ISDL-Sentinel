@@ -7,25 +7,25 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetLabAsistantScheduleService(month string) (labAsistantSchedule []schema.GetLabAsistantSchedule200ResponseInner, err error) {
-	labAsistantSchedule, err = repositories.GetLabAsistantScheduleRepository(month)
+func GetLabAssistantScheduleService(month string) (labAssistantSchedule []schema.GetLabAssistantSchedule200ResponseInner, err error) {
+	labAssistantSchedule, err = repositories.GetLabAssistantScheduleRepository(month)
 	if err != nil {
-		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab asistant schedule: %v", err)
+		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %v", err)
 	}
 
-	return labAsistantSchedule, nil
+	return labAssistantSchedule, nil
 }
 
-func PostLabAsistantScheduleService(month string, labAsistantScheduleRequest []schema.PostLabAsistantScheduleRequestInner) (labAsistantSchedule []schema.GetLabAsistantSchedule200ResponseInner, err error) {
-	err = repositories.PostLabAsistantScheduleRepository(month, labAsistantScheduleRequest)
+func PostLabAssistantScheduleService(month string, labAssistantScheduleRequest []schema.PostLabAssistantScheduleRequestInner) (labAssistantSchedule []schema.GetLabAssistantSchedule200ResponseInner, err error) {
+	err = repositories.PostLabAssistantScheduleRepository(month, labAssistantScheduleRequest)
 	if err != nil {
-		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to post lab asistant schedule: %v", err)
+		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to post lab assistant schedule: %v", err)
 	}
 
-	labAsistantSchedule, err = repositories.GetLabAsistantScheduleRepository(month)
+	labAssistantSchedule, err = repositories.GetLabAssistantScheduleRepository(month)
 	if err != nil {
-		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab asistant schedule: %v", err)
+		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %v", err)
 	}
 
-	return labAsistantSchedule, nil
+	return labAssistantSchedule, nil
 }

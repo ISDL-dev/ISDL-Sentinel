@@ -8,59 +8,59 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetLabAsistantScheduleRepository(month string) (labAsistantSchedule []schema.GetLabAsistantSchedule200ResponseInner, err error) {
-	var labAsistantScheduleInner schema.GetLabAsistantSchedule200ResponseInner
+func GetLabAssistantScheduleRepository(month string) (labAssistantSchedule []schema.GetLabAssistantSchedule200ResponseInner, err error) {
+	var labAssistantScheduleInner schema.GetLabAssistantSchedule200ResponseInner
 
-	getLabAsistantScheduleQuery := `
+	getLabAssistantScheduleQuery := `
 		SELECT 
 			u.name AS user_name, 
 			las.shift_day AS shift_date
 		FROM 
-			lab_asistant_shift las
+			lab_assistant_shift las
 		JOIN 
 			user u ON las.user_id = u.id
 		WHERE 
 			DATE_FORMAT(las.shift_day, '%Y-%m') = ?
 	`
-	getLabAsistantScheduleRows, err := infrastructures.DB.Query(getLabAsistantScheduleQuery, month)
+	getLabAssistantScheduleRows, err := infrastructures.DB.Query(getLabAssistantScheduleQuery, month)
 	if err != nil {
-		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %w", err)
+		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %w", err)
 	}
-	defer getLabAsistantScheduleRows.Close()
+	defer getLabAssistantScheduleRows.Close()
 
-	for getLabAsistantScheduleRows.Next() {
+	for getLabAssistantScheduleRows.Next() {
 		var shiftDate time.Time
-		err := getLabAsistantScheduleRows.Scan(
-			&labAsistantScheduleInner.UserName,
+		err := getLabAssistantScheduleRows.Scan(
+			&labAssistantScheduleInner.UserName,
 			&shiftDate)
 		if err != nil {
-			return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("failed to scan row for lab assistant schedule: %v", err)
+			return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to scan row for lab assistant schedule: %v", err)
 		}
-		labAsistantScheduleInner.ShiftDate = shiftDate.Format("2006-01-02")
-		labAsistantSchedule = append(labAsistantSchedule, labAsistantScheduleInner)
+		labAssistantScheduleInner.ShiftDate = shiftDate.Format("2006-01-02")
+		labAssistantSchedule = append(labAssistantSchedule, labAssistantScheduleInner)
 	}
 
-	if err := getLabAsistantScheduleRows.Err(); err != nil {
-		return []schema.GetLabAsistantSchedule200ResponseInner{}, fmt.Errorf("error occurred during iteration: %v", err)
+	if err := getLabAssistantScheduleRows.Err(); err != nil {
+		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("error occurred during iteration: %v", err)
 	}
 
-	return labAsistantSchedule, nil
+	return labAssistantSchedule, nil
 }
 
-func PostLabAsistantScheduleRepository(month string, labAsistantScheduleRequest []schema.PostLabAsistantScheduleRequestInner) (err error) {
-	deleteLabAsistantScheduleQuery := `DELETE FROM lab_asistant_shift WHERE DATE_FORMAT(shift_day, '%Y-%m') = ?;`
+func PostLabAssistantScheduleRepository(month string, labAssistantScheduleRequest []schema.PostLabAssistantScheduleRequestInner) (err error) {
+	deleteLabAssistantScheduleQuery := `DELETE FROM lab_assistant_shift WHERE DATE_FORMAT(shift_day, '%Y-%m') = ?;`
 
-	_, err = infrastructures.DB.Exec(deleteLabAsistantScheduleQuery, month)
+	_, err = infrastructures.DB.Exec(deleteLabAssistantScheduleQuery, month)
 	if err != nil {
-		return fmt.Errorf("failed to execute query to delete lab asistant schedule: %v", err)
+		return fmt.Errorf("failed to execute query to delete lab assistant schedule: %v", err)
 	}
 
-	postLabAsistantScheduleQuery := `INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES (?, ?);`
+	postLabAssistantScheduleQuery := `INSERT INTO lab_assistant_shift (user_id, shift_day) VALUES (?, ?);`
 
-	for _, schedule := range labAsistantScheduleRequest {
-		_, err = infrastructures.DB.Exec(postLabAsistantScheduleQuery, schedule.UserId, schedule.ShiftDate)
+	for _, schedule := range labAssistantScheduleRequest {
+		_, err = infrastructures.DB.Exec(postLabAssistantScheduleQuery, schedule.UserId, schedule.ShiftDate)
 		if err != nil {
-			return fmt.Errorf("failed to execute query to insert lab asistant schedule: %v", err)
+			return fmt.Errorf("failed to execute query to insert lab assistant schedule: %v", err)
 		}
 	}
 

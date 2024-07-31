@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS leaving_history(
     FOREIGN KEY (entering_history_id) REFERENCES entering_history(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS lab_asistant_shift(
+CREATE TABLE IF NOT EXISTS lab_assistant_shift(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     shift_day DATE NOT NULL,
@@ -202,7 +202,7 @@ INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, i
 (9, 10, '2024-07-27 18:30:00', '09:30:00', false),
 (14, 12, '2024-07-27 20:00:00', '09:00:00', true);
 
-INSERT INTO lab_asistant_shift (user_id, shift_day) VALUES 
+INSERT INTO lab_assistant_shift (user_id, shift_day) VALUES 
 (19, '2024-07-01'),
 (20, '2024-07-03'),
 (21, '2024-07-05'),
