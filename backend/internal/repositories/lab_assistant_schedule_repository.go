@@ -48,20 +48,30 @@ func GetLabAssistantScheduleRepository(month string) (labAssistantSchedule []sch
 }
 
 func PostLabAssistantScheduleRepository(month string, labAssistantScheduleRequest []schema.PostLabAssistantScheduleRequestInner) (err error) {
-	deleteLabAssistantScheduleQuery := `DELETE FROM lab_assistant_shift WHERE DATE_FORMAT(shift_day, '%Y-%m') = ?;`
-
-	_, err = infrastructures.DB.Exec(deleteLabAssistantScheduleQuery, month)
+	tx, err := infrastructures.DB.Begin()
 	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+
+	deleteLabAssistantScheduleQuery := `DELETE FROM lab_assistant_shift WHERE DATE_FORMAT(shift_day, '%Y-%m') = ?;`
+	_, err = tx.Exec(deleteLabAssistantScheduleQuery, month)
+	if err != nil {
+		tx.Rollback()
 		return fmt.Errorf("failed to execute query to delete lab assistant schedule: %v", err)
 	}
 
 	postLabAssistantScheduleQuery := `INSERT INTO lab_assistant_shift (user_id, shift_day) VALUES (?, ?);`
-
 	for _, schedule := range labAssistantScheduleRequest {
-		_, err = infrastructures.DB.Exec(postLabAssistantScheduleQuery, schedule.UserId, schedule.ShiftDate)
+		_, err = tx.Exec(postLabAssistantScheduleQuery, schedule.UserId, schedule.ShiftDate)
 		if err != nil {
+			tx.Rollback()
 			return fmt.Errorf("failed to execute query to insert lab assistant schedule: %v", err)
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to commit transaction: %v", err)
 	}
 
 	return nil
