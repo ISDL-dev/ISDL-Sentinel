@@ -14,29 +14,50 @@ import {
 } from "@chakra-ui/react";
 import { Top3Icon } from "../RankIcon/Top3Icon";
 import { Top10Icon } from "../RankIcon/Top10Icon";
+import { useEffect, useState } from "react";
+import { GetRanking200ResponseInner } from "../../schema";
+import { rankingApi } from "../../api";
 
-type RankingList = {
-  user_id: number;
-  user_name: string;
-  attendance_days: number;
-  stay_time: string;
-  grade: number;
-  avatar_id: number;
-  avatar_img_path: string;
-};
-const rankingList: RankingList[] = [];
-for (var i = 1; i < 11; i++) {
-  rankingList.push({
-    user_id: i,
-    user_name: `user${i}`,
-    attendance_days: i * 4,
-    grade: i,
-    avatar_id: 1,
-    stay_time: "09:00:00",
-    avatar_img_path: "default1.png",
-  });
-}
 export const RankingList = (placeholder: { placeholder: string }) => {
+  const LIMIT_DISPLAY_RANK = 10;
+  const [rankingList, setRankingList] = useState<GetRanking200ResponseInner[]>(
+    []
+  );
+  const getDateFromStringFormat = (dateFormat: string) => {
+    const [hours, minutes, seconds] = dateFormat.split(":").map(Number);
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    const baseDate = new Date(0);
+    return new Date(baseDate.getTime() + totalSeconds * 1000);
+  };
+  const descTimeSort = (a: Date, b: Date) => {
+    return a < b ? 1 : -1;
+  };
+  const orderByPlaceholder = (
+    responseData: GetRanking200ResponseInner[],
+    placeholder: string
+  ) => {
+    return placeholder === "stay_time"
+      ? responseData.sort((a, b) =>
+          descTimeSort(
+            getDateFromStringFormat(a.stay_time),
+            getDateFromStringFormat(b.stay_time)
+          )
+        )
+      : responseData.sort((a, b) => a.attendance_days - b.attendance_days);
+  };
+  const fetchRankingList = async () => {
+    try {
+      const response = await rankingApi.getRanking();
+      setRankingList(
+        orderByPlaceholder(response.data, placeholder.placeholder)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchRankingList();
+  }, []);
   return (
     <>
       <Grid
@@ -97,7 +118,11 @@ export const RankingList = (placeholder: { placeholder: string }) => {
               <Tbody>
                 {(() => {
                   const rankUserRender = [];
-                  for (var i = 3; i < rankingList.length; i++) {
+                  for (
+                    var i = 3;
+                    i < LIMIT_DISPLAY_RANK ?? rankingList.length;
+                    i++
+                  ) {
                     rankUserRender.push(
                       <Tr key={rankingList[i].user_id}>
                         <Td textAlign="center" w={15}>
