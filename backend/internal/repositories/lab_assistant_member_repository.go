@@ -17,13 +17,13 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 		return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("failed to execute a query to get grade_id: %v", err)
 	}
 
-	getLabAsistantMemberQuery := `
+	getLabAssistantMemberQuery := `
 		SELECT 
 			u.id, 
 			u.name, 
 			u.avatar_id, 
 			a.img_path, 
-			(SELECT COUNT(*) FROM lab_asistant_shift las WHERE las.user_id = u.id) AS count
+			(SELECT COUNT(*) FROM lab_assistant_shift las WHERE las.user_id = u.id) AS count
 		FROM 
 			user u
 		LEFT JOIN 
@@ -31,7 +31,7 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 		WHERE 
 			u.grade_id = ?;
 	`
-	getRows, err := infrastructures.DB.Query(getLabAsistantMemberQuery, gradeId)
+	getRows, err := infrastructures.DB.Query(getLabAssistantMemberQuery, gradeId)
 	if err != nil {
 		return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("getRows getLabAssistantMember Query error err:%w", err)
 	}
@@ -39,11 +39,11 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 
 	for getRows.Next() {
 		err := getRows.Scan(
-			&labAsistantMember.UserId,
-			&labAsistantMember.UserName,
-			&labAsistantMember.AvatarId,
-			&labAsistantMember.AvatarImgPath,
-			&labAsistantMember.Count,
+			&labAssistantMember.UserId,
+			&labAssistantMember.UserName,
+			&labAssistantMember.AvatarId,
+			&labAssistantMember.AvatarImgPath,
+			&labAssistantMember.Count,
 		)
 		if err != nil {
 			return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("getRows getLabAssistantMember Query error err: %v", err)
@@ -52,11 +52,7 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 	}
 
 	if err := getRows.Err(); err != nil {
-		return []schema.GetLabAsistantMember200ResponseInner{}, fmt.Errorf("error occurred during iteration: %v", err)
-	}
-
-	if err := getRows.Err(); err != nil {
-		return []schema.GetLabAsistantMember200ResponseInner{}, fmt.Errorf("error occurred during iteration: %v", err)
+		return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("error occurred during iteration: %v", err)
 	}
 
 	return labAssistantMemberList, nil
