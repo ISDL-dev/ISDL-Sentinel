@@ -31,10 +31,10 @@ export const Ranking = () => {
         <Tab>出席日数</Tab>
       </TabList>
       <TabPanels>
-        <TabPanel>
+        <TabPanel key={"stay_time"}>
           <RankingList placeholder="stay_time"></RankingList>
         </TabPanel>
-        <TabPanel>
+        <TabPanel key={"attendance_days"}>
           <RankingList placeholder="attendance_days"></RankingList>
         </TabPanel>
       </TabPanels>
