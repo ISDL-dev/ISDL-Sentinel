@@ -64,6 +64,11 @@ export default function Profile() {
         await profileApi.deleteAvatar(requestBody);
         const response = await profileApi.getUserById(userId); // 再取得
         setUserData(response.data);
+        setAuthUser({
+          ...authUser,
+          avatar_id: response.data.avatar_id,
+          avatar_img_path: response.data.avatar_img_path
+        });
       }
     } catch (err) {
       setError("アバターの削除に失敗しました");
