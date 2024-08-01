@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
@@ -54,12 +55,12 @@ func DeleteAvatarRepository(avatarRequest schema.Avatar) (err error) {
 	}
 
 	getCurrentAvatarIdQuery := `SELECT avatar_id FROM user WHERE id = ?;`
-	var currentAvatarId int32
+	var currentAvatarId sql.NullInt32
 	if err := tx.QueryRow(getCurrentAvatarIdQuery, avatarRequest.UserId).Scan(&currentAvatarId); err != nil {
 		return fmt.Errorf("failed to execute query to get current avatar id: %v", err)
 	}
 
-	if currentAvatarId == avatarRequest.AvatarId {
+	if !currentAvatarId.Valid {
 		getNewAvatarQuery := `
 			SELECT avatar_id
 			FROM user_possession_avatar
