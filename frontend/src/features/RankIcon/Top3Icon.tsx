@@ -7,15 +7,7 @@ interface Top3IconProps {
 export const Top3Icon: React.FC<Top3IconProps> = (props) => {
   const colorList = ["#ffd700", "#c9caca", "#b87333"];
   return (
-    <Box
-      zIndex={10}
-      mt={-10}
-      ml={{
-        base: 5,
-        md: 7,
-      }}
-      pb={10}
-    >
+    <Box zIndex={10} mt={-10} mr="46px" pb={10}>
       <div className="absolute">
         <FaCrown fontSize={48} color={colorList[props.rank]}></FaCrown>
       </div>
