@@ -12,7 +12,7 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
-  const userId = location.state.userId
+  const userId = location.state.userId;
   const { authUser, setAuthUser } = useUser();  
   const authUserId = authUser ? authUser.user_id : undefined;
 
@@ -53,6 +53,28 @@ export default function Profile() {
     }
   };
 
+  const deleteUserAvatar = async (userId: number, avatarId: number) => {
+    if (!authUser) return;
+    try {
+      if (userId === authUserId) {
+        const requestBody: Avatar = {
+          user_id: userId,
+          avatar_id: avatarId,
+        };
+        await profileApi.deleteAvatar(requestBody);
+        const response = await profileApi.getUserById(userId); // 再取得
+        setUserData(response.data);
+        setAuthUser({
+          ...authUser,
+          avatar_id: response.data.avatar_id,
+          avatar_img_path: response.data.avatar_img_path
+        });
+      }
+    } catch (err) {
+      setError("アバターの削除に失敗しました");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -86,9 +108,8 @@ export default function Profile() {
         <AvatarList
           gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}
           avatars={userData.avatar_list}
-          onAvatarClick={(avatarId) =>
-            updateUserData(userData.user_id, avatarId)
-          }
+          onAvatarClick={(avatarId) => updateUserData(userData.user_id, avatarId)}
+          onDeleteClick={(avatarId) => deleteUserAvatar(userData.user_id, avatarId)}
         />
       </Grid>
     </Box>

@@ -33,6 +33,7 @@ func PostLabAssistantScheduleController(ctx *gin.Context) {
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
+		return
 	}
 
 	month := ctx.Param("month")

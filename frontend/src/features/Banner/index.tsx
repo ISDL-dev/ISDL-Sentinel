@@ -29,7 +29,7 @@ export default function Banner(props: {
                 Email address: {email}
             </Text>
             <Text color={textColorSecondary} fontSize='md' fontWeight='400' mt='5px'>
-                Rank: {grade}
+                Grade: {grade}
             </Text>
 			<Flex w='max-content' mx='auto' mt={{ base: 20, md: 150 }} >
 				<Flex mx='auto' me={{ base: 5, md: 20 }} alignItems='center' flexDirection='column'>

@@ -13,3 +13,12 @@ func PutAvatarService(avatarRequest schema.Avatar) (avatarResponse schema.Avatar
 
 	return avatarResponse, nil
 }
+
+func DeleteAvatarService(avatarRequest schema.Avatar) (err error) {
+	err = repositories.DeleteAvatarRepository(avatarRequest)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

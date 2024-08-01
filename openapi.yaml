@@ -118,6 +118,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete my avatar
+      operationId: delete-avatar
+      tags:
+        - Profile
+      requestBody:
+        description: request body of delete avatar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Avatar'
+      responses:
+        '200':
+          description: successful to delete avatar
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /ranking:
     get:
       summary: Get ranking
@@ -127,28 +148,6 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/RankingList"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /avatar/{count}:
-    get:
-      summary: Get an avatar by id
-      operationId: get-avatar-by-id
-      tags:
-        - Ranking
-      parameters:
-        - in: path
-          name: count
-          required: true
-          schema:
-            type: integer
-            format: uint64
-      responses:
-        "200":
-          $ref: "#/components/responses/AvatarInformation"
         default:
           description: unexpected error
           content:
@@ -209,21 +208,6 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/LabAssistantSchedule"           
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /avatar-list:
-    get:
-      summary: Get avatar list
-      operationId: get-avatar-list
-      tags:
-        - Avatar list
-      responses:
-        "200":
-          $ref: "#/components/responses/AvatarInformation"
         default:
           description: unexpected error
           content:
@@ -488,17 +472,10 @@ components:
                     avatar_id:
                       type: integer
                       format: uint64
-                    avatar_name:
-                      type: string
-                    rarity:
-                      type: integer
-                      format: uint64
                     img_path:
                       type: string
                   required:
                     - avatar_id
-                    - avatar_name
-                    - rarity
                     - img_path
             required:
               - user_id
@@ -513,30 +490,6 @@ components:
               - avatar_id
               - avatar_img_path
               - avatar_list
-    AvatarInformation:
-      description: Successful to get an avatar by ID
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                avatar_id:
-                  type: integer
-                  format: uint64
-                avatar_name:
-                  type: string
-                rarity:
-                  type: integer
-                  format: uint64
-                img_path:
-                  type: string
-              required:
-                - avatar_id
-                - avatar_name
-                - rarity
-                - img_path
     RankingList:
       description: Successful to get ranking
       content:
