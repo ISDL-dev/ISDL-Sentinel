@@ -32,10 +32,12 @@ const AvatarList: React.FC<AvatarListProps> = ({ avatars, onAvatarClick, onDelet
                 <Tr key={avatar.avatar_id}>
                   <Td textAlign="center">{index + 1}</Td>
                   <Td textAlign="center">
-                    <Image 
-                      src={`./avatar/${avatar.img_path}`} 
-                      boxSize={{ base: '40px', md: '50px' }}
-                    />
+                    <Box display="flex" justifyContent="center" alignItems="center" height={{ base: '40px', md: '50px' }}>
+                      <Image 
+                        src={`./avatar/${avatar.img_path}`} 
+                        boxSize={{ base: '40px', md: '50px' }}
+                      />
+                    </Box>
                   </Td>
                   <Td textAlign="center">
                     <Box display="flex" justifyContent="center">
