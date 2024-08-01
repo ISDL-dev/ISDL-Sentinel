@@ -20,6 +20,7 @@ func GetUsersByIdController(ctx *gin.Context) {
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
+		return
 	}
 
 	userInformation, err := services.GetUsersByIdService(userId)
