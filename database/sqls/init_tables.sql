@@ -18,8 +18,6 @@ CREATE TABLE IF NOT EXISTS grade(
 
 CREATE TABLE IF NOT EXISTS avatar(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    avatar_name VARCHAR(64) NOT NULL,
-    rarity INT UNSIGNED NOT NULL,
     img_path VARCHAR(64) NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -38,7 +36,7 @@ CREATE TABLE IF NOT EXISTS user(
     FOREIGN KEY (status_id) REFERENCES status(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (place_id) REFERENCES place(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (grade_id) REFERENCES grade(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS credential_authenticator (
@@ -114,7 +112,7 @@ CREATE TABLE IF NOT EXISTS user_possession_avatar(
     user_id INT UNSIGNED NOT NULL,
     avatar_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (avatar_id) REFERENCES avatar(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------
@@ -141,9 +139,9 @@ INSERT INTO grade (grade_name) VALUES
 ('M1'),
 ('U4');
 
-INSERT INTO avatar (avatar_name, rarity, img_path) VALUES
-('default1', 1, 'default1.png'),
-('default2', 2, 'default2.png');
+INSERT INTO avatar (img_path) VALUES
+('default1.png'),
+('default2.png');
 
 INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, status_id, place_id, grade_id, avatar_id) VALUES
 ('小野 景子', 'kono', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 2, NULL, 1, 1),

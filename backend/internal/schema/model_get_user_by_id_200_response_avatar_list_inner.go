@@ -13,10 +13,6 @@ type GetUserById200ResponseAvatarListInner struct {
 
 	AvatarId int32 `json:"avatar_id"`
 
-	AvatarName string `json:"avatar_name"`
-
-	Rarity int32 `json:"rarity"`
-
 	ImgPath string `json:"img_path"`
 }
 
