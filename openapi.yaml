@@ -93,6 +93,24 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /avatar:
+    post:
+      summary: Upload my avatar
+      operationId: post-avatar
+      tags:
+        - Profile
+      requestBody:
+        description: request body of upload avatar
+        required: true
+        $ref: '#/components/requestBodies/UploadAvatar'
+      responses:
+        '200':
+          description: successful to upload avatar      
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     put:
       summary: Update my avatar
       operationId: put-avatar
@@ -273,6 +291,20 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
+    UploadAvatar:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                format: uint64
+              avatar_img_path:
+                type: string
+            required:
+              - user_id
+              - avatar_img_path
     LabAssistantSchedule:
       content:
         application/json:

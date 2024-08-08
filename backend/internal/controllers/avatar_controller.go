@@ -10,6 +10,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func PostAvatarController(ctx *gin.Context) {
+	var postAvatarRequest schema.PostAvatarRequest
+	if err := ctx.BindJSON(&postAvatarRequest); err != nil {
+		log.Printf("Internal Server Error: failed to bind a request body with a struct: %v\n", err)
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	err := services.PostAvatarService(postAvatarRequest)
+	if err != nil {
+		log.Println(fmt.Errorf("failed to upload avatar:%w", err))
+		ctx.JSON(http.StatusInternalServerError, schema.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+	} else {
+		ctx.Status(http.StatusOK)
+	}
+}
+
 func PutAvatarController(ctx *gin.Context) {
 	var avatarRequest schema.Avatar
 	if err := ctx.BindJSON(&avatarRequest); err != nil {

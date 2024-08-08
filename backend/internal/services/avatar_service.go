@@ -5,6 +5,15 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
+func PostAvatarService(postAvatarRequest schema.PostAvatarRequest) (err error) {
+	err = repositories.PostAvatarRepository(postAvatarRequest)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func PutAvatarService(avatarRequest schema.Avatar) (avatarResponse schema.Avatar, err error) {
 	avatarResponse, err = repositories.PutAvatarRepository(avatarRequest)
 	if err != nil {

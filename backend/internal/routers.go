@@ -20,6 +20,7 @@ func SetRoutes(router *gin.Engine) {
 	v1 := router.Group("/v1")
 	{
 		v1.GET("/users/:user_id", controllers.GetUsersByIdController)
+		v1.POST("/avatar", controllers.PostAvatarController)
 		v1.PUT("/avatar", controllers.PutAvatarController)
 		v1.DELETE("/avatar", controllers.DeleteAvatarController)
 		v1.GET("/attendees-list", controllers.GetAttendeesListController)
