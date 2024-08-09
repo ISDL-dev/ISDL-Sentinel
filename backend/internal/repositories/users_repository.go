@@ -67,8 +67,6 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 	getAvatarListQuery := `
 		SELECT 
 			avatar.id AS AvatarId,
-			avatar.avatar_name AS AvatarName,
-			avatar.rarity AS Rarity,
 			avatar.img_path AS ImgPath 
 		FROM 
 			user_possession_avatar 
@@ -81,7 +79,7 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		return schema.GetUserById200Response{}, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
 	for rows.Next() {
-		err := rows.Scan(&avatar.AvatarId, &avatar.AvatarName, &avatar.Rarity, &avatar.ImgPath)
+		err := rows.Scan(&avatar.AvatarId, &avatar.ImgPath)
 		if err != nil {
 			return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get avatar list:%w", err)
 		}

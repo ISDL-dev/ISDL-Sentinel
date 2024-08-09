@@ -12,7 +12,8 @@ paths:
       summary: Add user information
       operationId: post-user
       tags:
-        - get-attendees-list
+        - Attendees list
+        - ISDL MAP
       responses:
         "200": 
           $ref: "#/components/responses/AttendeesList"
@@ -27,7 +28,7 @@ paths:
       summary: update status
       operationId: put-status
       tags:
-        - put-status
+        - Attendees list
       requestBody:
         description: request body of user 
         required: true
@@ -48,11 +49,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /access-history/{date}:
     get:
       summary: Get user infomation
       operationId: get-user
       tags:
-        - get-user
+        - Access history
+      parameters:
+        - in: path
+          name: date
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           $ref: "#/components/responses/AccessHistory"
@@ -67,7 +75,7 @@ paths:
       summary: Get a user by ID
       operationId: get-user-by-id
       tags:
-        - get-user-by-id
+        - Profile
       parameters:
         - in: path
           name: user_id
@@ -86,10 +94,10 @@ paths:
                 $ref: "#/components/schemas/Error"
   /avatar:
     put:
-      summary: update avatar
+      summary: Update my avatar
       operationId: put-avatar
       tags:
-        - put-avatar
+        - Profile
       requestBody:
         description: request body of update avatar
         required: true
@@ -110,12 +118,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete my avatar
+      operationId: delete-avatar
+      tags:
+        - Profile
+      requestBody:
+        description: request body of delete avatar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Avatar'
+      responses:
+        '200':
+          description: successful to delete avatar
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /ranking:
     get:
       summary: Get ranking
       operationId: get-ranking
       tags:
-        - get-ranking
+        - Ranking
       responses:
         "200":
           $ref: "#/components/responses/RankingList"
@@ -125,37 +154,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /avatar/{count}:
+  /lab-assistant-member:
     get:
-      summary: Get an avatar by ID
-      operationId: get-avatar-by-id
+      summary: Get lab assistant member
+      operationId: get-lab-assistant-member
       tags:
-        - get-avatar-by-id
-      parameters:
-        - in: path
-          name: count
-          required: true
-          schema:
-            type: integer
-            format: uint64
+        - LA
       responses:
         "200":
-          $ref: "#/components/responses/AvatarInformation"
+          $ref: "#/components/responses/LabAssistantMember"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /avatar-list:
+  /lab-assistant/{month}:
     get:
-      summary: Get avatar list
-      operationId: get-avatar-list
+      summary: Get lab assistant schedule
+      operationId: get-lab-assistant-schedule
       tags:
-        - get-avatar-list
+        - LA
+      parameters:
+        - in: path
+          name: month
+          required: true
+          schema:
+            type: string
       responses:
         "200":
-          $ref: "#/components/responses/AvatarInformation"
+          $ref: "#/components/responses/LabAssistantSchedule"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Resister lab assistant schedule
+      operationId: post-lab-assistant-schedule
+      tags:
+        - LA
+      parameters:
+        - in: path
+          name: month
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request body of lab assistant
+        required: true
+        $ref: '#/components/requestBodies/LabAssistantSchedule'
+      responses:
+        '200':
+          $ref: "#/components/responses/LabAssistantSchedule"           
         default:
           description: unexpected error
           content:
@@ -167,7 +219,7 @@ paths:
       summary: Sign in
       operationId: post-sign-in
       tags:
-        - post-sign-in
+        - Authentication
       requestBody:
         description: request body of sign in
         required: true
@@ -186,7 +238,7 @@ paths:
       summary: Create user information
       operationId: post-user-information
       tags:
-        - post-user-information
+        - Authentication
       requestBody:
         description: request body of sign up
         required: true
@@ -202,10 +254,10 @@ paths:
                 $ref: "#/components/schemas/Error"
   /password:
     put:
-      summary: change password
+      summary: Change password
       operationId: put-change-password
       tags:
-        - put-change-password
+        - Authentication
       requestBody:
         description: request body of change password
         required: true
@@ -221,6 +273,22 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
+    LabAssistantSchedule:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: uint64
+                shift_date:
+                  type: string
+              required:
+                - user_id
+                - shift_date
     SignInUser:
       content:
         application/json:
@@ -404,17 +472,10 @@ components:
                     avatar_id:
                       type: integer
                       format: uint64
-                    avatar_name:
-                      type: string
-                    rarity:
-                      type: integer
-                      format: uint64
                     img_path:
                       type: string
                   required:
                     - avatar_id
-                    - avatar_name
-                    - rarity
                     - img_path
             required:
               - user_id
@@ -429,30 +490,6 @@ components:
               - avatar_id
               - avatar_img_path
               - avatar_list
-    AvatarInformation:
-      description: Successful to get an avatar by ID
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                avatar_id:
-                  type: integer
-                  format: uint64
-                avatar_name:
-                  type: string
-                rarity:
-                  type: integer
-                  format: uint64
-                img_path:
-                  type: string
-              required:
-                - avatar_id
-                - avatar_name
-                - rarity
-                - img_path
     RankingList:
       description: Successful to get ranking
       content:
@@ -487,6 +524,50 @@ components:
                 - grade
                 - avatar_id
                 - avatar_img_path
+    LabAssistantMember:
+      description: Successful to get lab assistant member
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: uint64
+                user_name:
+                  type: string
+                avatar_id:
+                  type: integer
+                  format: uint64
+                avatar_img_path:
+                  type: string
+                count:
+                  type: integer
+                  format: uint64
+              required:
+                - user_id
+                - user_name
+                - avatar_id
+                - avatar_img_path
+                - count
+    LabAssistantSchedule:
+      description: Successful to get lab assistant schedule
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                shift_date:
+                  type: string
+              required:
+                - user_name
+                - shift_date
     SignInUser:
       description: successful to sign in
       content:
@@ -499,6 +580,8 @@ components:
                 format: uint64
               user_name:
                 type: string
+              status:
+                type: string
               avatar_id:
                 type: integer
                 format: uint64
@@ -507,6 +590,7 @@ components:
             required:
               - user_id
               - user_name
+              - status
               - avatar_id
               - avatar_img_path
   schemas:

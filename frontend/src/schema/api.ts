@@ -205,6 +205,62 @@ export interface GetAttendeesList200ResponseInner {
 /**
  * 
  * @export
+ * @interface GetLabAssistantMember200ResponseInner
+ */
+export interface GetLabAssistantMember200ResponseInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'avatar_img_path': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface GetLabAssistantSchedule200ResponseInner
+ */
+export interface GetLabAssistantSchedule200ResponseInner {
+    /**
+     * 
+     * @type {string}
+     * @memberof GetLabAssistantSchedule200ResponseInner
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetLabAssistantSchedule200ResponseInner
+     */
+    'shift_date': string;
+}
+/**
+ * 
+ * @export
  * @interface GetRanking200ResponseInner
  */
 export interface GetRanking200ResponseInner {
@@ -347,18 +403,6 @@ export interface GetUserById200ResponseAvatarListInner {
      * @type {string}
      * @memberof GetUserById200ResponseAvatarListInner
      */
-    'avatar_name': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof GetUserById200ResponseAvatarListInner
-     */
-    'rarity': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof GetUserById200ResponseAvatarListInner
-     */
     'img_path': string;
 }
 /**
@@ -383,6 +427,25 @@ export interface ModelError {
 /**
  * 
  * @export
+ * @interface PostLabAssistantScheduleRequestInner
+ */
+export interface PostLabAssistantScheduleRequestInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof PostLabAssistantScheduleRequestInner
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostLabAssistantScheduleRequestInner
+     */
+    'shift_date': string;
+}
+/**
+ * 
+ * @export
  * @interface PostSignIn200Response
  */
 export interface PostSignIn200Response {
@@ -398,6 +461,12 @@ export interface PostSignIn200Response {
      * @memberof PostSignIn200Response
      */
     'user_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostSignIn200Response
+     */
+    'status': string;
     /**
      * 
      * @type {number}
@@ -501,19 +570,23 @@ export interface Status {
 }
 
 /**
- * GetAccessHistoryApi - axios parameter creator
+ * AccessHistoryApi - axios parameter creator
  * @export
  */
-export const GetUserApiAxiosParamCreator = function (configuration?: Configuration) {
+export const AccessHistoryApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get user infomation
+         * @summary Get access history
+         * @param {string} date 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/user`;
+        getAccessHistory: async (date: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'date' is not null or undefined
+            assertParamExists('getAccessHistory', 'date', date)
+            const localVarPath = `/access-history/{date}`
+                .replace(`{${"date"}}`, encodeURIComponent(String(date)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -540,72 +613,75 @@ export const GetUserApiAxiosParamCreator = function (configuration?: Configurati
 };
 
 /**
- * GetUserApi - functional programming interface
+ * AccessHistoryApi - functional programming interface
  * @export
  */
-export const GetUserApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetUserApiAxiosParamCreator(configuration)
+export const AccessHistoryApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AccessHistoryApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary Get user infomation
+         * @summary Get access history
+         * @param {string} date 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessHistory(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(options);
+        async getAccessHistory(date: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(date, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetUserApi.getUser']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AccessHistoryApi.getAccessHistory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * GetUserApi - factory interface
+ * AccessHistoryApi - factory interface
  * @export
  */
-export const GetUserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetUserApiFp(configuration)
+export const AccessHistoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AccessHistoryApiFp(configuration)
     return {
         /**
          * 
-         * @summary Get user infomation
+         * @summary Get access history
+         * @param {string} date 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory(options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
-            return localVarFp.getAccessHistory(options).then((request) => request(axios, basePath));
+        getAccessHistory(date: string, options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
+            return localVarFp.getAccessHistory(date, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * GetUserApi - object-oriented interface
+ * AccessHistoryApi - object-oriented interface
  * @export
- * @class GetUserApi
+ * @class AccessHistoryApi
  * @extends {BaseAPI}
  */
-export class GetUserApi extends BaseAPI {
+export class AccessHistoryApi extends BaseAPI {
     /**
      * 
-     * @summary Get user infomation
+     * @summary Get access history
+     * @param {string} date 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof GetUserApi
+     * @memberof AccessHistoryApi
      */
-    public getUser(options?: RawAxiosRequestConfig) {
-        return GetUserApiFp(this.configuration).getUser(options).then((request) => request(this.axios, this.basePath));
+    public getAccessHistory(date: string, options?: RawAxiosRequestConfig) {
+        return AccessHistoryApiFp(this.configuration).getAccessHistory(date, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 
 /**
- * PostUserApi - axios parameter creator
+ * AttendeesListApi - axios parameter creator
  * @export
  */
-export const PostUserApiAxiosParamCreator = function (configuration?: Configuration) {
+export const AttendeesListApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
@@ -638,929 +714,6 @@ export const PostUserApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
-    }
-};
-
-/**
- * GetAttendeesListApi - functional programming interface
- * @export
- */
-export const GetAttendeesListApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetAttendeesListApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get attendees list
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAttendeesList200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAttendeesList(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetAttendeesListApi.getAttendeesList']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * GetAttendeesListApi - factory interface
- * @export
- */
-export const GetAttendeesListApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetAttendeesListApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get attendees list
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAttendeesList(options?: any): AxiosPromise<Array<GetAttendeesList200ResponseInner>> {
-            return localVarFp.getAttendeesList(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * GetAttendeesListApi - object-oriented interface
- * @export
- * @class GetAttendeesListApi
- * @extends {BaseAPI}
- */
-export class GetAttendeesListApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get attendees list
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GetAttendeesListApi
-     */
-    public getAttendeesList(options?: RawAxiosRequestConfig) {
-        return GetAttendeesListApiFp(this.configuration).getAttendeesList(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * GetAvatarByIdApi - axios parameter creator
- * @export
- */
-export const GetAvatarByIdApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Get an avatar by ID
-         * @param {number} count 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvatarById: async (count: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'count' is not null or undefined
-            assertParamExists('getAvatarById', 'count', count)
-            const localVarPath = `/avatar/{count}`
-                .replace(`{${"count"}}`, encodeURIComponent(String(count)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * GetAvatarByIdApi - functional programming interface
- * @export
- */
-export const GetAvatarByIdApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetAvatarByIdApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get an avatar by ID
-         * @param {number} count 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getAvatarById(count: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetUserById200ResponseAvatarListInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvatarById(count, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetAvatarByIdApi.getAvatarById']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * GetAvatarByIdApi - factory interface
- * @export
- */
-export const GetAvatarByIdApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetAvatarByIdApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get an avatar by ID
-         * @param {number} count 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvatarById(count: number, options?: any): AxiosPromise<Array<GetUserById200ResponseAvatarListInner>> {
-            return localVarFp.getAvatarById(count, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * GetAvatarByIdApi - object-oriented interface
- * @export
- * @class GetAvatarByIdApi
- * @extends {BaseAPI}
- */
-export class GetAvatarByIdApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get an avatar by ID
-     * @param {number} count 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GetAvatarByIdApi
-     */
-    public getAvatarById(count: number, options?: RawAxiosRequestConfig) {
-        return GetAvatarByIdApiFp(this.configuration).getAvatarById(count, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * GetAvatarListApi - axios parameter creator
- * @export
- */
-export const GetAvatarListApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Get avatar list
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvatarList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/avatar-list`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * GetAvatarListApi - functional programming interface
- * @export
- */
-export const GetAvatarListApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetAvatarListApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get avatar list
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getAvatarList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetUserById200ResponseAvatarListInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvatarList(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetAvatarListApi.getAvatarList']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * GetAvatarListApi - factory interface
- * @export
- */
-export const GetAvatarListApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetAvatarListApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get avatar list
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvatarList(options?: any): AxiosPromise<Array<GetUserById200ResponseAvatarListInner>> {
-            return localVarFp.getAvatarList(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * GetAvatarListApi - object-oriented interface
- * @export
- * @class GetAvatarListApi
- * @extends {BaseAPI}
- */
-export class GetAvatarListApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get avatar list
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GetAvatarListApi
-     */
-    public getAvatarList(options?: RawAxiosRequestConfig) {
-        return GetAvatarListApiFp(this.configuration).getAvatarList(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * GetRankingApi - axios parameter creator
- * @export
- */
-export const GetRankingApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Get ranking
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getRanking: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/ranking`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * GetRankingApi - functional programming interface
- * @export
- */
-export const GetRankingApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetRankingApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get ranking
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getRanking(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetRanking200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRanking(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetRankingApi.getRanking']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * GetRankingApi - factory interface
- * @export
- */
-export const GetRankingApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetRankingApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get ranking
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getRanking(options?: any): AxiosPromise<Array<GetRanking200ResponseInner>> {
-            return localVarFp.getRanking(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * GetRankingApi - object-oriented interface
- * @export
- * @class GetRankingApi
- * @extends {BaseAPI}
- */
-export class GetRankingApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get ranking
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GetRankingApi
-     */
-    public getRanking(options?: RawAxiosRequestConfig) {
-        return GetRankingApiFp(this.configuration).getRanking(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * GetUserByIdApi - axios parameter creator
- * @export
- */
-export const GetUserByIdApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Get a user by ID
-         * @param {number} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUserById: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserById', 'userId', userId)
-            const localVarPath = `/users/{user_id}`
-                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * GetUserByIdApi - functional programming interface
- * @export
- */
-export const GetUserByIdApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GetUserByIdApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get a user by ID
-         * @param {number} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUserById(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserById200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserById(userId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GetUserByIdApi.getUserById']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * GetUserByIdApi - factory interface
- * @export
- */
-export const GetUserByIdApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GetUserByIdApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get a user by ID
-         * @param {number} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUserById(userId: number, options?: any): AxiosPromise<GetUserById200Response> {
-            return localVarFp.getUserById(userId, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * GetUserByIdApi - object-oriented interface
- * @export
- * @class GetUserByIdApi
- * @extends {BaseAPI}
- */
-export class GetUserByIdApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get a user by ID
-     * @param {number} userId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GetUserByIdApi
-     */
-    public getUserById(userId: number, options?: RawAxiosRequestConfig) {
-        return GetUserByIdApiFp(this.configuration).getUserById(userId, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * PostSignInApi - axios parameter creator
- * @export
- */
-export const PostSignInApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Sign in
-         * @param {PostSignInRequest} [postSignInRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        postSignIn: async (postSignInRequest?: PostSignInRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/sign-in`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postUserRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * PostUserApi - functional programming interface
- * @export
- */
-export const PostUserApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PostUserApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Add user information
-         * @param {PostUserRequest} [postUserRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postSignIn(postSignInRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PostUserApi.postUser']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * PostUserApi - factory interface
- * @export
- */
-export const PostUserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PostUserApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Add user information
-         * @param {PostUserRequest} [postUserRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        postSignIn(postSignInRequest?: PostSignInRequest, options?: any): AxiosPromise<PostSignIn200Response> {
-            return localVarFp.postSignIn(postSignInRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * PostUserApi - object-oriented interface
- * @export
- * @class PostUserApi
- * @extends {BaseAPI}
- */
-export class PostUserApi extends BaseAPI {
-    /**
-     * 
-     * @summary Add user information
-     * @param {PostUserRequest} [postUserRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PostSignInApi
-     */
-    public postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig) {
-        return PostSignInApiFp(this.configuration).postSignIn(postSignInRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * PostUserInformationApi - axios parameter creator
- * @export
- */
-export const PostUserInformationApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Create user information
-         * @param {PostUserInformationRequest} [postUserInformationRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        postUserInformation: async (postUserInformationRequest?: PostUserInformationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/sign-up`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postUserInformationRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * PostUserInformationApi - functional programming interface
- * @export
- */
-export const PostUserInformationApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PostUserInformationApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Create user information
-         * @param {PostUserInformationRequest} [postUserInformationRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postUserInformation(postUserInformationRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PostUserInformationApi.postUserInformation']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * PostUserInformationApi - factory interface
- * @export
- */
-export const PostUserInformationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PostUserInformationApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Create user information
-         * @param {PostUserInformationRequest} [postUserInformationRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: any): AxiosPromise<PostSignIn200Response> {
-            return localVarFp.postUserInformation(postUserInformationRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * PostUserInformationApi - object-oriented interface
- * @export
- * @class PostUserInformationApi
- * @extends {BaseAPI}
- */
-export class PostUserInformationApi extends BaseAPI {
-    /**
-     * 
-     * @summary Create user information
-     * @param {PostUserInformationRequest} [postUserInformationRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PostUserInformationApi
-     */
-    public postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig) {
-        return PostUserInformationApiFp(this.configuration).postUserInformation(postUserInformationRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * PutAvatarApi - axios parameter creator
- * @export
- */
-export const PutAvatarApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary update avatar
-         * @param {Avatar} avatar request body of update avatar
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        putAvatar: async (avatar: Avatar, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'avatar' is not null or undefined
-            assertParamExists('putAvatar', 'avatar', avatar)
-            const localVarPath = `/avatar`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(avatar, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * PutAvatarApi - functional programming interface
- * @export
- */
-export const PutAvatarApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PutAvatarApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary update avatar
-         * @param {Avatar} avatar request body of update avatar
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Avatar>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putAvatar(avatar, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PutAvatarApi.putAvatar']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * PutAvatarApi - factory interface
- * @export
- */
-export const PutAvatarApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PutAvatarApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary update avatar
-         * @param {Avatar} avatar request body of update avatar
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        putAvatar(avatar: Avatar, options?: any): AxiosPromise<Avatar> {
-            return localVarFp.putAvatar(avatar, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * PutAvatarApi - object-oriented interface
- * @export
- * @class PutAvatarApi
- * @extends {BaseAPI}
- */
-export class PutAvatarApi extends BaseAPI {
-    /**
-     * 
-     * @summary update avatar
-     * @param {Avatar} avatar request body of update avatar
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PutAvatarApi
-     */
-    public putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig) {
-        return PutAvatarApiFp(this.configuration).putAvatar(avatar, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * PutChangePasswordApi - axios parameter creator
- * @export
- */
-export const PutChangePasswordApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary change password
-         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        putChangePassword: async (putChangePasswordRequest?: PutChangePasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/password`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(putChangePasswordRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * PutChangePasswordApi - functional programming interface
- * @export
- */
-export const PutChangePasswordApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PutChangePasswordApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary change password
-         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putChangePassword(putChangePasswordRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PutChangePasswordApi.putChangePassword']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * PutChangePasswordApi - factory interface
- * @export
- */
-export const PutChangePasswordApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PutChangePasswordApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary change password
-         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.putChangePassword(putChangePasswordRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * PutChangePasswordApi - object-oriented interface
- * @export
- * @class PutChangePasswordApi
- * @extends {BaseAPI}
- */
-export class PutChangePasswordApi extends BaseAPI {
-    /**
-     * 
-     * @summary change password
-     * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PutChangePasswordApi
-     */
-    public putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig) {
-        return PutChangePasswordApiFp(this.configuration).putChangePassword(putChangePasswordRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * PutStatusApi - axios parameter creator
- * @export
- */
-export const PutStatusApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
         /**
          * 
          * @summary update status
@@ -1601,12 +754,24 @@ export const PutStatusApiAxiosParamCreator = function (configuration?: Configura
 };
 
 /**
- * PutStatusApi - functional programming interface
+ * AttendeesListApi - functional programming interface
  * @export
  */
-export const PutStatusApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PutStatusApiAxiosParamCreator(configuration)
+export const AttendeesListApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AttendeesListApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAttendeesList200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAttendeesList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AttendeesListApi.getAttendeesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary update status
@@ -1617,19 +782,28 @@ export const PutStatusApiFp = function(configuration?: Configuration) {
         async putStatus(status: Status, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Status>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.putStatus(status, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PutStatusApi.putStatus']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AttendeesListApi.putStatus']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * PutStatusApi - factory interface
+ * AttendeesListApi - factory interface
  * @export
  */
-export const PutStatusApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PutStatusApiFp(configuration)
+export const AttendeesListApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AttendeesListApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAttendeesList(options?: any): AxiosPromise<Array<GetAttendeesList200ResponseInner>> {
+            return localVarFp.getAttendeesList(options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary update status
@@ -1644,22 +818,977 @@ export const PutStatusApiFactory = function (configuration?: Configuration, base
 };
 
 /**
- * PutStatusApi - object-oriented interface
+ * AttendeesListApi - object-oriented interface
  * @export
- * @class PutStatusApi
+ * @class AttendeesListApi
  * @extends {BaseAPI}
  */
-export class PutStatusApi extends BaseAPI {
+export class AttendeesListApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get attendees list
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AttendeesListApi
+     */
+    public getAttendeesList(options?: RawAxiosRequestConfig) {
+        return AttendeesListApiFp(this.configuration).getAttendeesList(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary update status
      * @param {Status} status request body of update status
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PutStatusApi
+     * @memberof AttendeesListApi
      */
     public putStatus(status: Status, options?: RawAxiosRequestConfig) {
-        return PutStatusApiFp(this.configuration).putStatus(status, options).then((request) => request(this.axios, this.basePath));
+        return AttendeesListApiFp(this.configuration).putStatus(status, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * AuthenticationApi - axios parameter creator
+ * @export
+ */
+export const AuthenticationApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Sign in
+         * @param {PostSignInRequest} [postSignInRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSignIn: async (postSignInRequest?: PostSignInRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/sign-in`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postSignInRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Create user information
+         * @param {PostUserInformationRequest} [postUserInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postUserInformation: async (postUserInformationRequest?: PostUserInformationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/sign-up`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postUserInformationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Change password
+         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putChangePassword: async (putChangePasswordRequest?: PutChangePasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(putChangePasswordRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AuthenticationApi - functional programming interface
+ * @export
+ */
+export const AuthenticationApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthenticationApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Sign in
+         * @param {PostSignInRequest} [postSignInRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postSignIn(postSignInRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.postSignIn']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Create user information
+         * @param {PostUserInformationRequest} [postUserInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostSignIn200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postUserInformation(postUserInformationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.postUserInformation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Change password
+         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putChangePassword(putChangePasswordRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.putChangePassword']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AuthenticationApi - factory interface
+ * @export
+ */
+export const AuthenticationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthenticationApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Sign in
+         * @param {PostSignInRequest} [postSignInRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSignIn(postSignInRequest?: PostSignInRequest, options?: any): AxiosPromise<PostSignIn200Response> {
+            return localVarFp.postSignIn(postSignInRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Create user information
+         * @param {PostUserInformationRequest} [postUserInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: any): AxiosPromise<PostSignIn200Response> {
+            return localVarFp.postUserInformation(postUserInformationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Change password
+         * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.putChangePassword(putChangePasswordRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthenticationApi - object-oriented interface
+ * @export
+ * @class AuthenticationApi
+ * @extends {BaseAPI}
+ */
+export class AuthenticationApi extends BaseAPI {
+    /**
+     * 
+     * @summary Sign in
+     * @param {PostSignInRequest} [postSignInRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public postSignIn(postSignInRequest?: PostSignInRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).postSignIn(postSignInRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Create user information
+     * @param {PostUserInformationRequest} [postUserInformationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public postUserInformation(postUserInformationRequest?: PostUserInformationRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).postUserInformation(postUserInformationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Change password
+     * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).putChangePassword(putChangePasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ISDLMAPApi - axios parameter creator
+ * @export
+ */
+export const ISDLMAPApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAttendeesList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/attendees-list`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ISDLMAPApi - functional programming interface
+ * @export
+ */
+export const ISDLMAPApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ISDLMAPApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAttendeesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAttendeesList200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAttendeesList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ISDLMAPApi.getAttendeesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ISDLMAPApi - factory interface
+ * @export
+ */
+export const ISDLMAPApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ISDLMAPApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get attendees list
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAttendeesList(options?: any): AxiosPromise<Array<GetAttendeesList200ResponseInner>> {
+            return localVarFp.getAttendeesList(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ISDLMAPApi - object-oriented interface
+ * @export
+ * @class ISDLMAPApi
+ * @extends {BaseAPI}
+ */
+export class ISDLMAPApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get attendees list
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ISDLMAPApi
+     */
+    public getAttendeesList(options?: RawAxiosRequestConfig) {
+        return ISDLMAPApiFp(this.configuration).getAttendeesList(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * LAApi - axios parameter creator
+ * @export
+ */
+export const LAApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get lab assistant member
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLabAssistantMember: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/lab-assistant-member`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get lab assistant schedule
+         * @param {string} month 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLabAssistantSchedule: async (month: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('getLabAssistantSchedule', 'month', month)
+            const localVarPath = `/lab-assistant/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Resister lab assistant schedule
+         * @param {string} month 
+         * @param {Array<PostLabAssistantScheduleRequestInner>} [postLabAssistantScheduleRequestInner] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postLabAssistantSchedule: async (month: string, postLabAssistantScheduleRequestInner?: Array<PostLabAssistantScheduleRequestInner>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('postLabAssistantSchedule', 'month', month)
+            const localVarPath = `/lab-assistant/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postLabAssistantScheduleRequestInner, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LAApi - functional programming interface
+ * @export
+ */
+export const LAApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LAApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get lab assistant member
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLabAssistantMember(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAssistantMember200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLabAssistantMember(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LAApi.getLabAssistantMember']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get lab assistant schedule
+         * @param {string} month 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLabAssistantSchedule(month: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAssistantSchedule200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLabAssistantSchedule(month, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LAApi.getLabAssistantSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Resister lab assistant schedule
+         * @param {string} month 
+         * @param {Array<PostLabAssistantScheduleRequestInner>} [postLabAssistantScheduleRequestInner] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postLabAssistantSchedule(month: string, postLabAssistantScheduleRequestInner?: Array<PostLabAssistantScheduleRequestInner>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetLabAssistantSchedule200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postLabAssistantSchedule(month, postLabAssistantScheduleRequestInner, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LAApi.postLabAssistantSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * LAApi - factory interface
+ * @export
+ */
+export const LAApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LAApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get lab assistant member
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLabAssistantMember(options?: any): AxiosPromise<Array<GetLabAssistantMember200ResponseInner>> {
+            return localVarFp.getLabAssistantMember(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get lab assistant schedule
+         * @param {string} month 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLabAssistantSchedule(month: string, options?: any): AxiosPromise<Array<GetLabAssistantSchedule200ResponseInner>> {
+            return localVarFp.getLabAssistantSchedule(month, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Resister lab assistant schedule
+         * @param {string} month 
+         * @param {Array<PostLabAssistantScheduleRequestInner>} [postLabAssistantScheduleRequestInner] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postLabAssistantSchedule(month: string, postLabAssistantScheduleRequestInner?: Array<PostLabAssistantScheduleRequestInner>, options?: any): AxiosPromise<Array<GetLabAssistantSchedule200ResponseInner>> {
+            return localVarFp.postLabAssistantSchedule(month, postLabAssistantScheduleRequestInner, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LAApi - object-oriented interface
+ * @export
+ * @class LAApi
+ * @extends {BaseAPI}
+ */
+export class LAApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get lab assistant member
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LAApi
+     */
+    public getLabAssistantMember(options?: RawAxiosRequestConfig) {
+        return LAApiFp(this.configuration).getLabAssistantMember(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get lab assistant schedule
+     * @param {string} month 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LAApi
+     */
+    public getLabAssistantSchedule(month: string, options?: RawAxiosRequestConfig) {
+        return LAApiFp(this.configuration).getLabAssistantSchedule(month, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Resister lab assistant schedule
+     * @param {string} month 
+     * @param {Array<PostLabAssistantScheduleRequestInner>} [postLabAssistantScheduleRequestInner] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LAApi
+     */
+    public postLabAssistantSchedule(month: string, postLabAssistantScheduleRequestInner?: Array<PostLabAssistantScheduleRequestInner>, options?: RawAxiosRequestConfig) {
+        return LAApiFp(this.configuration).postLabAssistantSchedule(month, postLabAssistantScheduleRequestInner, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ProfileApi - axios parameter creator
+ * @export
+ */
+export const ProfileApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Delete my avatar
+         * @param {Avatar} avatar request body of delete avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAvatar: async (avatar: Avatar, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'avatar' is not null or undefined
+            assertParamExists('deleteAvatar', 'avatar', avatar)
+            const localVarPath = `/avatar`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(avatar, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get a user by ID
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserById: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserById', 'userId', userId)
+            const localVarPath = `/users/{user_id}`
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update my avatar
+         * @param {Avatar} avatar request body of update avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putAvatar: async (avatar: Avatar, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'avatar' is not null or undefined
+            assertParamExists('putAvatar', 'avatar', avatar)
+            const localVarPath = `/avatar`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(avatar, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProfileApi - functional programming interface
+ * @export
+ */
+export const ProfileApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProfileApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Delete my avatar
+         * @param {Avatar} avatar request body of delete avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAvatar(avatar: Avatar, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAvatar(avatar, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.deleteAvatar']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get a user by ID
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserById(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserById200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserById(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.getUserById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update my avatar
+         * @param {Avatar} avatar request body of update avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Avatar>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putAvatar(avatar, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.putAvatar']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProfileApi - factory interface
+ * @export
+ */
+export const ProfileApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProfileApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Delete my avatar
+         * @param {Avatar} avatar request body of delete avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAvatar(avatar: Avatar, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAvatar(avatar, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get a user by ID
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserById(userId: number, options?: any): AxiosPromise<GetUserById200Response> {
+            return localVarFp.getUserById(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update my avatar
+         * @param {Avatar} avatar request body of update avatar
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putAvatar(avatar: Avatar, options?: any): AxiosPromise<Avatar> {
+            return localVarFp.putAvatar(avatar, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProfileApi - object-oriented interface
+ * @export
+ * @class ProfileApi
+ * @extends {BaseAPI}
+ */
+export class ProfileApi extends BaseAPI {
+    /**
+     * 
+     * @summary Delete my avatar
+     * @param {Avatar} avatar request body of delete avatar
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public deleteAvatar(avatar: Avatar, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).deleteAvatar(avatar, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get a user by ID
+     * @param {number} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public getUserById(userId: number, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).getUserById(userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update my avatar
+     * @param {Avatar} avatar request body of update avatar
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public putAvatar(avatar: Avatar, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).putAvatar(avatar, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * RankingApi - axios parameter creator
+ * @export
+ */
+export const RankingApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get ranking
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRanking: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/ranking`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RankingApi - functional programming interface
+ * @export
+ */
+export const RankingApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = RankingApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get ranking
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRanking(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetRanking200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRanking(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RankingApi.getRanking']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * RankingApi - factory interface
+ * @export
+ */
+export const RankingApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = RankingApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get ranking
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRanking(options?: any): AxiosPromise<Array<GetRanking200ResponseInner>> {
+            return localVarFp.getRanking(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * RankingApi - object-oriented interface
+ * @export
+ * @class RankingApi
+ * @extends {BaseAPI}
+ */
+export class RankingApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get ranking
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RankingApi
+     */
+    public getRanking(options?: RawAxiosRequestConfig) {
+        return RankingApiFp(this.configuration).getRanking(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

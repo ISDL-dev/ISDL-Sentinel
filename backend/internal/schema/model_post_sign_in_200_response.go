@@ -15,6 +15,8 @@ type PostSignIn200Response struct {
 
 	UserName string `json:"user_name"`
 
+	Status string `json:"status"`
+
 	AvatarId int32 `json:"avatar_id"`
 
 	AvatarImgPath string `json:"avatar_img_path"`

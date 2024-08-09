@@ -9,14 +9,14 @@ import (
 )
 
 func SelectApplyStatusId(status string) (id int32, statusName string, err error) {
-	var getStatusId int32 
+	var getStatusId int32
 	var getStatusName string
 	var targetStatusName string
 	getRows, err := repositories.GetAllStatusRepository()
 	if err != nil {
 		return 0, targetStatusName, fmt.Errorf("failed to get status list: %v", err)
 	}
-	if (model.IsInRoom(status)){
+	if model.IsInRoom(status) {
 		targetStatusName = model.OUT_ROOM
 	} else {
 		targetStatusName = model.IN_ROOM
@@ -26,16 +26,16 @@ func SelectApplyStatusId(status string) (id int32, statusName string, err error)
 		if err != nil {
 			return 0, targetStatusName, fmt.Errorf("failed to find target status id: %v", err)
 		}
-		if getStatusName == targetStatusName{
+		if getStatusName == targetStatusName {
 			return getStatusId, targetStatusName, nil
 		}
 	}
 	return 0, targetStatusName, nil
 }
 
-func SelectApplyPlaceId(targetStatusName string) (applyPlaceId int32, err error){
+func SelectApplyPlaceId(targetStatusName string) (applyPlaceId int32, err error) {
 	if targetStatusName == model.IN_ROOM {
-		applyPlaceId, err = repositories.GetInRoomPlaceIdRepository() 
+		applyPlaceId, err = repositories.GetInRoomPlaceIdRepository()
 		if err != nil {
 			return 0, fmt.Errorf("failed to execute query to get in room place id: %v", err)
 		}

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  AvatarBadge,
   Button,
   Flex,
   Grid,
@@ -16,8 +15,11 @@ import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { inRoom } from "../../models/users/user";
-import { getAttendeesListApi, putStatusApi } from "../../api";
+import { attendeesListApi } from "../../api";
+import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
+import { useUser } from '../../userContext';
+import { useNavigate } from 'react-router-dom';
 
 dayjs.locale("ja");
 
@@ -25,66 +27,44 @@ const decodeDate = (dateString: string) => {
   const date = dayjs(dateString);
   return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
     "ddd"
-  )}）${dayjs(date).format("HH時MM分")}`;
-};
-
-type AuthUser = {
-  id: number;
-  statusName: string;
-};
-type Attendee = {
-  userId: number;
-  userName: string;
-  placeName: string;
-  statusName: string;
-  gradeName: string;
-  avaterId: number;
-  avaterImgPath: string;
-  enteredAt: string;
-};
-const AUTH_USER: AuthUser = {
-  id: 4,
-  statusName: inRoom,
+  )}）${dayjs(date).format("HH時mm分")}`;
 };
 
 function Home() {
-  const [authUser, setAuthUser] = useState<AuthUser>(AUTH_USER);
-  const [attendeeList, setAttendeeList] = useState<Attendee[]>([]);
-  const handleStatusChange = async () => {
+  const { authUser, setAuthUser } = useUser();
+  const [attendeeList, setAttendeeList] = useState<GetAttendeesList200ResponseInner[] | null>(null);
+  const navigate = useNavigate();
+
+  const fetchAttendeesList = async () => {
     try {
-      const user = await putStatusApi.putStatus({
-        user_id: authUser.id,
-        status: authUser.statusName,
-      });
-      setAuthUser({ id: user.data.user_id, statusName: user.data.status });
+      const response = await attendeesListApi.getAttendeesList();
+      setAttendeeList(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleStatusChange = async () => {
+    if (!authUser) return;
+    try {
+      const user = await attendeesListApi.putStatus({
+        user_id: authUser.user_id,
+        status: authUser.status,
+      });
+      setAuthUser({
+        ...authUser,
+        status: user.data.status
+      });
+      await fetchAttendeesList(); // ここでリストを再取得
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await getAttendeesListApi.getAttendeesList();
-        console.log(response.data);
-        setAttendeeList(
-          response.data.map((attendee) => {
-            return {
-              userId: attendee.user_id,
-              userName: attendee.user_name,
-              placeName: attendee.place,
-              statusName: attendee.status,
-              gradeName: attendee.grade,
-              avaterId: attendee.avatar_id,
-              avaterImgPath: attendee.avatar_img_path,
-              enteredAt: attendee.entered_at,
-            };
-          })
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    fetchAttendeesList();
   }, []);
+
   return (
     <div>
       <Grid
@@ -95,56 +75,58 @@ function Home() {
         <h1 className="block mb-1 text-4xl font-bold text-gray-900 dark:text-white p-3 text-left">
           出席者一覧
         </h1>
-        <Grid
-          templateColumns="repeat(2, 1fr)"
-          alignItems={"center"}
-          w={"-moz-max-content"}
-          column={3}
-        >
-          {authUser.statusName === inRoom ? (
-            <>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                size="lg"
-                width={36}
-                isDisabled={true}
-              >
-                入室済
-              </Button>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                size="lg"
-                width={36}
-                onClick={handleStatusChange}
-              >
-                退室
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                size="lg"
-                width={36}
-                onClick={handleStatusChange}
-              >
-                入室
-              </Button>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                size="lg"
-                width={36}
-                isDisabled={true}
-              >
-                退室済
-              </Button>
-            </>
-          )}
-        </Grid>
+        {authUser && (
+          <Grid
+            templateColumns="repeat(2, 1fr)"
+            alignItems={"center"}
+            w={"-moz-max-content"}
+            column={3}
+          >
+            {authUser.status === inRoom ? (
+              <>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  isDisabled={true}
+                >
+                  入室済
+                </Button>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  onClick={handleStatusChange}
+                >
+                  退室
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  onClick={handleStatusChange}
+                >
+                  入室
+                </Button>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  isDisabled={true}
+                >
+                  退室済
+                </Button>
+              </>
+            )}
+          </Grid>
+        )}
       </Grid>
       <TableContainer
         pb={14}
@@ -165,24 +147,31 @@ function Home() {
             </Tr>
           </Thead>
           <Tbody outline="1px">
-            {attendeeList.map((attendee) => (
-              <Tr key={attendee.userId}>
-                <Td>
-                  <Flex alignItems={"center"} gap={3}>
-                    <Avatar
-                      size={"md"}
-                      src={attendee.avaterImgPath}
-                      border="2px"
-                    >
-                      <AvatarBadge boxSize="1.1em" bg="green.500" />
-                    </Avatar>
-                    {attendee.userName}
-                  </Flex>
+            {attendeeList === null ? (
+              <Tr>
+                <Td colSpan={5} textAlign="center">
+                  出席者はいません
                 </Td>
-                <Td>{attendee.placeName}</Td>
-                <Td>{decodeDate(attendee.enteredAt)}</Td>
               </Tr>
-            ))}
+            ) : (
+              attendeeList.map((attendee) => (
+                <Tr key={attendee.user_id}>
+                  <Td>
+                    <Flex alignItems={"center"} gap={3}>
+                      <Avatar
+                        size={"md"}
+                        src={`./avatar/${attendee.avatar_img_path}`}
+                        border="2px"
+                        onClick={() => navigate("/profile", { state: { userId: attendee.user_id } })}
+                      ></Avatar>
+                      {attendee.user_name}
+                    </Flex>
+                  </Td>
+                  <Td>{attendee.place}</Td>
+                  <Td>{decodeDate(attendee.entered_at)}</Td>
+                </Tr>
+              ))
+            )}
           </Tbody>
         </Table>
       </TableContainer>

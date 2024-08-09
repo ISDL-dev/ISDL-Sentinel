@@ -84,7 +84,7 @@ erDiagram
     places ||--o{ users:"N:1"
     grades ||--o{ users:"N:1"
     
-    users ||--o{ lab_asistant_shift:"1:N"
+    users ||--o{ lab_assistant_shift:"1:N"
     
     users {
         INT id PK
@@ -124,7 +124,7 @@ erDiagram
 		    DATETIME left_at
     }
     
-    lab_asistant_shift {
+    lab_assistant_shift {
 		    INT id PK
 		    INT user_id FK
 		    DATE shift_day
