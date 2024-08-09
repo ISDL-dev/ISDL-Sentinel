@@ -11,6 +11,7 @@ import Home from "./routes/Home";
 import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
 import SignInWebauthn from "./routes/SignInWebauthn";
+import LabAssistant from "./routes/LabAssistant";
 import Footer from "./features/Footer";
 import SidebarContent from "./features/SidebarContent";
 import MobileNav from "./features/MobileNav";
@@ -59,6 +60,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/ranking" element={<Ranking />} />
                 <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
+                <Route path="/lab-assistant" element={<LabAssistant />} />
               </Routes>
             </Box>
           </Box>

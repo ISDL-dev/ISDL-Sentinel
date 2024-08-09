@@ -543,6 +543,8 @@ components:
                   format: uint64
                 avatar_img_path:
                   type: string
+                last_shift_date:
+                  type: string
                 count:
                   type: integer
                   format: uint64
@@ -551,6 +553,7 @@ components:
                 - user_name
                 - avatar_id
                 - avatar_img_path
+                - last_shift_date
                 - count
     LabAssistantSchedule:
       description: Successful to get lab assistant schedule
