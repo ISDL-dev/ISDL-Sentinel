@@ -254,7 +254,7 @@ export default function Profile() {
             >
               <Box ref={titleRef}>
                 <Text fontSize="xl" fontWeight="bold" mb={3} textAlign="left">
-                  {`${selectedYear}年度${selectedMonth + 1}月LAシフト表`}
+                  {`${selectedYear}年${selectedMonth + 1}月LAシフト表`}
                 </Text>
               </Box>
               <Flex alignItems="center" gap={4}>
