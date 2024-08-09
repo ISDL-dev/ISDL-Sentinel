@@ -19,6 +19,8 @@ type GetLabAssistantMember200ResponseInner struct {
 
 	AvatarImgPath string `json:"avatar_img_path"`
 
+	LastShiftDate string `json:"last_shift_date"`
+
 	Count int32 `json:"count"`
 }
 

@@ -234,6 +234,12 @@ export interface GetLabAssistantMember200ResponseInner {
     'avatar_img_path': string;
     /**
      * 
+     * @type {string}
+     * @memberof GetLabAssistantMember200ResponseInner
+     */
+    'last_shift_date': string;
+    /**
+     * 
      * @type {number}
      * @memberof GetLabAssistantMember200ResponseInner
      */
