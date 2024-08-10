@@ -68,6 +68,13 @@ const generateDaysInMonth = (year: number, month: number): Shift[] => {
   return daysInMonth;
 };
 
+const decodeDate = (dateString: string) => {
+  const date = dayjs(dateString);
+  return `${dayjs(date).format("YYYY年MM月DD日")}（${dayjs(date).format(
+    "ddd"
+  )})`;
+};
+
 const formatMonth = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -369,7 +376,7 @@ export default function Profile() {
                           {member.user_name}
                         </Flex>
                       </Td>
-                      <Td>{member.last_shift_date}</Td>
+                      <Td>{decodeDate(member.last_shift_date)}</Td>
                       <Td>{member.count}</Td>
                     </Tr>
                   ))}
