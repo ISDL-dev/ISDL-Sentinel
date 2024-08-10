@@ -85,7 +85,9 @@ const fetchLabAssistantData = async (
   selectedDate: Date | null,
   selectedYear: number,
   selectedMonth: number,
-  setLabAssistantMember: React.Dispatch<React.SetStateAction<GetLabAssistantMember200ResponseInner[]>>,
+  setLabAssistantMember: React.Dispatch<
+    React.SetStateAction<GetLabAssistantMember200ResponseInner[]>
+  >,
   setShifts: React.Dispatch<React.SetStateAction<Shift[]>>,
   labAssistantApi: any
 ) => {
@@ -93,18 +95,19 @@ const fetchLabAssistantData = async (
   setLabAssistantMember(memberResponse.data);
 
   const formattedMonth = formatMonth(selectedDate || new Date());
-  const scheduleResponse = await labAssistantApi.getLabAssistantSchedule(formattedMonth);
+  const scheduleResponse = await labAssistantApi.getLabAssistantSchedule(
+    formattedMonth
+  );
 
-  const updatedShifts = generateDaysInMonth(
-    selectedYear,
-    selectedMonth
-  ).map((shift) => {
-    const schedule = scheduleResponse.data?.find(
-      (s: GetLabAssistantSchedule200ResponseInner) =>
-        dayjs(s.shift_date).date() === shift.date
-    );
-    return schedule ? { ...shift, user_name: schedule.user_name } : shift;
-  });
+  const updatedShifts = generateDaysInMonth(selectedYear, selectedMonth).map(
+    (shift) => {
+      const schedule = scheduleResponse.data?.find(
+        (s: GetLabAssistantSchedule200ResponseInner) =>
+          dayjs(s.shift_date).date() === shift.date
+      );
+      return schedule ? { ...shift, user_name: schedule.user_name } : shift;
+    }
+  );
 
   setShifts(updatedShifts);
 };
@@ -121,8 +124,8 @@ export default function Profile() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const toast = useToast();
   const navigate = useNavigate();
-  const gridRef = useRef<HTMLDivElement>(null); 
-  const titleRef = useRef<HTMLDivElement>(null); 
+  const gridRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchLabAssistantData(
@@ -183,7 +186,7 @@ export default function Profile() {
         setShifts,
         labAssistantApi
       );
-      
+
       toast({
         title: "シフトが正常に登録されました。",
         status: "success",
@@ -203,48 +206,49 @@ export default function Profile() {
   const handlePdfDownload = async () => {
     const titleElement = titleRef.current;
     const gridElement = gridRef.current;
-  
+
     if (!titleElement || !gridElement) {
-      console.error('Element not found');
+      console.error("Element not found");
       return;
     }
-  
+
     const titleCanvas = await html2canvas(titleElement, { scale: 2 });
-  
+
     const gridCanvas = await html2canvas(gridElement, { scale: 2 });
-  
-    const titleImgData = titleCanvas.toDataURL('image/png');
-    const gridImgData = gridCanvas.toDataURL('image/png');
-    const pdf = new jsPDF('landscape');
-  
+
+    const titleImgData = titleCanvas.toDataURL("image/png");
+    const gridImgData = gridCanvas.toDataURL("image/png");
+    const pdf = new jsPDF("landscape");
+
     const titleFontSize = 16;
     pdf.setFontSize(titleFontSize);
-    
+
     const titleWidth = 50;
     const titleHeight = 10;
-    
+
     const titleX = (pdf.internal.pageSize.width - 210) / 2;
     const titleY = 40;
-  
-    pdf.addImage(titleImgData, 'PNG', titleX, titleY, titleWidth, titleHeight);
-  
-    const imgWidth = 210; 
-    const imgHeight = gridCanvas.height * imgWidth / gridCanvas.width;
-  
+
+    pdf.addImage(titleImgData, "PNG", titleX, titleY, titleWidth, titleHeight);
+
+    const imgWidth = 210;
+    const imgHeight = (gridCanvas.height * imgWidth) / gridCanvas.width;
+
     const gridX = (pdf.internal.pageSize.width - imgWidth) / 2;
     const gridY = titleY + titleHeight;
-  
-    pdf.addImage(gridImgData, 'PNG', gridX, gridY, imgWidth, imgHeight);
-  
-    const filename = `${selectedYear}${String(selectedMonth + 1).padStart(2, '0')}.pdf`;
+
+    pdf.addImage(gridImgData, "PNG", gridX, gridY, imgWidth, imgHeight);
+
+    const filename = `${selectedYear}${String(selectedMonth + 1).padStart(
+      2,
+      "0"
+    )}.pdf`;
     pdf.save(filename);
   };
-  
-  
 
   return (
     <Box>
-      <Tabs>
+      <Tabs mt={{ base: 20, md: 0 }}>
         <TabList>
           <Tab>シフトボード</Tab>
           <Tab>シフトメンバー</Tab>
@@ -252,19 +256,31 @@ export default function Profile() {
 
         <TabPanels>
           <TabPanel>
-            {/* シフトボード */}
             <Flex
               flexDirection="row"
               mb={3}
               alignItems="center"
               justifyContent="space-between"
+              flexWrap="wrap" // モバイル対応
             >
-              <Box ref={titleRef}>
-                <Text fontSize="xl" fontWeight="bold" mb={3} textAlign="left">
+              <Box ref={titleRef} flex="1">
+                <Text
+                  fontSize="xl"
+                  fontWeight="bold"
+                  mb={3}
+                  whiteSpace="nowrap"
+                >
                   {`${selectedYear}年${selectedMonth + 1}月LAシフト表`}
                 </Text>
               </Box>
-              <Flex alignItems="center" gap={4}>
+              <Flex
+                alignItems="center"
+                gap={4}
+                justifyContent={{ base: "center", md: "flex-end" }} // 中央揃え
+                flex="1"
+                mt={{ base: 4, md: 0 }} // モバイルでの余白調整
+                flexWrap="wrap" // モバイル対応
+              >
                 <chakra.label htmlFor="month-picker" fontWeight="bold">
                   月を選択:
                 </chakra.label>
@@ -285,8 +301,13 @@ export default function Profile() {
               </Flex>
             </Flex>
 
-            <Box ref={gridRef}>
-              <Grid templateColumns="repeat(7, 1fr)" gap={1} mt={4}>
+            <Box ref={gridRef} overflowX="auto">
+              <Grid
+                templateColumns="repeat(7, 1fr)"
+                gap={1}
+                mt={4}
+                minWidth="600px"
+              >
                 {["日", "月", "火", "水", "木", "金", "土"].map(
                   (day, index) => (
                     <Box
@@ -341,9 +362,9 @@ export default function Profile() {
               pl={{ base: 2, md: 14 }}
               mt={8}
               outlineOffset={2}
-              overflowX="unset"
-              overflowY="scroll"
+              overflowX="auto"
               height="65vh"
+              maxWidth="100%" // テーブルをPCに合わせる
             >
               <Table
                 size="lg"
