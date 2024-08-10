@@ -6,6 +6,7 @@ import { IconType } from "react-icons";
 import { FiHome, FiBarChart2, FiMapPin, FiSettings } from "react-icons/fi";
 import { FaHistory } from "react-icons/fa";
 import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
+import { ImLab } from "react-icons/im";
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ const LinkItems: Array<{ name: string; icon: IconType; href: string }> = [
   { name: "Ranking", icon: FiBarChart2, href: "/ranking" },
   { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
   { name: "ISDL Map", icon: FiMapPin, href: "/" },
+  { name: "LA", icon: ImLab, href: "/lab-assistant" },
   { name: "Settings", icon: FiSettings, href: "/" },
 ];
 
