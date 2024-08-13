@@ -37,14 +37,3 @@ func SetRoutes(router *gin.Engine) {
 			webauthn.POST("/login-finish/:user_name", controllers.GetFinishLoginController)
 		}
 	}
-
-	public := router.Group("/")
-	{
-		public.POST("/auth/sign-in", controllers.DigestAuthController)
-	}
-
-	authenticated := router.Group("/")
-	authenticated.Use(controllers.DigestAuthMiddleware())
-	{
-	}
-}
