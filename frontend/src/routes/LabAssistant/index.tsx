@@ -362,7 +362,7 @@ export default function Profile() {
               pl={{ base: 2, md: 14 }}
               mt={8}
               outlineOffset={2}
-              overflowX="auto"
+              overflowY="auto"
               height="65vh"
               maxWidth="100%" // テーブルをPCに合わせる
             >
