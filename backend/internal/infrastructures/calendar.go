@@ -65,32 +65,20 @@ func saveToken(file string, token *oauth2.Token) {
 }
 
 func newOAuthClient(ctx context.Context, config *oauth2.Config) *http.Client {
-	data, err := loadToken("internal/infrastructures/credentials/token.json")
+	// トークンファイルを読み込む
+	tok, err := loadToken("internal/infrastructures/credentials/token.json")
 	if err != nil {
 		log.Fatalf("Failed to load token: %v", err)
 	}
 
-	var tokenData model.Token
-	if err := json.Unmarshal(data, &tokenData); err != nil {
-		log.Fatalf("Failed to unmarshal token data: %v", err)
-	}
-
-	// oauth2.Token オブジェクトに変換する
-	token := &oauth2.Token{
-		AccessToken:  tokenData.AccessToken,
-		TokenType:    tokenData.TokenType,
-		RefreshToken: tokenData.RefreshToken,
-		Expiry:       parseExpiry(tokenData.Expiry),
-	}
-
 	// トークンが期限切れならリフレッシュする
-	if token.Expiry.Before(time.Now()) {
-		fmt.Println("token expired, refreshing...")
-		token = refreshToken(token, config)
-		saveToken("token.json", token)
+	if tok.Expiry.Before(time.Now()) {
+		fmt.Println("Token expired, refreshing...")
+		tok = refreshToken(tok, config)
+		saveToken("token.json", tok)
 	}
 
-	return config.Client(ctx, token)
+	return config.Client(ctx, tok)
 }
 
 func parseExpiry(expiryStr string) time.Time {
@@ -187,7 +175,8 @@ func valueOrFileContents(value string, filename string) string {
 	return strings.TrimSpace(string(slurp))
 }
 
-func GetCalendarList() {
+func GetCalendarList() []model.Calendar {
+	var eventList []model.Calendar
 	calendarIDs := []model.CalendarRoomId{
 		model.CalendarRoomId{RoomName: "KC101-large", CalendarId: model.KC101_LARGE_CALENDAR_ID},
 		model.CalendarRoomId{RoomName: "KC103", CalendarId: model.KC103_CALENDAR_ID},
@@ -197,44 +186,72 @@ func GetCalendarList() {
 	}
 
 	ctx := context.Background()
-	b, err := os.ReadFile("internal/infrastructures/credentials/credentials.json")
+
+	// 認証情報を読み込み
+	credentialsFile := "internal/infrastructures/credentials/credentials.json"
+	b, err := os.ReadFile(credentialsFile)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
 
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+	// OAuth2.0の設定を作成
+	calendarReadonlyScope := "https://www.googleapis.com/auth/calendar.readonly"
+	config, err := google.ConfigFromJSON(b, calendarReadonlyScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	c := newOAuthClient(ctx, config)
 
-	srv, err := calendar.NewService(ctx, option.WithHTTPClient(c))
+	// OAuth2.0クライアントを作成
+	client := newOAuthClient(ctx, config)
+
+	// Calendar APIサービスを作成
+	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Calendar client: %v", err)
 	}
 
-	t := time.Now().Format(time.RFC3339)
+	// 現在の時刻を取得
+	currentTime := time.Now().Format(time.RFC3339)
+
+	// 各カレンダーからイベントを取得
 	for _, room := range calendarIDs {
-		events, err := srv.Events.List(room.CalendarId).ShowDeleted(false).
-			SingleEvents(true).TimeMin(t).MaxResults(10).OrderBy("startTime").Do()
+		events, err := srv.Events.List(room.CalendarId).
+			ShowDeleted(false).
+			SingleEvents(true).
+			TimeMin(currentTime).
+			MaxResults(2).
+			OrderBy("startTime").
+			Do()
 		if err != nil {
-			log.Fatalf("Unable to retrieve next ten of the user's events: %v", err)
+			log.Printf("Unable to retrieve events for calendar %s: %v", room.RoomName, err)
+			continue
 		}
+
 		if len(events.Items) == 0 {
-			fmt.Println("No upcoming events found.")
+			fmt.Printf("No upcoming events found for calendar %s.\n", room.RoomName)
 		} else {
+			fmt.Printf("Upcoming events for calendar %s:\n", room.RoomName)
 			for _, item := range events.Items {
+				attendeeMail := []string{}
 				date := item.Start.DateTime
 				if date == "" {
 					date = item.Start.Date
 				}
-				fmt.Printf("%v (%v)\n", item.Summary, date)
-				fmt.Printf("使用者\n")
 				for _, attendee := range item.Attendees {
-					fmt.Printf("(%s)\n", attendee.Email)
+					if attendee.Email == room.CalendarId {
+						continue
+					}
+					attendeeMail = append(attendeeMail, attendee.Email)
 				}
+				eventList = append(eventList, model.Calendar{
+					RoomName:     room.RoomName,
+					Summary:      item.Summary,
+					StartDate:    item.Start.DateTime,
+					EndDate:      item.End.DateTime,
+					AttendeeMail: attendeeMail,
+				})
 			}
 		}
 	}
+	return eventList
 }

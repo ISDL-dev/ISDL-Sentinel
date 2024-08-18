@@ -27,3 +27,11 @@ type Token struct {
 	RefreshToken string `json:"refresh_token"`
 	Expiry       string `json:"expiry"`
 }
+
+func ToInterfaceSlice(slice []string) []interface{} {
+	result := make([]interface{}, len(slice))
+	for i, v := range slice {
+		result[i] = v
+	}
+	return result
+}
