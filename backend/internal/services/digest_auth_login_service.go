@@ -6,14 +6,13 @@ import (
     "encoding/hex"
     "fmt"
     "strings"
-    "time"
 
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 const (
-    realm = "ISDL-Sentinel"
+    realm = "@mikilab.doshisha.ac.jp"
 )
 
 func CreateWWWAuthenticateHeader(nonce string) string {
@@ -27,14 +26,16 @@ func ValidateDigestAuth(auth, method, uri string) (string, error) {
     }
 
     username := params["username"]
-    userInfo, err := repositories.GetUserCredential(username)
+
+    userInfo, err := repositories.GetDigestCredential(username)
     if err != nil {
         return "", fmt.Errorf("failed to get user credential: %w", err)
     }
 
-    ha1 := md5Hash(fmt.Sprintf("%s:%s:%s", username, realm, userInfo.Password))
-    ha2 := md5Hash(fmt.Sprintf("%s:%s", method, uri))
-    expectedResponse := md5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
+    ha1 := MD5Hash(fmt.Sprintf("%s:%s:%s", username, realm, userInfo.Password))
+    ha2 := MD5Hash(fmt.Sprintf("%s:%s", method, uri))
+
+    expectedResponse := MD5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
 
     if expectedResponse != params["response"] {
         return "", fmt.Errorf("invalid digest")
@@ -68,7 +69,7 @@ func GenerateNonce() string {
     return hex.EncodeToString(b)
 }
 
-func md5Hash(data string) string {
+func MD5Hash(data string) string {
     hash := md5.Sum([]byte(data))
     return hex.EncodeToString(hash[:])
 }

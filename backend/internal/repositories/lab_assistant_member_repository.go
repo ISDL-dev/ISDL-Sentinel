@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
@@ -23,6 +24,7 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 			u.name, 
 			u.avatar_id, 
 			a.img_path, 
+			(SELECT MAX(las.shift_day) FROM lab_assistant_shift las WHERE las.user_id = u.id) AS last_shift_date,
 			(SELECT COUNT(*) FROM lab_assistant_shift las WHERE las.user_id = u.id) AS count
 		FROM 
 			user u
@@ -38,15 +40,21 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 	defer getRows.Close()
 
 	for getRows.Next() {
+		var lastShiftDate string
 		err := getRows.Scan(
 			&labAssistantMember.UserId,
 			&labAssistantMember.UserName,
 			&labAssistantMember.AvatarId,
 			&labAssistantMember.AvatarImgPath,
+			&lastShiftDate,
 			&labAssistantMember.Count,
 		)
 		if err != nil {
 			return []schema.GetLabAssistantMember200ResponseInner{}, fmt.Errorf("getRows getLabAssistantMember Query error err: %v", err)
+		}
+
+		if lastShiftDate != "" {
+			labAssistantMember.LastShiftDate = strings.Split(lastShiftDate, "T")[0]
 		}
 		labAssistantMemberList = append(labAssistantMemberList, labAssistantMember)
 	}

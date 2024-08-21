@@ -36,4 +36,10 @@ func SetRoutes(router *gin.Engine) {
 			webauthn.GET("/login-begin/:user_name", controllers.GetBeginLoginController)
 			webauthn.POST("/login-finish/:user_name", controllers.GetFinishLoginController)
 		}
+
+		digest := v1.Group("/digest")
+		{
+			digest.POST("/login/", controllers.DigestLoginController)
+		}
 	}
+}

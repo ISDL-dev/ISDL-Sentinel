@@ -9,34 +9,37 @@ import (
 )
 
 // GetUserCredential retrieves user credentials based on the provided name
-func GetUserCredential(name string) (userInfo schema.PostUserInformationRequest, err error) {
-	getUserCredentialQuery := `
-		SELECT 
-			name,
-			mail_address,
-			password
-		FROM user
-		WHERE name = ?;
-	`
+func GetDigestCredential(name string) (userInfo schema.PostUserInformationRequest, err error) {
 
-	err = infrastructures.DB.QueryRow(getUserCredentialQuery, name).Scan(
-		&userInfo.Name,
-		&userInfo.MailAddress,
-		&userInfo.Password,
-	)
+    getUserCredentialQuery := `
+        SELECT 
+            name,
+            mail_address,
+            password
+        FROM users
+        WHERE mail_address = ?;
+    `
 
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return schema.PostUserInformationRequest{}, fmt.Errorf("user not found: %w", err)
-		}
-		return schema.PostUserInformationRequest{}, fmt.Errorf("failed to get user credential: %w", err)
-	}
+    row := infrastructures.DB.QueryRow(getUserCredentialQuery, name)
 
-	return userInfo, nil
+    err = row.Scan(
+        &userInfo.Name,
+        &userInfo.MailAddress,
+        &userInfo.Password,
+    )
+
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return schema.PostUserInformationRequest{}, fmt.Errorf("user not found: %w", err)
+        }
+        return schema.PostUserInformationRequest{}, fmt.Errorf("failed to get user credential: %w", err)
+    }
+
+    return userInfo, nil
 }
 
 // UpdateUserCredential updates user information in the database
-func UpdateUserCredential(userInfo schema.PostUserInformationRequest) error {
+func UpdateDigestCredential(userInfo schema.PostUserInformationRequest) error {
 	updateUserCredentialQuery := `
 		UPDATE user
 		SET 
@@ -86,5 +89,3 @@ func CreateUser(userInfo schema.PostUserInformationRequest) error {
 
 	return nil
 }
-
-// その他の必要な関数（GetNonce, ValidateNonce など）も同様に実装します。
