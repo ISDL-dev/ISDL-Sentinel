@@ -18,7 +18,7 @@ import (
 
 var googleDriveConfig *oauth2.Config
 var googleDriveService *drive.Service
-var tokenChan chan *oauth2.Token
+var googleDriveTokenChan chan *oauth2.Token
 
 func getClient() *http.Client {
 	tokFile := "internal/infrastructures/credentials/google_drive_token.json"
@@ -56,13 +56,13 @@ func getTokenFromWeb() *oauth2.Token {
 	fmt.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
 
-	tokenChan = make(chan *oauth2.Token)
+	googleDriveTokenChan = make(chan *oauth2.Token)
 
-	tok := <-tokenChan
+	tok := <-googleDriveTokenChan
 	return tok
 }
 
-func Callback(ctx *gin.Context) {
+func GoogleDriveCallback(ctx *gin.Context) {
 	authCode := ctx.Query("code")
 	if authCode == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Code not found"})
@@ -74,7 +74,7 @@ func Callback(ctx *gin.Context) {
 		log.Fatalf("Unable to retrieve token from web %v", err)
 	}
 
-	tokenChan <- tok
+	googleDriveTokenChan <- tok
 }
 
 func InitializeGoogleDriveClient() {

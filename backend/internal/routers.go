@@ -34,7 +34,7 @@ func SetRoutes(router *gin.Engine) {
 
 		oauthn := v1.Group("/oauthn")
 		{
-			oauthn.GET("/callback", infrastructures.Callback)
+			oauthn.GET("/google-drive-callback", infrastructures.GoogleDriveCallback)
 		}
 
 		webauthn := v1.Group("/webauthn")
