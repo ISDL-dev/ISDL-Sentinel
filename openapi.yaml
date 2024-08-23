@@ -98,10 +98,6 @@ paths:
       operationId: post-avatar
       tags:
         - Profile
-      requestBody:
-        description: request body of upload avatar
-        required: true
-        $ref: '#/components/requestBodies/UploadAvatar'
       responses:
         '200':
           description: successful to upload avatar      

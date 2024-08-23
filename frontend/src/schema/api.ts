@@ -433,25 +433,6 @@ export interface ModelError {
 /**
  * 
  * @export
- * @interface PostAvatarRequest
- */
-export interface PostAvatarRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof PostAvatarRequest
-     */
-    'user_id': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostAvatarRequest
-     */
-    'avatar_img_path': string;
-}
-/**
- * 
- * @export
  * @interface PostLabAssistantScheduleRequestInner
  */
 export interface PostLabAssistantScheduleRequestInner {
@@ -1546,11 +1527,10 @@ export const ProfileApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Upload my avatar
-         * @param {PostAvatarRequest} [postAvatarRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postAvatar: async (postAvatarRequest?: PostAvatarRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postAvatar: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/avatar`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1565,12 +1545,9 @@ export const ProfileApiAxiosParamCreator = function (configuration?: Configurati
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postAvatarRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1652,12 +1629,11 @@ export const ProfileApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Upload my avatar
-         * @param {PostAvatarRequest} [postAvatarRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postAvatar(postAvatarRequest?: PostAvatarRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postAvatar(postAvatarRequest, options);
+        async postAvatar(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postAvatar(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProfileApi.postAvatar']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1708,12 +1684,11 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary Upload my avatar
-         * @param {PostAvatarRequest} [postAvatarRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postAvatar(postAvatarRequest?: PostAvatarRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.postAvatar(postAvatarRequest, options).then((request) => request(axios, basePath));
+        postAvatar(options?: any): AxiosPromise<void> {
+            return localVarFp.postAvatar(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1762,13 +1737,12 @@ export class ProfileApi extends BaseAPI {
     /**
      * 
      * @summary Upload my avatar
-     * @param {PostAvatarRequest} [postAvatarRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProfileApi
      */
-    public postAvatar(postAvatarRequest?: PostAvatarRequest, options?: RawAxiosRequestConfig) {
-        return ProfileApiFp(this.configuration).postAvatar(postAvatarRequest, options).then((request) => request(this.axios, this.basePath));
+    public postAvatar(options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).postAvatar(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

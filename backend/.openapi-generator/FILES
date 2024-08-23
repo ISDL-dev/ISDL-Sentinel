@@ -9,7 +9,6 @@ internal/schema/model_get_lab_assistant_schedule_200_response_inner.go
 internal/schema/model_get_ranking_200_response_inner.go
 internal/schema/model_get_user_by_id_200_response.go
 internal/schema/model_get_user_by_id_200_response_avatar_list_inner.go
-internal/schema/model_post_avatar_request.go
 internal/schema/model_post_lab_assistant_schedule_request_inner.go
 internal/schema/model_post_sign_in_200_response.go
 internal/schema/model_post_sign_in_request.go

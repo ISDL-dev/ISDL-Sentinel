@@ -31,11 +31,6 @@ func SetRoutes(router *gin.Engine) {
 		v1.GET("/lab-assistant/:month", controllers.GetLabAssistantScheduleController)
 		v1.POST("/lab-assistant/:month", controllers.PostLabAssistantScheduleController)
 
-		// oauthn := v1.Group("/oauthn")
-		// {
-		// 	oauthn.GET("/callback", infrastructures.CallBack)
-		// }
-
 		webauthn := v1.Group("/webauthn")
 		{
 			webauthn.GET("/register-begin/:user_name", controllers.GetBeginRegistrationController)
