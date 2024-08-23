@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,11 @@ func getClient() *http.Client {
 	tok, err := tokenFromFileForDrive(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb()
+		saveTokenForDrive(tokFile, tok)
+	}
+	if tok.Expiry.Before(time.Now()) {
+		fmt.Println("Token expired, refreshing...")
+		tok = refreshTokenForDrive(tok)
 		saveTokenForDrive(tokFile, tok)
 	}
 	return googleDriveConfig.Client(context.Background(), tok)
@@ -61,6 +67,15 @@ func getTokenFromWeb() *oauth2.Token {
 
 	tok := <-googleDriveTokenChan
 	return tok
+}
+
+func refreshTokenForDrive(tok *oauth2.Token) *oauth2.Token {
+	tokenSource := googleDriveConfig.TokenSource(context.Background(), tok)
+	newTok, err := tokenSource.Token()
+	if err != nil {
+		log.Fatalf("Failed to refresh token: %v", err)
+	}
+	return newTok
 }
 
 func GoogleDriveCallback(ctx *gin.Context) {
