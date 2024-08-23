@@ -80,7 +80,7 @@ func GoogleDriveCallback(ctx *gin.Context) {
 func InitializeGoogleDriveClient() {
 	log.Println("initialize Google Drive client")
 	ctx := context.Background()
-	b, err := os.ReadFile("internal/infrastructures/credentials/google_drive_credentials_web.json")
+	b, err := os.ReadFile("internal/infrastructures/credentials/google_drive_credentials.json")
 	if err != nil {
 		fmt.Errorf("Failed to read the client secret file: %w", err)
 	}
