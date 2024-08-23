@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -65,7 +66,10 @@ func getTokenFromWeb() *oauth2.Token {
 func GoogleDriveCallback(ctx *gin.Context) {
 	authCode := ctx.Query("code")
 	if authCode == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Code not found"})
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Code not found",
+		})
 		return
 	}
 
