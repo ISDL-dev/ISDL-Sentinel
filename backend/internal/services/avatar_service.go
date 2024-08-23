@@ -1,14 +1,23 @@
 package services
 
 import (
+	"fmt"
+	"mime/multipart"
+
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func PostAvatarService(postAvatarRequest schema.PostAvatarRequest) (err error) {
-	err = repositories.PostAvatarRepository(postAvatarRequest)
+func PostAvatarService(userId int, avatarFile *multipart.FileHeader) (err error) {
+	avatarImgPath, err := infrastructures.UploadAvatarFile(avatarFile)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to upload avatar file: %w", err)
+	}
+
+	err = repositories.PostAvatarRepository(userId, avatarImgPath)
+	if err != nil {
+		return fmt.Errorf("failed to save avatar link: %w", err)
 	}
 
 	return nil

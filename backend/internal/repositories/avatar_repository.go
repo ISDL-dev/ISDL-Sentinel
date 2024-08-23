@@ -8,7 +8,7 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func PostAvatarRepository(postAvatarRequest schema.PostAvatarRequest) (err error) {
+func PostAvatarRepository(userId int, avatarImgPath string) (err error) {
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
@@ -22,7 +22,7 @@ func PostAvatarRepository(postAvatarRequest schema.PostAvatarRequest) (err error
 	}()
 
 	postAvatarQuery := `INSERT INTO avatar (img_path) VALUES (?);`
-	result, err := tx.Exec(postAvatarQuery, postAvatarRequest.AvatarImgPath)
+	result, err := tx.Exec(postAvatarQuery, avatarImgPath)
 	if err != nil {
 		return fmt.Errorf("failed to execute query to post avatar: %v", err)
 	}
@@ -33,7 +33,7 @@ func PostAvatarRepository(postAvatarRequest schema.PostAvatarRequest) (err error
 	}
 
 	postUserPossessionAvatarQuery := `INSERT INTO user_possession_avatar (user_id, avatar_id) VALUES (?, ?);`
-	_, err = tx.Exec(postUserPossessionAvatarQuery, postAvatarRequest.UserId, avatarId)
+	_, err = tx.Exec(postUserPossessionAvatarQuery, userId, avatarId)
 	if err != nil {
 		return fmt.Errorf("failed to execute query to post user possession avatar: %v", err)
 	}
