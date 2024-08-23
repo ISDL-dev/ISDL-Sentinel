@@ -2,6 +2,7 @@ package internal
 
 import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +31,11 @@ func SetRoutes(router *gin.Engine) {
 		v1.GET("/lab-assistant-member", controllers.GetLabAssistantMemberController)
 		v1.GET("/lab-assistant/:month", controllers.GetLabAssistantScheduleController)
 		v1.POST("/lab-assistant/:month", controllers.PostLabAssistantScheduleController)
+
+		oauthn := v1.Group("/oauthn")
+		{
+			oauthn.GET("/callback", infrastructures.Callback)
+		}
 
 		webauthn := v1.Group("/webauthn")
 		{

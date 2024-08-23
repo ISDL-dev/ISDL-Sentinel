@@ -31,7 +31,7 @@ func main() {
 			log.Fatalln(err)
 		}
 	}()
-
+	infrastructures.InitializeGoogleDriveClient()
 	// シグナルの待機
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

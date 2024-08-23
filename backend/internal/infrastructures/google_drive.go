@@ -9,20 +9,25 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 )
 
-func getClient(config *oauth2.Config) *http.Client {
+var googleDriveConfig *oauth2.Config
+var googleDriveService *drive.Service
+var tokenChan chan *oauth2.Token
+
+func getClient() *http.Client {
 	tokFile := "internal/infrastructures/credentials/google_drive_token.json"
 	tok, err := tokenFromFileForDrive(tokFile)
 	if err != nil {
-		tok = getTokenFromWeb(config)
+		tok = getTokenFromWeb()
 		saveTokenForDrive(tokFile, tok)
 	}
-	return config.Client(context.Background(), tok)
+	return googleDriveConfig.Client(context.Background(), tok)
 }
 
 func tokenFromFileForDrive(file string) (*oauth2.Token, error) {
@@ -46,21 +51,50 @@ func saveTokenForDrive(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
-	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+func getTokenFromWeb() *oauth2.Token {
+	authURL := googleDriveConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	fmt.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
 
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("Unable to read authorization code %v", err)
+	tokenChan = make(chan *oauth2.Token)
+
+	tok := <-tokenChan
+	return tok
+}
+
+func Callback(ctx *gin.Context) {
+	authCode := ctx.Query("code")
+	if authCode == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Code not found"})
+		return
 	}
 
-	tok, err := config.Exchange(context.TODO(), authCode)
+	tok, err := googleDriveConfig.Exchange(context.TODO(), authCode)
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web %v", err)
 	}
-	return tok
+
+	tokenChan <- tok
+}
+
+func InitializeGoogleDriveClient() {
+	log.Println("initialize Google Drive client")
+	ctx := context.Background()
+	b, err := os.ReadFile("internal/infrastructures/credentials/google_drive_credentials_web.json")
+	if err != nil {
+		fmt.Errorf("Failed to read the client secret file: %w", err)
+	}
+
+	googleDriveConfig, err = google.ConfigFromJSON(b, drive.DriveFileScope)
+	if err != nil {
+		fmt.Errorf("Failed to parse the client secret file: %w", err)
+	}
+
+	client := getClient()
+	googleDriveService, err = drive.NewService(ctx, option.WithHTTPClient(client))
+	if err != nil {
+		fmt.Errorf("Failed to initialize Google Drive client: %w", err)
+	}
 }
 
 func UploadAvatarFile(avatarFile *multipart.FileHeader) (string, error) {
@@ -70,29 +104,12 @@ func UploadAvatarFile(avatarFile *multipart.FileHeader) (string, error) {
 	}
 	defer file.Close()
 
-	ctx := context.Background()
-	b, err := os.ReadFile("internal/infrastructures/credentials/google_drive_credentials.json")
-	if err != nil {
-		return "", fmt.Errorf("Failed to read the client secret file: %w", err)
-	}
-
-	config, err := google.ConfigFromJSON(b, drive.DriveFileScope)
-	if err != nil {
-		return "", fmt.Errorf("Failed to parse the client secret file: %w", err)
-	}
-
-	client := getClient(config)
-	srv, err := drive.NewService(ctx, option.WithHTTPClient(client))
-	if err != nil {
-		return "", fmt.Errorf("Failed to initialize Google Drive client: %w", err)
-	}
-
 	fileMetadata := &drive.File{
 		Name:    avatarFile.Filename,
 		Parents: []string{os.Getenv("GOOGLE_DRIVE_FOLDER_ID")},
 	}
 
-	driveFile, err := srv.Files.Create(fileMetadata).Media(file).Do()
+	driveFile, err := googleDriveService.Files.Create(fileMetadata).Media(file).Do()
 	if err != nil {
 		return "", fmt.Errorf("Failed to upload the file to Google Drive: %w", err)
 	}
