@@ -12,7 +12,6 @@ import (
 )
 
 func PostAvatarController(ctx *gin.Context) {
-	// Get user_id from form data and convert it to an int
 	userIdStr := ctx.PostForm("user_id")
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
@@ -24,7 +23,6 @@ func PostAvatarController(ctx *gin.Context) {
 		return
 	}
 
-	// Get avatar_file from form data
 	avatarFile, err := ctx.FormFile("avatar_file")
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get avatar file: %w", err))
@@ -35,7 +33,6 @@ func PostAvatarController(ctx *gin.Context) {
 		return
 	}
 
-	// Call the service to handle the avatar upload
 	err = services.PostAvatarService(userId, avatarFile)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to upload avatar: %w", err))
