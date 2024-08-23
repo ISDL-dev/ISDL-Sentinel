@@ -2,13 +2,15 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetInRoomStatusIdRepository() (getStatusId int32, err error){
+func GetInRoomStatusIdRepository() (getStatusId int32, err error) {
 	getRows, err := infrastructures.DB.Query("SELECT id FROM status WHERE status_name = ?;", model.IN_ROOM)
 	if err != nil {
 		return 0, fmt.Errorf("getRows GetInRoomStatusId Query error err:%w", err)
@@ -56,7 +58,7 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 			) eh ON u.id = eh.user_id
 		WHERE 
 			u.status_id = ?;`
-	getRows, err := infrastructures.DB.Query(getInRoomUserListQuery,inRoomStatusId)
+	getRows, err := infrastructures.DB.Query(getInRoomUserListQuery, inRoomStatusId)
 	if err != nil {
 		return []schema.GetAttendeesList200ResponseInner{}, fmt.Errorf("getRows getInRoomUserList Query error err:%w", err)
 	}
@@ -76,4 +78,47 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 		userList = append(userList, attendee)
 	}
 	return userList, nil
+}
+
+func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err error) {
+	now := time.Now().UTC()
+	layout := time.RFC3339
+	for _, room := range eventList {
+		startTime, err := time.Parse(layout, room.StartDate)
+		endTime, err := time.Parse(layout, room.EndDate)
+		if err != nil {
+			return fmt.Errorf("Error parsing date: %v", err)
+		}
+		if startTime.Before(now) && endTime.After(now) {
+			fmt.Printf("calendar %s.\n", room.AttendeeMail[0])
+			fmt.Printf("room %s.\n", room.RoomName)
+
+			emailPlaceholders := strings.Repeat("?,", len(room.AttendeeMail))
+			emailPlaceholders = strings.TrimSuffix(emailPlaceholders, ",")
+
+			UpdateInRoomUserFromCalendarQuery := fmt.Sprintf(`
+				UPDATE user
+				SET 
+					place_id = (
+						SELECT id
+						FROM place
+						WHERE place_name = ?
+					),
+					status_id = (
+						SELECT id
+						FROM status
+						WHERE status_name = ?
+					)
+				WHERE mail_address IN (%s)`, emailPlaceholders)
+
+			// クエリの実行
+			args := append([]interface{}{room.RoomName, model.IN_ROOM}, model.ToInterfaceSlice(room.AttendeeMail)...)
+			_, err := infrastructures.DB.Exec(UpdateInRoomUserFromCalendarQuery, args...)
+			if err != nil {
+				return fmt.Errorf("failed to execute query: %v", err)
+			}
+			return nil
+		}
+	}
+	return nil
 }
