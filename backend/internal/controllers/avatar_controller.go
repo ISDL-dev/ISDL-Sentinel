@@ -4,11 +4,47 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
+
+func PostAvatarController(ctx *gin.Context) {
+	userIdStr := ctx.PostForm("user_id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		log.Println(fmt.Errorf("invalid user_id: %w", err))
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	avatarFile, err := ctx.FormFile("avatar_file")
+	if err != nil {
+		log.Println(fmt.Errorf("failed to get avatar file: %w", err))
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	err = services.PostAvatarService(userId, avatarFile)
+	if err != nil {
+		log.Println(fmt.Errorf("failed to upload avatar: %w", err))
+		ctx.JSON(http.StatusBadRequest, schema.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	} else {
+		ctx.Status(http.StatusOK)
+	}
+}
 
 func PutAvatarController(ctx *gin.Context) {
 	var avatarRequest schema.Avatar
