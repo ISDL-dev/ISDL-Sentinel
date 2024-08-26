@@ -8,28 +8,6 @@ import (
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func DigestAuthMiddleware() gin.HandlerFunc {
-    return func(ctx *gin.Context) {
-        auth := ctx.GetHeader("Authorization")
-        if auth == "" {
-            nonce := services.GenerateNonce()
-            ctx.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(nonce))
-            ctx.AbortWithStatus(http.StatusUnauthorized)
-            return
-        }
-
-        username, err := services.ValidateDigestAuth(auth, ctx.Request.Method, ctx.Request.URL.RequestURI())
-        if err != nil {
-            ctx.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(services.GenerateNonce()))
-            ctx.AbortWithStatus(http.StatusUnauthorized)
-            return
-        }
-
-        ctx.Set("username", username)
-        ctx.Next()
-    }
-}
-
 func DigestLoginController(ctx *gin.Context) {
 	auth := ctx.GetHeader("Authorization")
 

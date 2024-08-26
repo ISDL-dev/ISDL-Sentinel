@@ -8,7 +8,6 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-// GetUserCredential retrieves user credentials based on the provided name
 func GetDigestCredential(name string) (userInfo schema.PostUserInformationRequest, err error) {
 
     getUserCredentialQuery := `
