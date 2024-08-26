@@ -13,14 +13,14 @@ func GetDigestCredential(name string) (userInfo schema.PostUserInformationReques
 
     getUserCredentialQuery := `
         SELECT 
-            name,
+            auth_user_name,
             mail_address,
             password
-        FROM users
-        WHERE mail_address = ?;
+        FROM user
+        WHERE mail_address = ? OR auth_user_name = ?;
     `
 
-    row := infrastructures.DB.QueryRow(getUserCredentialQuery, name)
+    row := infrastructures.DB.QueryRow(getUserCredentialQuery, name, name)
 
     err = row.Scan(
         &userInfo.Name,
@@ -36,56 +36,4 @@ func GetDigestCredential(name string) (userInfo schema.PostUserInformationReques
     }
 
     return userInfo, nil
-}
-
-// UpdateUserCredential updates user information in the database
-func UpdateDigestCredential(userInfo schema.PostUserInformationRequest) error {
-	updateUserCredentialQuery := `
-		UPDATE user
-		SET 
-			mail_address = ?,
-			password = ?
-		WHERE name = ?;
-	`
-
-	result, err := infrastructures.DB.Exec(updateUserCredentialQuery,
-		userInfo.MailAddress,
-		userInfo.Password,
-		userInfo.Name,
-	)
-
-	if err != nil {
-		return fmt.Errorf("failed to update user credential: %w", err)
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to get rows affected: %w", err)
-	}
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("no user found with the provided name")
-	}
-
-	return nil
-}
-
-// CreateUser creates a new user in the database
-func CreateUser(userInfo schema.PostUserInformationRequest) error {
-	createUserQuery := `
-		INSERT INTO user (name, mail_address, password)
-		VALUES (?, ?, ?);
-	`
-
-	_, err := infrastructures.DB.Exec(createUserQuery,
-		userInfo.Name,
-		userInfo.MailAddress,
-		userInfo.Password,
-	)
-
-	if err != nil {
-		return fmt.Errorf("failed to create user: %w", err)
-	}
-
-	return nil
 }

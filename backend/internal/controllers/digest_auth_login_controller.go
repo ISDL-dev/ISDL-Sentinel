@@ -4,64 +4,63 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 func DigestAuthMiddleware() gin.HandlerFunc {
-    return func(c *gin.Context) {
-        auth := c.GetHeader("Authorization")
+    return func(ctx *gin.Context) {
+        auth := ctx.GetHeader("Authorization")
         if auth == "" {
             nonce := services.GenerateNonce()
-            c.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(nonce))
-            c.AbortWithStatus(http.StatusUnauthorized)
+            ctx.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(nonce))
+            ctx.AbortWithStatus(http.StatusUnauthorized)
             return
         }
 
-        username, err := services.ValidateDigestAuth(auth, c.Request.Method, c.Request.URL.RequestURI())
+        username, err := services.ValidateDigestAuth(auth, ctx.Request.Method, ctx.Request.URL.RequestURI())
         if err != nil {
-            c.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(services.GenerateNonce()))
-            c.AbortWithStatus(http.StatusUnauthorized)
+            ctx.Header("WWW-Authenticate", services.CreateWWWAuthenticateHeader(services.GenerateNonce()))
+            ctx.AbortWithStatus(http.StatusUnauthorized)
             return
         }
 
-        c.Set("username", username)
-        c.Next()
+        ctx.Set("username", username)
+        ctx.Next()
     }
 }
 
-func DigestLoginController(c *gin.Context) {
-	auth := c.GetHeader("Authorization")
+func DigestLoginController(ctx *gin.Context) {
+	auth := ctx.GetHeader("Authorization")
 
 	if auth == "" {
 		nonce := services.GenerateNonce()
 		wwwAuthenticateHeader := services.CreateWWWAuthenticateHeader(nonce)
-		c.Header("WWW-Authenticate", wwwAuthenticateHeader)
-		c.JSON(http.StatusUnauthorized, schema.Error{
+		ctx.Header("WWW-Authenticate", wwwAuthenticateHeader)
+		ctx.JSON(http.StatusUnauthorized, schema.Error{
 			Code:    http.StatusUnauthorized,
 			Message: "Authentication required",
 		})
 		return
 	}
 
-	username, err := services.ValidateDigestAuth(auth, c.Request.Method, c.Request.URL.RequestURI())
+	userName, err := services.ValidateDigestAuth(auth, ctx.Request.Method, ctx.Request.URL.RequestURI())
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, schema.Error{
+		ctx.JSON(http.StatusUnauthorized, schema.Error{
 			Code:    http.StatusUnauthorized,
 			Message: "Authentication failed",
 		})
 		return
 	}
 
-	loginUserInfo, err := repositories.GetDigestCredential(username)
+	loginUserInfo, err := services.GetLoginUserInfoService(userName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, schema.Error{
+		ctx.JSON(http.StatusInternalServerError, schema.Error{
 			Code:    http.StatusInternalServerError,
 			Message: "Failed to get user information",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, loginUserInfo)
+	ctx.JSON(http.StatusOK, loginUserInfo)
 }

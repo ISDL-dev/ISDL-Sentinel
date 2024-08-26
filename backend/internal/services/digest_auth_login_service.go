@@ -25,14 +25,14 @@ func ValidateDigestAuth(auth, method, uri string) (string, error) {
         return "", fmt.Errorf("failed to parse authorization header: %w", err)
     }
 
-    username := params["username"]
+    userName := params["username"]
 
-    userInfo, err := repositories.GetDigestCredential(username)
+    userInfo, err := repositories.GetDigestCredential(userName)
     if err != nil {
         return "", fmt.Errorf("failed to get user credential: %w", err)
     }
 
-    ha1 := MD5Hash(fmt.Sprintf("%s:%s:%s", username, realm, userInfo.Password))
+    ha1 := MD5Hash(fmt.Sprintf("%s:%s:%s", userName, realm, userInfo.Password))
     ha2 := MD5Hash(fmt.Sprintf("%s:%s", method, uri))
 
     expectedResponse := MD5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
@@ -41,7 +41,7 @@ func ValidateDigestAuth(auth, method, uri string) (string, error) {
         return "", fmt.Errorf("invalid digest")
     }
 
-    return username, nil
+    return userInfo.Name, nil
 }
 
 func ParseDigestAuth(auth string) (map[string]string, error) {
@@ -74,10 +74,11 @@ func MD5Hash(data string) string {
     return hex.EncodeToString(hash[:])
 }
 
-func GetLoginUserInfo(username string) (schema.PostSignIn200Response, error) {
-    userInfo, err := repositories.GetLoginUserInfo(username)
+func GetLoginUserInfoService(userName string) (schema.PostSignIn200Response, error) {
+    userInfo, err := repositories.GetLoginUserInfo(userName)
     if err != nil {
         return schema.PostSignIn200Response{}, fmt.Errorf("failed to get login user info: %w", err)
     }
     return userInfo, nil
 }
+

@@ -5,8 +5,6 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
 )
 
 func SetRoutes(router *gin.Engine) {
