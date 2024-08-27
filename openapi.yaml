@@ -5,12 +5,12 @@ info:
   license:
     name: MIT
 servers:
-- url: http://localhost:3000
+- url: http://localhost:3000/v1
 paths:
-  /user:
-    post:
-      summary: Add user information
-      operationId: post-user
+  /attendees-list:
+    get:
+      summary: Get attendees list
+      operationId: get-attendees-list
       tags:
         - Attendees list
         - ISDL MAP
@@ -30,7 +30,7 @@ paths:
       tags:
         - Attendees list
       requestBody:
-        description: request body of user 
+        description: request body of update status
         required: true
         content:
           application/json:
@@ -51,8 +51,8 @@ paths:
                 $ref: "#/components/schemas/Error"
   /access-history/{date}:
     get:
-      summary: Get user infomation
-      operationId: get-user
+      summary: Get access history
+      operationId: get-access-history
       tags:
         - Access history
       parameters:
