@@ -45,7 +45,7 @@ func SetRoutes(router *gin.Engine) {
 
 		digest := v1.Group("/digest")
 		{
-			digest.POST("/login/", controllers.DigestLoginController)
+			digest.POST("/login", controllers.DigestLoginController)
 		}
 	}
 }
