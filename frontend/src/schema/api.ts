@@ -691,8 +691,7 @@ export const AttendeesListApiAxiosParamCreator = function (configuration?: Confi
     return {
         /**
          * 
-         * @summary Add user information
-         * @param {PostUserRequest} [postUserRequest] 
+         * @summary Get attendees list
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
