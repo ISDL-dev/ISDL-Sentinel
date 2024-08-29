@@ -11,6 +11,8 @@ export default function Profile() {
   const [userData, setUserData] = useState<GetUserById200Response | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const location = useLocation();
   const userId = location.state.userId;
   const { authUser, setAuthUser } = useUser();  
@@ -75,6 +77,30 @@ export default function Profile() {
     }
   };
 
+  const handleFileUpload = async () => {
+    if (!selectedFile || !authUser) return;
+
+    try {
+      const response = await profileApi.postAvatar(userId, selectedFile);
+      console.log(response);
+      // Handle success (e.g., refetch avatar list)
+      const updatedData = await profileApi.getUserById(userId);
+      setUserData(updatedData.data);
+      setAuthUser({
+        ...authUser,
+        avatar_id: updatedData.data.avatar_id,
+        avatar_img_path: updatedData.data.avatar_img_path
+      });
+      setSelectedFile(null);
+    } catch (error) {
+      setError("アバターのアップロードに失敗しました");
+    }
+  };
+
+  const handleCancelUpload = () => {
+    setSelectedFile(null);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -97,7 +123,7 @@ export default function Profile() {
         <Banner
           gridArea="1 / 1 / 2 / 2"
           banner="rgba(79, 209, 197, 1)"
-          avatar={`./avatar/${userData.avatar_img_path}`}
+          avatar={userData.avatar_img_path}
           name={userData.user_name}
           attendance_days={userData.attendance_days}
           stay_time={userData.stay_time}
@@ -110,6 +136,10 @@ export default function Profile() {
           avatars={userData.avatar_list}
           onAvatarClick={(avatarId) => updateUserData(userData.user_id, avatarId)}
           onDeleteClick={(avatarId) => deleteUserAvatar(userData.user_id, avatarId)}
+          selectedFile={selectedFile}
+          setSelectedFile={setSelectedFile}
+          onSaveUpload={handleFileUpload}
+          onCancelUpload={handleCancelUpload}
         />
       </Grid>
     </Box>
