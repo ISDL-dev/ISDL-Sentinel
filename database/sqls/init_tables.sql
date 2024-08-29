@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS grade(
 
 CREATE TABLE IF NOT EXISTS avatar(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    img_path VARCHAR(64) NOT NULL
+    img_path VARCHAR(512) NOT NULL
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS user(
@@ -140,8 +140,8 @@ INSERT INTO grade (grade_name) VALUES
 ('U4');
 
 INSERT INTO avatar (img_path) VALUES
-('default1.png'),
-('default2.png');
+('https://drive.google.com/thumbnail?id=1E2HnYLTvg9XXVeW1gMbANAvCbl_ES6Nn&sz=w1000'),
+('https://drive.google.com/thumbnail?id=11tPSwxIahqttDTYCAI0ZJ7yx1FCoPRPB&sz=w1000');
 
 INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, status_id, place_id, grade_id, avatar_id) VALUES
 ('小野 景子', 'kono', 'kono@mail.doshisha.ac.jp', 'project443', 5821, 2, NULL, 1, 1),
