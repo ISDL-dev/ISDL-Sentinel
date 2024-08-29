@@ -1527,10 +1527,16 @@ export const ProfileApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Upload my avatar
+         * @param {number} userId 
+         * @param {File} avatarFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postAvatar: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postAvatar: async (userId: number, avatarFile: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('postAvatar', 'userId', userId)
+            // verify required parameter 'avatarFile' is not null or undefined
+            assertParamExists('postAvatar', 'avatarFile', avatarFile)
             const localVarPath = `/avatar`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1542,12 +1548,24 @@ export const ProfileApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
 
+            if (userId !== undefined) { 
+                localVarFormParams.append('user_id', userId as any);
+            }
+    
+            if (avatarFile !== undefined) { 
+                localVarFormParams.append('avatar_file', avatarFile as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1629,11 +1647,13 @@ export const ProfileApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Upload my avatar
+         * @param {number} userId 
+         * @param {File} avatarFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postAvatar(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postAvatar(options);
+        async postAvatar(userId: number, avatarFile: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postAvatar(userId, avatarFile, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProfileApi.postAvatar']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1684,11 +1704,13 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary Upload my avatar
+         * @param {number} userId 
+         * @param {File} avatarFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postAvatar(options?: any): AxiosPromise<void> {
-            return localVarFp.postAvatar(options).then((request) => request(axios, basePath));
+        postAvatar(userId: number, avatarFile: File, options?: any): AxiosPromise<void> {
+            return localVarFp.postAvatar(userId, avatarFile, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1737,12 +1759,14 @@ export class ProfileApi extends BaseAPI {
     /**
      * 
      * @summary Upload my avatar
+     * @param {number} userId 
+     * @param {File} avatarFile 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProfileApi
      */
-    public postAvatar(options?: RawAxiosRequestConfig) {
-        return ProfileApiFp(this.configuration).postAvatar(options).then((request) => request(this.axios, this.basePath));
+    public postAvatar(userId: number, avatarFile: File, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).postAvatar(userId, avatarFile, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
