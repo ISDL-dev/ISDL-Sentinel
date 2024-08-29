@@ -83,7 +83,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   <Avatar
                     size={"md"}
                     border="2px"
-                    src={`./avatar/${authUser.avatar_img_path}`}
+                    src={authUser.avatar_img_path}
                   />
                   <VStack
                     display={{ base: "none", md: "flex" }}
