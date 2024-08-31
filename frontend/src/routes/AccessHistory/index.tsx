@@ -142,7 +142,7 @@ export default function AccessHistory() {
                       {access.entering.avatar_img_path && (
                         <Avatar
                           size={"md"}
-                          src={`./avatar/${access.entering.avatar_img_path}`}
+                          src={access.entering.avatar_img_path}
                           border="2px"
                           onClick={() =>
                             navigate("/profile", {
@@ -161,7 +161,7 @@ export default function AccessHistory() {
                       <Flex alignItems={"center"} gap={3}>
                         <Avatar
                           size={"md"}
-                          src={`./avatar/${access.leaving.avatar_img_path}`}
+                          src={access.leaving.avatar_img_path}
                           border="2px"
                           onClick={() =>
                             navigate("/profile", {

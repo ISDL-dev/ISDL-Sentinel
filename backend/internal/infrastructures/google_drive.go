@@ -133,7 +133,7 @@ func UploadAvatarFile(avatarFile *multipart.FileHeader) (string, error) {
 		return "", fmt.Errorf("Failed to upload the file to Google Drive: %w", err)
 	}
 
-	avatarImgPath := fmt.Sprintf("https://drive.google.com/uc?id=%s", driveFile.Id)
+	avatarImgPath := fmt.Sprintf("https://drive.google.com/thumbnail?id=%s&sz=w1000", driveFile.Id)
 
 	return avatarImgPath, nil
 }

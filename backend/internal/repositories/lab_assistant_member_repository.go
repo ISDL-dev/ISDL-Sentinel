@@ -24,7 +24,7 @@ func GetLabAssistantMemberRepository() (labAssistantMemberList []schema.GetLabAs
 			u.name, 
 			u.avatar_id, 
 			a.img_path, 
-			(SELECT MAX(las.shift_day) FROM lab_assistant_shift las WHERE las.user_id = u.id) AS last_shift_date,
+			IFNULL((SELECT MAX(las.shift_day) FROM lab_assistant_shift las WHERE las.user_id = u.id), "") AS last_shift_date,
 			(SELECT COUNT(*) FROM lab_assistant_shift las WHERE las.user_id = u.id) AS count
 		FROM 
 			user u

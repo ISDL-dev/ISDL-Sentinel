@@ -98,6 +98,10 @@ paths:
       operationId: post-avatar
       tags:
         - Profile
+      requestBody:
+        description: request body of upload avatar
+        required: true
+        $ref: '#/components/requestBodies/UploadAvatar'
       responses:
         '200':
           description: successful to upload avatar      
@@ -289,18 +293,18 @@ components:
   requestBodies:
     UploadAvatar:
       content:
-        application/json:
+        multipart/form-data:
           schema:
             type: object
             properties:
               user_id:
                 type: integer
-                format: uint64
-              avatar_img_path:
+              avatar_file:
                 type: string
+                format: binary
             required:
               - user_id
-              - avatar_img_path
+              - avatar_file
     LabAssistantSchedule:
       content:
         application/json:

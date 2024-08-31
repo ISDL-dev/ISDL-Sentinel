@@ -94,7 +94,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
             >
               <Top3Icon rank={index}></Top3Icon>
               <Image
-                src={`./avatar/${item.avatar_img_path}`}
+                src={item.avatar_img_path}
                 alt={`${item.avatar_id}`}
                 boxSize={{
                   base: "48px",
@@ -162,7 +162,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
                                   marginRight={{ base: 0, md: 8 }}
                                 >
                                   <Image
-                                    src={`./avatar/${item.avatar_img_path}`}
+                                    src={item.avatar_img_path}
                                     alt={`${item.avatar_id}`}
                                     boxSize={{
                                       base: "36px",

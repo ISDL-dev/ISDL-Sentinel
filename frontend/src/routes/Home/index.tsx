@@ -160,7 +160,7 @@ function Home() {
                     <Flex alignItems={"center"} gap={3}>
                       <Avatar
                         size={"md"}
-                        src={`./avatar/${attendee.avatar_img_path}`}
+                        src={attendee.avatar_img_path}
                         border="2px"
                         onClick={() => navigate("/profile", { state: { userId: attendee.user_id } })}
                       ></Avatar>
