@@ -88,3 +88,4 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 
 	return userInformation, nil
 }
+

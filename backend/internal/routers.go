@@ -9,12 +9,10 @@ import (
 
 func SetRoutes(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:4000",
-		},
+		AllowOrigins:     []string{"http://localhost:4000"},
 		AllowOriginFunc:  func(origin string) bool { return true },
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
 
@@ -43,6 +41,11 @@ func SetRoutes(router *gin.Engine) {
 			webauthn.POST("/register-finish/:user_name", controllers.GetFinishRegistrationController)
 			webauthn.GET("/login-begin/:user_name", controllers.GetBeginLoginController)
 			webauthn.POST("/login-finish/:user_name", controllers.GetFinishLoginController)
+		}
+
+		digest := v1.Group("/digest")
+		{
+			digest.POST("/login", controllers.DigestLoginController)
 		}
 	}
 }
