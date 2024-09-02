@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS user(
     password VARCHAR(64) NOT NULL,
     number_of_coin INT NOT NULL,
     display_name VARCHAR(64),
+    current_entered_at DATETIME,
     status_id INT UNSIGNED NOT NULL,
     place_id INT UNSIGNED,
     grade_id INT UNSIGNED NOT NULL,
