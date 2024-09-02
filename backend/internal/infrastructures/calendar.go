@@ -179,6 +179,7 @@ func GetCalendarList() []model.Calendar {
 	var eventList []model.Calendar
 	calendarIDs := []model.CalendarRoomId{
 		model.CalendarRoomId{RoomName: "KC101-large", CalendarId: model.KC101_LARGE_CALENDAR_ID},
+		model.CalendarRoomId{RoomName: "KC101-small", CalendarId: model.KC101_SMALL_CALENDAR_ID},
 		model.CalendarRoomId{RoomName: "KC103", CalendarId: model.KC103_CALENDAR_ID},
 		model.CalendarRoomId{RoomName: "KC111", CalendarId: model.KC111_CALENDAR_ID},
 		model.CalendarRoomId{RoomName: "KC116", CalendarId: model.KC116_CALENDAR_ID},
