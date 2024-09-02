@@ -68,10 +68,10 @@ func PutAvatarRepository(avatarRequest schema.Avatar) (avatarResponse schema.Ava
 	return avatarResponse, nil
 }
 
-func DeleteAvatarRepository(avatarRequest schema.Avatar) (err error) {
+func DeleteAvatarRepository(avatarRequest schema.Avatar) (avatarImgPath string, err error) {
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		return "", fmt.Errorf("failed to begin transaction: %v", err)
 	}
 	defer func() {
 		if err != nil {
@@ -81,16 +81,21 @@ func DeleteAvatarRepository(avatarRequest schema.Avatar) (err error) {
 		tx.Commit()
 	}()
 
+	getAvatarImgPathQuery := `SELECT img_path FROM avatar WHERE id = ?;`
+	if err := tx.QueryRow(getAvatarImgPathQuery, avatarRequest.AvatarId).Scan(&avatarImgPath); err != nil {
+		return "", fmt.Errorf("failed to execute query to get avatar img path: %v", err)
+	}
+
 	deleteAvatarQuery := `DELETE FROM avatar WHERE id = ?;`
 	_, err = tx.Exec(deleteAvatarQuery, avatarRequest.AvatarId)
 	if err != nil {
-		return fmt.Errorf("failed to execute query to delete avatar: %v", err)
+		return "", fmt.Errorf("failed to execute query to delete avatar: %v", err)
 	}
 
 	getCurrentAvatarIdQuery := `SELECT avatar_id FROM user WHERE id = ?;`
 	var currentAvatarId sql.NullInt32
 	if err := tx.QueryRow(getCurrentAvatarIdQuery, avatarRequest.UserId).Scan(&currentAvatarId); err != nil {
-		return fmt.Errorf("failed to execute query to get current avatar id: %v", err)
+		return "", fmt.Errorf("failed to execute query to get current avatar id: %v", err)
 	}
 
 	if !currentAvatarId.Valid {
@@ -101,15 +106,15 @@ func DeleteAvatarRepository(avatarRequest schema.Avatar) (err error) {
 			LIMIT 1;`
 		var newAvatarId int32
 		if err := tx.QueryRow(getNewAvatarQuery, avatarRequest.UserId).Scan(&newAvatarId); err != nil {
-			return fmt.Errorf("failed to execute query to get new avatar: %v", err)
+			return "", fmt.Errorf("failed to execute query to get new avatar: %v", err)
 		}
 
 		updateUserAvatarQuery := `UPDATE user SET avatar_id = ? WHERE id = ?;`
 		_, err = tx.Exec(updateUserAvatarQuery, newAvatarId, avatarRequest.UserId)
 		if err != nil {
-			return fmt.Errorf("failed to execute query to update user avatar: %v", err)
+			return "", fmt.Errorf("failed to execute query to update user avatar: %v", err)
 		}
 	}
 
-	return nil
+	return avatarImgPath, nil
 }
