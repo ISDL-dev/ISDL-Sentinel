@@ -15,6 +15,7 @@ type CalendarRoomId struct {
 
 const (
 	KC101_LARGE_CALENDAR_ID = "mikilab.doshisha.ac.jp_3739313235333736353437@resource.calendar.google.com"
+	KC101_SMALL_CALENDAR_ID = "c_188c9tphie1akjm2hquasoipu060q@resource.calendar.google.com"
 	KC103_CALENDAR_ID       = "mikilab.doshisha.ac.jp_33353234353936362d333132@resource.calendar.google.com"
 	KC111_CALENDAR_ID       = "mikilab.doshisha.ac.jp_3235333239333534343633@resource.calendar.google.com"
 	KC116_CALENDAR_ID       = "mikilab.doshisha.ac.jp_38363338373137302d343939@resource.calendar.google.com"
