@@ -3,10 +3,12 @@ import {
   Button,
   Flex,
   Grid,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -18,8 +20,9 @@ import { inRoom } from "../../models/users/user";
 import { attendeesListApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
-import { useUser } from '../../userContext';
-import { useNavigate } from 'react-router-dom';
+import { useUser } from "../../userContext";
+import { useNavigate } from "react-router-dom";
+import { Loading } from "../../features/Loading/Loading";
 
 dayjs.locale("ja");
 
@@ -32,13 +35,18 @@ const decodeDate = (dateString: string) => {
 
 function Home() {
   const { authUser, setAuthUser } = useUser();
-  const [attendeeList, setAttendeeList] = useState<GetAttendeesList200ResponseInner[] | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [attendeeList, setAttendeeList] = useState<
+    GetAttendeesList200ResponseInner[] | null
+  >(null);
   const navigate = useNavigate();
 
   const fetchAttendeesList = async () => {
     try {
+      setIsFetching(true);
       const response = await attendeesListApi.getAttendeesList();
       setAttendeeList(response.data);
+      setIsFetching(false);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +61,7 @@ function Home() {
       });
       setAuthUser({
         ...authUser,
-        status: user.data.status
+        status: user.data.status,
       });
       await fetchAttendeesList(); // ここでリストを再取得
     } catch (error) {
@@ -147,7 +155,11 @@ function Home() {
             </Tr>
           </Thead>
           <Tbody outline="1px">
-            {attendeeList === null ? (
+            {isFetching ? (
+              <Td colSpan={5} textAlign="center">
+                <Loading loadingItemText="出席者"></Loading>
+              </Td>
+            ) : attendeeList === null ? (
               <Tr>
                 <Td colSpan={5} textAlign="center">
                   出席者はいません
@@ -162,7 +174,11 @@ function Home() {
                         size={"md"}
                         src={attendee.avatar_img_path}
                         border="2px"
-                        onClick={() => navigate("/profile", { state: { userId: attendee.user_id } })}
+                        onClick={() =>
+                          navigate("/profile", {
+                            state: { userId: attendee.user_id },
+                          })
+                        }
                       ></Avatar>
                       {attendee.user_name}
                     </Flex>
