@@ -2,4 +2,3 @@
 .DS_Store
 /database/data
 /backend/tmp
-/backend/internal/infrastructures/credentials
