@@ -32,6 +32,7 @@ func SetRoutes(router *gin.Engine) {
 
 		oauthn := v1.Group("/oauthn")
 		{
+			oauthn.GET("/google-calendar-callback", infrastructures.GoogleCalendarCallback)
 			oauthn.GET("/google-drive-callback", infrastructures.GoogleDriveCallback)
 		}
 

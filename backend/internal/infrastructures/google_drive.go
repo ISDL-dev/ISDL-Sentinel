@@ -2,14 +2,12 @@ package infrastructures
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 	"github.com/gin-gonic/gin"
@@ -21,63 +19,6 @@ import (
 
 var googleDriveConfig *oauth2.Config
 var googleDriveService *drive.Service
-var googleDriveTokenChan chan *oauth2.Token
-
-func getClient() *http.Client {
-	tokFile := "internal/infrastructures/credentials/google_drive_token.json"
-	tok, err := tokenFromFileForDrive(tokFile)
-	if err != nil {
-		tok = getTokenFromWeb()
-		saveTokenForDrive(tokFile, tok)
-	}
-	if tok.Expiry.Before(time.Now()) {
-		fmt.Println("Token expired, refreshing...")
-		tok = refreshTokenForDrive(tok)
-		saveTokenForDrive(tokFile, tok)
-	}
-	return googleDriveConfig.Client(context.Background(), tok)
-}
-
-func tokenFromFileForDrive(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
-}
-
-func saveTokenForDrive(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
-	if err != nil {
-		log.Fatalf("Unable to cache oauth token: %v", err)
-	}
-	defer f.Close()
-	json.NewEncoder(f).Encode(token)
-}
-
-func getTokenFromWeb() *oauth2.Token {
-	authURL := googleDriveConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
-		"authorization code: \n%v\n", authURL)
-
-	googleDriveTokenChan = make(chan *oauth2.Token)
-
-	tok := <-googleDriveTokenChan
-	return tok
-}
-
-func refreshTokenForDrive(tok *oauth2.Token) *oauth2.Token {
-	tokenSource := googleDriveConfig.TokenSource(context.Background(), tok)
-	newTok, err := tokenSource.Token()
-	if err != nil {
-		log.Fatalf("Failed to refresh token: %v", err)
-	}
-	return newTok
-}
 
 func GoogleDriveCallback(ctx *gin.Context) {
 	authCode := ctx.Query("code")
@@ -94,7 +35,7 @@ func GoogleDriveCallback(ctx *gin.Context) {
 		log.Fatalf("Unable to retrieve token from web %v", err)
 	}
 
-	googleDriveTokenChan <- tok
+	TokenChan <- tok
 }
 
 func InitializeGoogleDriveClient() {
@@ -110,7 +51,9 @@ func InitializeGoogleDriveClient() {
 		fmt.Errorf("Failed to parse the client secret file: %w", err)
 	}
 
-	client := getClient()
+	tokFile := "internal/infrastructures/credentials/google_drive_token.json"
+	client := GetClient(googleDriveConfig, tokFile)
+
 	googleDriveService, err = drive.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		fmt.Errorf("Failed to initialize Google Drive client: %w", err)
