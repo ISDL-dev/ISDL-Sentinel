@@ -22,6 +22,7 @@ import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
 import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../features/Loading/Loading";
 
 dayjs.locale("ja");
 
@@ -156,17 +157,7 @@ function Home() {
           <Tbody outline="1px">
             {isFetching ? (
               <Td colSpan={5} textAlign="center">
-                <Text pb={3} fontWeight={800} fontSize={20}>
-                  出席者を読込中です
-                </Text>
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="teal.500"
-                  size="xl"
-                  alignContent={"center"}
-                />
+                <Loading loadingItemText="出席者"></Loading>
               </Td>
             ) : attendeeList === null ? (
               <Tr>
