@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
@@ -136,4 +137,27 @@ func UploadAvatarFile(avatarFile *multipart.FileHeader) (string, error) {
 	avatarImgPath := fmt.Sprintf("https://drive.google.com/thumbnail?id=%s&sz=w1000", driveFile.Id)
 
 	return avatarImgPath, nil
+}
+
+func DeleteAvatarFile(avatarImgPath string) error {
+	const idParam = "id="
+	idIndex := strings.Index(avatarImgPath, idParam)
+	if idIndex == -1 {
+		return fmt.Errorf("File ID not found in avatarImgPath")
+	}
+	idStart := idIndex + len(idParam)
+	idEnd := strings.Index(avatarImgPath[idStart:], "&")
+	if idEnd == -1 {
+		idEnd = len(avatarImgPath)
+	} else {
+		idEnd += idStart
+	}
+	fileID := avatarImgPath[idStart:idEnd]
+
+	err := googleDriveService.Files.Delete(fileID).Do()
+	if err != nil {
+		return fmt.Errorf("Failed to delete the file from Google Drive: %w", err)
+	}
+
+	return nil
 }

@@ -33,9 +33,14 @@ func PutAvatarService(avatarRequest schema.Avatar) (avatarResponse schema.Avatar
 }
 
 func DeleteAvatarService(avatarRequest schema.Avatar) (err error) {
-	err = repositories.DeleteAvatarRepository(avatarRequest)
+	avatarImgPath, err := repositories.DeleteAvatarRepository(avatarRequest)
 	if err != nil {
 		return err
+	}
+
+	err = infrastructures.DeleteAvatarFile(avatarImgPath)
+	if err != nil {
+		return fmt.Errorf("failed to delete avatar file: %w", err)
 	}
 
 	return nil
