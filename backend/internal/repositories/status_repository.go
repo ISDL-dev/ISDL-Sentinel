@@ -52,7 +52,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 		UPDATE user 
 		SET 
 			place_id = ?, 
-			status_id = ?
+			status_id = ?,
 		WHERE 
 			id = ?;`
 		_, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, userId)
@@ -117,7 +117,8 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 		UPDATE user 
 		SET 
 			place_id = ?, 
-			status_id = ?
+			status_id = ?,
+			current_entered_at = NOW()
 		WHERE 
 			id = ?;`
 		_, err = tx.Exec(putInRoomQuery, placeId, statusId, userId)
