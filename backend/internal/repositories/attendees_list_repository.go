@@ -35,7 +35,10 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 			g.grade_name AS Grade,
 			u.avatar_id AS AvatarId,
 			a.img_path AS AvatarImgPath,
-			IFNULL(eh.latest_entered_at, '2024-07-16 09:00:00') AS EnteredAt
+			CASE
+				WHEN p.place_name = ? THEN IFNULL(eh.latest_entered_at, '2024-07-16 09:00:00')
+				ELSE IFNULL(u.current_entered_at, '2024-07-16 09:00:00')
+			END AS EnteredAt
 		FROM 
 			user u
 		JOIN 
@@ -58,7 +61,7 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 			) eh ON u.id = eh.user_id
 		WHERE 
 			u.status_id = ?;`
-	getRows, err := infrastructures.DB.Query(getInRoomUserListQuery, inRoomStatusId)
+	getRows, err := infrastructures.DB.Query(getInRoomUserListQuery, model.KC104, inRoomStatusId)
 	if err != nil {
 		return []schema.GetAttendeesList200ResponseInner{}, fmt.Errorf("getRows getInRoomUserList Query error err:%w", err)
 	}
@@ -85,6 +88,9 @@ func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err err
 	layout := time.RFC3339
 	for _, room := range eventList {
 		startTime, err := time.Parse(layout, room.StartDate)
+		if err != nil {
+			return fmt.Errorf("Error parsing date: %v", err)
+		}
 		endTime, err := time.Parse(layout, room.EndDate)
 		if err != nil {
 			return fmt.Errorf("Error parsing date: %v", err)
@@ -108,11 +114,12 @@ func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err err
 						SELECT id
 						FROM status
 						WHERE status_name = ?
-					)
+					),
+					current_entered_at = ?
 				WHERE mail_address IN (%s)`, emailPlaceholders)
 
 			// クエリの実行
-			args := append([]interface{}{room.RoomName, model.IN_ROOM}, model.ToInterfaceSlice(room.AttendeeMail)...)
+			args := append([]interface{}{room.RoomName, model.IN_ROOM, startTime.Add(9 * time.Hour)}, model.ToInterfaceSlice(room.AttendeeMail)...)
 			_, err := infrastructures.DB.Exec(UpdateInRoomUserFromCalendarQuery, args...)
 			if err != nil {
 				return fmt.Errorf("failed to execute query: %v", err)
