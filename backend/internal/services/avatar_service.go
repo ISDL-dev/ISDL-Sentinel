@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"mime/multipart"
 
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 func PostAvatarService(userId int, avatarFile *multipart.FileHeader) (err error) {
-	avatarImgPath, err := infrastructures.UploadAvatarFile(avatarFile)
+	avatarImgPath, err := UploadAvatarFile(avatarFile)
 	if err != nil {
 		return fmt.Errorf("failed to upload avatar file: %w", err)
 	}
@@ -38,7 +37,7 @@ func DeleteAvatarService(avatarRequest schema.Avatar) (err error) {
 		return err
 	}
 
-	err = infrastructures.DeleteAvatarFile(avatarImgPath)
+	err = DeleteAvatarFile(avatarImgPath)
 	if err != nil {
 		return fmt.Errorf("failed to delete avatar file: %w", err)
 	}

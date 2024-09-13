@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
+	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
@@ -89,3 +90,35 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 	return userInformation, nil
 }
 
+func GetTeacherMailAddress() (teacherMailAddress []string, err error) {
+	var mailAddress string
+
+	getUsersMailAddressListQuery := `
+		SELECT 
+			u.mail_address 
+		FROM 
+			user u
+		INNER JOIN 
+			grade g ON u.grade_id = g.id
+		WHERE 
+			g.grade_name = ?;`
+	rows, err := infrastructures.DB.Query(getUsersMailAddressListQuery, model.Teacher)
+	if err != nil {
+		return nil, fmt.Errorf("getRows db.Query error err:%w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&mailAddress)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan mail address: %w", err)
+		}
+		teacherMailAddress = append(teacherMailAddress, mailAddress)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error: %w", err)
+	}
+
+	return teacherMailAddress, nil
+}
