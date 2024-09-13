@@ -8,7 +8,7 @@ services:
       args:
         - "BACKEND_ENDPOINT=${BACKEND_ENDPOINT}"
     env_file:
-      - .env
+      - .env.${ENV_TYPE}
     tty: true
     stdin_open: true
     ports:
@@ -20,7 +20,7 @@ services:
     container_name: isdl-sentinel-backend
     build: ./backend
     env_file:
-      - .env
+      - .env.${ENV_TYPE}
     tty: true
     stdin_open: true
     ports:
@@ -40,9 +40,9 @@ services:
     tty: true
     stdin_open: true
     volumes:
-        - ./database/data:/var/lib/mysql
+        - ./database/data_${ENV_TYPE}:/var/lib/mysql
         - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
-        - ./database/sqls:/docker-entrypoint-initdb.d
+        - ./database/sqls_${ENV_TYPE}:/docker-entrypoint-initdb.d
     ports:
         - 3306:3306
 
