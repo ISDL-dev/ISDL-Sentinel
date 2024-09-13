@@ -10,6 +10,7 @@ type Content struct {
 type Body struct {
 	Type string `json:"type"`
 	Text string `json:"text"`
+	Wrap bool   `json:"wrap"`
 }
 
 type Attachment struct {

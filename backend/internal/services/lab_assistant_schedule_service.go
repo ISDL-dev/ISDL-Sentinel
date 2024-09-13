@@ -58,7 +58,18 @@ func NotificationLabAssistantScheduleWithTeams(shiftDate string, userName string
 	} else {
 		eventDetails = "\n\n━━━━━━━━━━━━━━━━━\n\n"
 		for _, e := range event {
-			eventDetails += fmt.Sprintf("・%s\n\n", e.Summary)
+			startTimeParsed, err := time.Parse(time.RFC3339, e.StartDate)
+			if err != nil {
+				log.Printf("Error parsing start date: %v", err)
+				continue
+			}
+
+			endTimeParsed, err := time.Parse(time.RFC3339, e.EndDate)
+			if err != nil {
+				log.Printf("Error parsing end date: %v", err)
+				continue
+			}
+			eventDetails += fmt.Sprintf("- %s %s〜%s\n\n", e.Summary, startTimeParsed.Format("15:04"), endTimeParsed.Format("15:04"))
 		}
 		eventDetails += "━━━━━━━━━━━━━━━━━"
 	}
@@ -77,6 +88,7 @@ func NotificationLabAssistantScheduleWithTeams(shiftDate string, userName string
 						{
 							Type: "TextBlock",
 							Text: fmt.Sprintf("おはようございます．\n\n本日，%sのLAは%sです．\n\n本日の行事は%s\n\n今日も一日頑張りましょう．", formattedDate, userName, eventDetails),
+							Wrap: true,
 						},
 					},
 				},
