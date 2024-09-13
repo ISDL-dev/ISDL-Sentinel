@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type Calendar struct {
 	RoomName     string
 	Summary      string
@@ -21,6 +23,16 @@ const (
 	KC116_CALENDAR_ID       = "mikilab.doshisha.ac.jp_38363338373137302d343939@resource.calendar.google.com"
 	KC119_CALENDAR_ID       = "mikilab.doshisha.ac.jp_38363935323038372d393739@resource.calendar.google.com"
 )
+
+var Weekdays = map[time.Weekday]string{
+	time.Sunday:    "日",
+	time.Monday:    "月",
+	time.Tuesday:   "火",
+	time.Wednesday: "水",
+	time.Thursday:  "木",
+	time.Friday:    "金",
+	time.Saturday:  "土",
+}
 
 type Token struct {
 	AccessToken  string `json:"access_token"`
