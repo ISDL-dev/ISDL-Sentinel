@@ -129,3 +129,17 @@ func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err err
 	}
 	return nil
 }
+
+func DeleteRoomFromCalendarRepository() (err error) {
+	DeleteRoomFromCalendarQuery := `
+		UPDATE user
+		SET place_id = (SELECT id FROM place WHERE place_name = ?)
+		WHERE place_id IS NOT NULL 
+		AND place_id != (SELECT id FROM place WHERE place_name = ?);`
+
+	_, err = infrastructures.DB.Exec(DeleteRoomFromCalendarQuery, model.KC104, model.KC104)
+	if err != nil {
+		return fmt.Errorf("failed to execute query: %v", err)
+	}
+	return nil
+}

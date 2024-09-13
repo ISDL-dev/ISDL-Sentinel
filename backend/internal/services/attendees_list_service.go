@@ -14,6 +14,7 @@ func GetAttendeesListService() (attendeeList []schema.GetAttendeesList200Respons
 	}
 
 	eventList := GetCalendarList()
+	repositories.DeleteRoomFromCalendarRepository()
 	repositories.UpdateInRoomUserFromCalendarRepository(eventList)
 
 	attendeeList, err = repositories.GetInRoomUserListRepository(inRoomStatusId)
