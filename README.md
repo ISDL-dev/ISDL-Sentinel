@@ -57,19 +57,38 @@ make generate
 
 ISDL_Sentinel ディレクトリ直下で，以下のコマンドを実行して Docker コンテナのビルドと起動をする．
 
+#### 本番環境
+
 ```bash
-make build-up 
+make build-up prod
+```
+
+起動後に`http://localhost:4000` にアクセスして動作確認を行う． 
+
+#### 開発環境
+
+```bash
+make build-up dev
 ```
 
 起動後に`http://localhost:4000` にアクセスして動作確認を行う．  
+ 
 
 
 ### アプリケーションの停止
 
 ISDL_Sentinel ディレクトリ直下で，以下のコマンドを実行して Docker コンテナの削除と停止をする．
 
+#### 本番環境
+
 ```bash
-make stop 
+make stop prod
+```
+
+#### 開発環境
+
+```bash
+make stop dev
 ```
 
 ## ER図
@@ -78,55 +97,111 @@ make stop
 
 ```mermaid
 erDiagram
-    users ||--o{ entering_history:"1:N"
-    users ||--o{ leaving_history:"1:N"
-    status ||--o{ users:"N:1"
-    places ||--o{ users:"N:1"
-    grades ||--o{ users:"N:1"
+    user ||--o{ entering_history : "1:N"
+    user ||--o{ leaving_history : "1:N"
+    leaving_history ||--|| entering_history : "1:1"
+    status ||--o{ user : "N:1"
+    place ||--o{ user : "N:1"
+    grade ||--o{ user : "N:1"
     
-    users ||--o{ lab_assistant_shift:"1:N"
-    
-    users {
+    user ||--o{ lab_asistant_shift : "1:N"
+    user ||--o{ user_possession_avatar : "1:N"
+    avatar ||--|| user_possession_avatar : "1:1"
+    avatar ||--|| user : "1:1"
+
+    user ||--o{ credential : "1:N"
+    credential ||--|| credential_flags : "1:1"
+    credential ||--|| credential_authenticator : "1:1"
+		
+    user {
         INT id PK
+        VARCHAR name
+        VARCHAR auth_user_name
+        VARCHAR mail_address
+        VARCHAR password
+        INT number_of_coin
+        VARCHAR display_name
         INT status_id FK
         INT place_id FK
         INT grade_id FK
-        VARCHAR name
-        VARCHAR mail_address
-        VARCHAR password
-        INT number_of_coins
+        INT avatar_id FK
     }
     
     status {
-		   INT id PK
-		   VARCHAR status_name
+        INT id PK
+        VARCHAR status_name
     }
     
-    places {
-		   INT id PK
-		   VARCHAR place_name
+    place {
+        INT id PK
+        VARCHAR place_name
     }
     
-    grades {
-		   INT id PK
-		   VARCHAR grade_name
+    grade {
+        INT id PK
+        VARCHAR grade_name
     }
     
-    entering_history　{
-		    INT id PK
-		    INT user_id FK
-		    DATETIME entered_at
+    entering_history {
+        INT id PK
+        INT user_id FK
+        DATETIME entered_at
+        BOOLEAN is_first_entering
     }
     
-    leaving_history　{
-		    INT id PK
-		    INT user_id FK
-		    DATETIME left_at
+    leaving_history {
+        INT id PK
+        INT user_id FK
+        INT entering_history_id FK
+        DATETIME left_at
+        TIME stay_time
+        BOOLEAN is_last_leaving
     }
     
-    lab_assistant_shift {
-		    INT id PK
-		    INT user_id FK
-		    DATE shift_day
+    lab_asistant_shift {
+        INT id PK
+        INT user_id FK
+        DATE shift_day
     }
     
+    avatar {
+        INT id PK
+        VARCHAR img_path
+    }
+    
+    user_possession_avatar {
+        INT id PK
+        INT user_id FK
+        INT avatar_id FK
+    }
+
+    credential {
+        INT id PK
+        INT user_id FK
+        BLOB credential_id
+        BLOB public_key
+        VARCHAR attestation_type
+        INT flags_id FK
+        INT authenticator_id FK
+    }
+
+    credential_authenticator {
+        INT id PK
+        BLOB aaguid
+        BIGINT sign_count
+        BOOLEAN cloneWarning
+        VARCHAR attachment
+    }
+
+    credential_flags {
+        INT id PK
+        BOOLEAN user_present
+        BOOLEAN user_verified
+        BOOLEAN backup_eligible
+        BOOLEAN backup_state
+    }
+
+    session {
+        VARCHAR session_id PK
+        JSON session_data
+    }
