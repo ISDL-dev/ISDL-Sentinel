@@ -8,13 +8,13 @@ generate:
 	cd ../frontend && npm run generate-typescript-axios
 
 build-up:
-	docker-compose up -d --build
+	docker-compose --env-file .env.$(lastword $(MAKECMDGOALS)) up -d --build
 
 up:
-	docker-compose up -d
+	docker-compose --env-file .env.$(lastword $(MAKECMDGOALS)) up -d
 
 stop:
-	docker-compose stop
+	docker-compose --env-file .env.$(lastword $(MAKECMDGOALS)) stop
 
 down:
-	docker-compose down
+	docker-compose --env-file .env.$(lastword $(MAKECMDGOALS)) down

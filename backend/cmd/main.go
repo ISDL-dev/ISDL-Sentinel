@@ -11,6 +11,7 @@ import (
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +34,9 @@ func main() {
 	}()
 	infrastructures.InitializeGoogleCalendarClient()
 	infrastructures.InitializeGoogleDriveClient()
-	// services.InitializeTaskScheduler()
+	if os.Getenv("ENV_TYPE") == "prod" {
+		services.InitializeTaskScheduler()
+	}
 	// シグナルの待機
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
