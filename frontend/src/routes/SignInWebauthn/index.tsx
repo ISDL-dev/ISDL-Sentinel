@@ -265,6 +265,12 @@ export default function SignInWebauthn() {
             </HStack>
           </Stack>
         </Box>
+        <Text mt={1} textAlign="center">
+          または{" "}
+          <ChakraLink href="/sign-in-digest" color="teal.500">
+            パスワードでログイン
+          </ChakraLink>
+        </Text>
       </Stack>
     </Container>
   );

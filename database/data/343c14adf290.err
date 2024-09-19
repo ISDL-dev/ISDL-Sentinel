@@ -1,0 +1,12 @@
+2024-08-21T17:36:11.753883Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2024-08-21T17:36:11.756120Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.39) starting as process 124
+2024-08-21T17:36:11.757329Z 0 [Warning] [MY-013242] [Server] --character-set-server: 'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.
+2024-08-21T17:36:11.757366Z 0 [Warning] [MY-013244] [Server] --collation-server: 'utf8mb3_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
+2024-08-21T17:36:11.759494Z 0 [Warning] [MY-010159] [Server] Setting lower_case_table_names=2 because file system for /var/lib/mysql/ is case insensitive
+2024-08-21T17:36:11.773285Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2024-08-21T17:36:12.214249Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2024-08-21T17:36:12.960815Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2024-08-21T17:36:12.961431Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2024-08-21T17:36:12.968658Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2024-08-21T17:36:13.068113Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2024-08-21T17:36:13.068140Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.39'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
