@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Grid,
+  Box,
   Spinner,
   Table,
   TableContainer,
@@ -16,7 +17,7 @@ import {
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { inRoom, overnight } from "../../models/users/user";
+import { inRoom, outRoom, overnight } from "../../models/users/user";
 import { attendeesListApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ const decodeDate = (dateString: string) => {
 const isBetween8PMandMidnight = () => {
   const currentTime = dayjs();
   const hour = currentTime.hour();
-  return hour >= 13 && hour < 24; // 20時以降の条件
+  return hour >= 20 && hour < 24; 
 };
 
 function Home() {
@@ -58,29 +59,12 @@ function Home() {
     }
   };
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (requestedStatus: string) => {
     if (!authUser) return;
     try {
       const user = await attendeesListApi.putStatus({
         user_id: authUser.user_id,
-        status: authUser.status,
-      });
-      setAuthUser({
-        ...authUser,
-        status: user.data.status,
-      });
-      await fetchAttendeesList(); // ここでリストを再取得
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleStatusOvernightChange = async () => {
-    if (!authUser) return;
-    try {
-      const user = await attendeesListApi.putStatus({
-        user_id: authUser.user_id,
-        status: overnight,
+        status: requestedStatus,
       });
       setAuthUser({
         ...authUser,
@@ -98,68 +82,43 @@ function Home() {
 
   return (
     <div>
-      <Grid
-        templateColumns="repeat(3, 1fr)"
-        alignItems={"center"}
-        w={"-moz-max-content"}
-        column={3}
-      >
-        <h1 className="block mb-1 text-4xl font-bold text-gray-900 dark:text-white p-3 text-left">
-          出席者一覧
-        </h1>
+      <Grid templateColumns="repeat(1, 1fr)" w="100%" mt={{ base: 20, md: 0 }} p={6}>
+        <Flex justifyContent="center" alignItems="center" w="100%">
+          <Box flex="1">
+            <Text
+              fontSize={{ base: "2xl", md: "4xl" }}
+              fontWeight="bold"
+              color="gray.900"
+              mb={3}
+              whiteSpace="nowrap"
+            >
+              出席者一覧
+            </Text>
+          </Box>
+        </Flex>
+  
         {authUser && (
-          <Grid templateColumns="repeat(3, 1fr)" alignItems={"center"}>
-          {authUser.status === overnight ? (
-            <>
-              <Button
-                colorScheme="cyan"
-                variant="solid"
-                size="lg"
-                width={36}
-                isDisabled={true}
-              >
-                宿泊済
-              </Button>
-              <Flex ml="auto">
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  isDisabled={true}
-                >
-                  入室済
-                </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  onClick={handleStatusChange}
-                >
-                  退室
-                </Button>
-              </Flex>
-            </>
-          ) : authUser.status === inRoom ? (
-            <>
-              {isBetween8PMandMidnight() && (
+          <Flex
+          justifyContent={{ base: "center", md: "flex-end" }}
+            alignItems="center"
+            gap={4}
+            mt={4}
+            flexWrap="nowrap"
+          >
+            {authUser.status === overnight ? (
+              <>
                 <Button
                   colorScheme="cyan"
                   variant="solid"
                   size="lg"
-                  width={36}
-                  onClick={handleStatusOvernightChange}
+                  isDisabled={true}
                 >
-                  宿泊
+                  宿泊済
                 </Button>
-              )}
-              <Flex ml="auto">
                 <Button
                   colorScheme="teal"
                   variant="solid"
                   size="lg"
-                  width={36}
                   isDisabled={true}
                 >
                   入室済
@@ -168,41 +127,64 @@ function Home() {
                   colorScheme="teal"
                   variant="solid"
                   size="lg"
-                  width={36}
-                  onClick={handleStatusChange}
+                  onClick={() => handleStatusChange(outRoom)}
                 >
                   退室
                 </Button>
-              </Flex>
-            </>
-          ) : (
-            <>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                size="lg"
-                width={36}
-                onClick={handleStatusChange}
-              >
-                入室
-              </Button>
-              <Flex ml="auto">
+              </>
+            ) : authUser.status === inRoom ? (
+              <>
+                {isBetween8PMandMidnight() && (
+                  <Button
+                    colorScheme="cyan"
+                    variant="solid"
+                    size="lg"
+                    onClick={() => handleStatusChange(overnight)}
+                  >
+                    宿泊
+                  </Button>
+                )}
                 <Button
                   colorScheme="teal"
                   variant="solid"
                   size="lg"
-                  width={36}
+                  isDisabled={true}
+                >
+                  入室済
+                </Button>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  onClick={() => handleStatusChange(outRoom)}
+                >
+                  退室
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  onClick={() => handleStatusChange(inRoom)}
+                >
+                  入室
+                </Button>
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
                   isDisabled={true}
                 >
                   退室済
                 </Button>
-              </Flex>
-            </>
-          )}
-        </Grid>
-        
+              </>
+            )}
+          </Flex>
         )}
       </Grid>
+  
       <TableContainer
         pb={14}
         pr={14}
@@ -260,6 +242,7 @@ function Home() {
       </TableContainer>
     </div>
   );
-}
+  
+}  
 
 export default Home;

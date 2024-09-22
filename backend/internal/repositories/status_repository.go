@@ -18,37 +18,48 @@ func JudgeNoMemberInRoom(kc104PlaceId int32) (isFirstEntering bool, err error) {
 	return !getRows.Next(), nil
 }
 
-func GetAllStatusRepository() (statusList *sql.Rows, err error) {
-	getRows, err := infrastructures.DB.Query("SELECT id, status_name FROM status;")
+func GetStatusId(status string) (statusId int32, err error) {
+	getRows, err := infrastructures.DB.Query("SELECT id FROM status WHERE status_name = ?;", status)
 	if err != nil {
-		return nil, fmt.Errorf("getRows db.Query error err:%w", err)
+		return 0, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
-	return getRows, nil
+	for getRows.Next() {
+		err := getRows.Scan(&statusId)
+		if err != nil {
+			return 0, fmt.Errorf("failed to find target status id: %v", err)
+		}
+	}
+	return statusId, nil
 }
 
-func GetInRoomPlaceIdRepository() (getStatusId int32, err error) {
+func GetPlaceId() (placeId int32, err error) {
 	getRows, err := infrastructures.DB.Query("SELECT id FROM place WHERE place_name = ?;", model.KC104)
 	if err != nil {
 		return 0, fmt.Errorf("getRows GetInRoomStatusId Query error err:%w", err)
 	}
 	for getRows.Next() {
-		err := getRows.Scan(&getStatusId)
+		err := getRows.Scan(&placeId)
 		if err != nil {
 			return 0, fmt.Errorf("failed to find target status id: %v", err)
 		}
 	}
-	return getStatusId, nil
+	return placeId, nil
 }
 
-func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error) {
+func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 	var enteringHistoryId int32
 	var enteredAt time.Time
+
+	statusId, err := GetStatusId(status.Status)
+	if err != nil {
+		return fmt.Errorf("failed to get status id: %v", err)
+	}
 
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("fail to begin transaction error err:%w", err)
 	}
-	if placeId == 0 {
+	if status.Status == model.OUT_ROOM {
 		putOutRoomQuery := `
 		UPDATE user 
 		SET 
@@ -56,7 +67,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			status_id = ?
 		WHERE 
 			id = ?;`
-		_, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, userId)
+		_, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, status.UserId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
@@ -73,7 +84,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			entered_at DESC 
 		LIMIT 
 			1;`
-		getRows, err := infrastructures.DB.Query(getLatestEnteringHistoryQuery, userId)
+		getRows, err := infrastructures.DB.Query(getLatestEnteringHistoryQuery, status.UserId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("getLatestEnteringHistoryQuery error err:%w", err)
@@ -103,12 +114,12 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			TIMEDIFF(NOW(), ?),
 			?
 		);`
-		_, err = tx.Exec(insertOutRoomQuery, userId, enteringHistoryId, enteredAt, isLastLeaving)
+		_, err = tx.Exec(insertOutRoomQuery, status.UserId, enteringHistoryId, enteredAt, isLastLeaving)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("insertOutRoomQuery error err:%w", err)
 		}
-	} else {
+	} else if status.Status == model.IN_ROOM {
 		isFirstEntering, err := JudgeNoMemberInRoom(placeId)
 		if err != nil {
 			tx.Rollback()
@@ -122,7 +133,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			current_entered_at = NOW()
 		WHERE 
 			id = ?;`
-		_, err = tx.Exec(putInRoomQuery, placeId, statusId, userId)
+		_, err = tx.Exec(putInRoomQuery, placeId, statusId, status.UserId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
@@ -130,35 +141,22 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 		insertInRoomQuery := `
 		INSERT INTO entering_history (user_id, entered_at, is_first_entering)
 		VALUES (?, NOW(), ?);`
-		_, err = tx.Exec(insertInRoomQuery, userId, isFirstEntering)
+		_, err = tx.Exec(insertInRoomQuery, status.UserId, isFirstEntering)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("insertInRoomQuery error err:%w", err)
 		}
-	}
-	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("fail to commit transaction error err:%w", err)
-	}
-	return nil
-}
-
-func PutStatusToOvernightRepository(status schema.Status) (err error) {
-	tx, err := infrastructures.DB.Begin()
-	if err != nil {
-		return fmt.Errorf("fail to begin transaction error err:%w", err)
-	}
-
-	putOvernightQuery := `
+	} else {
+		putOvernightQuery := `
 		UPDATE user
-		SET status_id = (SELECT id FROM status WHERE status_name = ?)
-		WHERE id = ?
-	`
-	_, err = tx.Exec(putOvernightQuery, status.Status, status.UserId)
-	if err != nil {
-		tx.Rollback()
-		return fmt.Errorf("putOvernightQuery error err:%w", err)
+		SET status_id = ?
+		WHERE id = ?`
+		_, err = tx.Exec(putOvernightQuery, statusId, status.UserId)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("putOvernightQuery error err:%w", err)
+		}
 	}
-
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("fail to commit transaction error err:%w", err)
 	}
