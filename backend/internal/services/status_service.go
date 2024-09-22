@@ -49,6 +49,15 @@ func PutStatusService(status schema.Status) (user schema.Status, err error) {
 	var applyStatusId int32
 	var applyPlaceId int32
 	var targetStatusName string
+
+	if status.Status == model.OVERNIGHT {
+		err = repositories.PutStatusToOvernightRepository(status)
+		if err != nil {
+			return schema.Status{}, fmt.Errorf("failed to change user status: %v", err)
+		}
+		return status, nil
+	}
+
 	applyStatusId, targetStatusName, err = SelectApplyStatusId(status.Status)
 	if err != nil {
 		return schema.Status{}, fmt.Errorf("failed to find target status id: %v", err)

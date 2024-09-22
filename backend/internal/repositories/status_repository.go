@@ -7,6 +7,7 @@ import (
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 func JudgeNoMemberInRoom(kc104PlaceId int32) (isFirstEntering bool, err error) {
@@ -52,7 +53,7 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 		UPDATE user 
 		SET 
 			place_id = ?, 
-			status_id = ?,
+			status_id = ?
 		WHERE 
 			id = ?;`
 		_, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, userId)
@@ -135,6 +136,29 @@ func PutStatusRepository(userId int32, statusId int32, placeId int32) (err error
 			return fmt.Errorf("insertInRoomQuery error err:%w", err)
 		}
 	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("fail to commit transaction error err:%w", err)
+	}
+	return nil
+}
+
+func PutStatusToOvernightRepository(status schema.Status) (err error) {
+	tx, err := infrastructures.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("fail to begin transaction error err:%w", err)
+	}
+
+	putOvernightQuery := `
+		UPDATE user
+		SET status_id = (SELECT id FROM status WHERE status_name = ?)
+		WHERE id = ?
+	`
+	_, err = tx.Exec(putOvernightQuery, status.Status, status.UserId)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("putOvernightQuery error err:%w", err)
+	}
+
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("fail to commit transaction error err:%w", err)
 	}

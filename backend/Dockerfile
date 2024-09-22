@@ -1,4 +1,4 @@
-FROM golang:1.20.2-alpine3.17
+FROM golang:1.23.1-alpine
 
 RUN mkdir /go/src/backend
 RUN apk update && apk add git

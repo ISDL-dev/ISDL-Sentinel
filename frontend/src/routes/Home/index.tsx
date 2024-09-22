@@ -16,7 +16,7 @@ import {
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { inRoom } from "../../models/users/user";
+import { inRoom, overnight } from "../../models/users/user";
 import { attendeesListApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
@@ -31,6 +31,12 @@ const decodeDate = (dateString: string) => {
   return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
     "ddd"
   )}）${dayjs(date).format("HH時mm分")}`;
+};
+
+const isBetween8PMandMidnight = () => {
+  const currentTime = dayjs();
+  const hour = currentTime.hour();
+  return hour >= 13 && hour < 24; // 20時以降の条件
 };
 
 function Home() {
@@ -69,6 +75,23 @@ function Home() {
     }
   };
 
+  const handleStatusOvernightChange = async () => {
+    if (!authUser) return;
+    try {
+      const user = await attendeesListApi.putStatus({
+        user_id: authUser.user_id,
+        status: overnight,
+      });
+      setAuthUser({
+        ...authUser,
+        status: user.data.status,
+      });
+      await fetchAttendeesList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchAttendeesList();
   }, []);
@@ -79,19 +102,25 @@ function Home() {
         templateColumns="repeat(3, 1fr)"
         alignItems={"center"}
         w={"-moz-max-content"}
+        column={3}
       >
         <h1 className="block mb-1 text-4xl font-bold text-gray-900 dark:text-white p-3 text-left">
           出席者一覧
         </h1>
         {authUser && (
-          <Grid
-            templateColumns="repeat(2, 1fr)"
-            alignItems={"center"}
-            w={"-moz-max-content"}
-            column={3}
-          >
-            {authUser.status === inRoom ? (
-              <>
+          <Grid templateColumns="repeat(3, 1fr)" alignItems={"center"}>
+          {authUser.status === overnight ? (
+            <>
+              <Button
+                colorScheme="cyan"
+                variant="solid"
+                size="lg"
+                width={36}
+                isDisabled={true}
+              >
+                宿泊済
+              </Button>
+              <Flex ml="auto">
                 <Button
                   colorScheme="teal"
                   variant="solid"
@@ -110,9 +139,31 @@ function Home() {
                 >
                   退室
                 </Button>
-              </>
-            ) : (
-              <>
+              </Flex>
+            </>
+          ) : authUser.status === inRoom ? (
+            <>
+              {isBetween8PMandMidnight() && (
+                <Button
+                  colorScheme="cyan"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  onClick={handleStatusOvernightChange}
+                >
+                  宿泊
+                </Button>
+              )}
+              <Flex ml="auto">
+                <Button
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  width={36}
+                  isDisabled={true}
+                >
+                  入室済
+                </Button>
                 <Button
                   colorScheme="teal"
                   variant="solid"
@@ -120,8 +171,22 @@ function Home() {
                   width={36}
                   onClick={handleStatusChange}
                 >
-                  入室
+                  退室
                 </Button>
+              </Flex>
+            </>
+          ) : (
+            <>
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                size="lg"
+                width={36}
+                onClick={handleStatusChange}
+              >
+                入室
+              </Button>
+              <Flex ml="auto">
                 <Button
                   colorScheme="teal"
                   variant="solid"
@@ -131,9 +196,11 @@ function Home() {
                 >
                   退室済
                 </Button>
-              </>
-            )}
-          </Grid>
+              </Flex>
+            </>
+          )}
+        </Grid>
+        
         )}
       </Grid>
       <TableContainer
