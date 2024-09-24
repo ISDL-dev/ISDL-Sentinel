@@ -27,6 +27,10 @@ func openDB() {
 	if err != nil {
 		log.Fatalf("main sql.Open error err:%v", err)
 	}
+
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(10)
+	// DB.SetConnMaxLifetime(10 * time.Second)
 }
 
 func CloseDB() {

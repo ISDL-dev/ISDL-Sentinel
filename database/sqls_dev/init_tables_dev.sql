@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS leaving_history(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     entering_history_id INT UNSIGNED NOT NULL,
-    left_at DATETIME NOT NULL,
+    left_at DATETIME,
     stay_time TIME NOT NULL,
     is_last_leaving Boolean NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE RESTRICT ON UPDATE CASCADE,

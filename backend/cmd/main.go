@@ -34,9 +34,10 @@ func main() {
 	}()
 	infrastructures.InitializeGoogleCalendarClient()
 	infrastructures.InitializeGoogleDriveClient()
-	if os.Getenv("ENV_TYPE") == "prod" {
-		services.InitializeTaskScheduler()
-	}
+	// if os.Getenv("ENV_TYPE") == "prod" {
+	// 	services.InitializeTaskScheduler()
+	// }
+	services.InitializeTaskScheduler()
 	// シグナルの待機
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

@@ -42,6 +42,16 @@ func setLabAssistantScheduler(jst *time.Location) {
 	}
 }
 
+func forceLeavingRoomScheduler(jst *time.Location) {
+	log.Printf("Executing forced exit process...")
+	err = repositories.UpdateUserStatusToOutRoom()
+	if err != nil {
+		log.Fatalf("failed to execute query to get lab assistant schedule: %v", err)
+		return
+	}
+	log.Printf("Executing forced exit process...")
+}
+
 func InitializeTaskScheduler() {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
@@ -55,11 +65,23 @@ func InitializeTaskScheduler() {
 		return
 	}
 
+	// _, err = ns.NewJob(
+	// 	// (分 時 日 月 曜日)
+	// 	gocron.CronJob("0 0 1 * *", false),
+	// 	gocron.NewTask(func() {
+	// 		setLabAssistantScheduler(jst)
+	// 	}),
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// 	return
+	// }
+
 	_, err = ns.NewJob(
 		// (分 時 日 月 曜日)
-		gocron.CronJob("0 0 1 * *", false),
+		gocron.CronJob("*/2 * * * *", false),
 		gocron.NewTask(func() {
-			setLabAssistantScheduler(jst)
+			forceLeavingRoomScheduler(jst)
 		}),
 	)
 	if err != nil {

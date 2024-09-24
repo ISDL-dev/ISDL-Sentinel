@@ -162,3 +162,122 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 	}
 	return nil
 }
+
+func UpdateUserStatusToOutRoom() error {
+	if err := infrastructures.DB.Ping(); err != nil {
+		return fmt.Errorf("failed to ping database: %w", err)
+	}
+
+	tx, err := infrastructures.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("fail to begin transaction: %w", err)
+	}
+
+	var overnightCount int
+	checkOvernightQuery := `
+		SELECT COUNT(*) 
+		FROM user u
+		JOIN status s ON u.status_id = s.id
+		WHERE s.status_name = ?`
+	err = tx.QueryRow(checkOvernightQuery, model.OVERNIGHT).Scan(&overnightCount)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to check overnight users: %w", err)
+	}
+
+	if overnightCount == 0 {
+		// 最新のidを一時テーブルに保存してから更新
+		updateLastLeavingQuery := `
+			UPDATE leaving_history
+			JOIN (
+				SELECT id 
+				FROM leaving_history 
+				ORDER BY left_at DESC 
+				LIMIT 1
+			) AS latest ON leaving_history.id = latest.id
+			SET leaving_history.is_last_leaving = true`
+
+		_, err = tx.Exec(updateLastLeavingQuery)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to update is_last_leaving: %w", err)
+		}
+	}
+
+	outRoomsStatusId, err := GetStatusId(model.OUT_ROOM)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to get OutRoom status id: %w", err)
+	}
+
+	getUserIdQuery := `
+		SELECT u.id 
+		FROM user u
+		JOIN status s ON u.status_id = s.id
+		WHERE s.status_name = ?`
+	rows, err := tx.Query(getUserIdQuery, model.IN_ROOM)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to query users: %w", err)
+	}
+	defer rows.Close() // リソース解放のために defer で rows をクローズ
+
+	for rows.Next() {
+		var userId int32
+		if err := rows.Scan(&userId); err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to scan user: %w", err)
+		}
+
+		updateUserQuery := `
+		UPDATE user
+		SET status_id = ?
+		WHERE id = ?`
+		_, err = tx.Exec(updateUserQuery, outRoomsStatusId, userId)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to update user status: %w", err)
+		}
+
+		getLatestEnteringHistoryQuery := `
+		SELECT 
+			id AS enteringHistoryId, 
+			entered_at AS enteredAt 
+		FROM 
+			entering_history 
+		WHERE 
+			user_id = ?
+		ORDER BY 
+			entered_at DESC 
+		LIMIT 
+			1;`
+		var enteringHistoryId int
+		var enteredAt time.Time
+		err = tx.QueryRow(getLatestEnteringHistoryQuery, userId).Scan(&enteringHistoryId, &enteredAt)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to find entering history: %w", err)
+		}
+
+		insertOutRoomQuery := `
+		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+		VALUES (
+			?, 
+			?, 
+			?, 
+			?, 
+			?
+		);`
+		_, err = tx.Exec(insertOutRoomQuery, userId, enteringHistoryId, sql.NullTime{}, "00:00:00", false)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to insert into leaving_history: %w", err)
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("fail to commit transaction: %w", err)
+	}
+
+	return nil
+}
