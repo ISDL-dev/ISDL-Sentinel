@@ -5,6 +5,7 @@ import (
     "crypto/rand"
     "encoding/hex"
     "fmt"
+    "log"
     "strings"
 
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/repositories"
@@ -22,6 +23,7 @@ func CreateWWWAuthenticateHeader(nonce string) string {
 func ValidateDigestAuth(auth, method, uri string) (string, error) {
     params, err := ParseDigestAuth(auth)
     if err != nil {
+        log.Println(fmt.Errorf("failed to parse authorization header: %w", err))
         return "", fmt.Errorf("failed to parse authorization header: %w", err)
     }
 
@@ -29,15 +31,28 @@ func ValidateDigestAuth(auth, method, uri string) (string, error) {
 
     userInfo, err := repositories.GetDigestCredential(userName)
     if err != nil {
+        log.Println(fmt.Errorf("failed to get user credential: %w", err))
         return "", fmt.Errorf("failed to get user credential: %w", err)
     }
 
     ha1 := MD5Hash(fmt.Sprintf("%s:%s:%s", userName, realm, userInfo.Password))
     ha2 := MD5Hash(fmt.Sprintf("%s:%s", method, uri))
 
-    expectedResponse := MD5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
+    log.Printf("HA1: %s", ha1)
+    log.Printf("HA2: %s", ha2)
+    log.Printf("Nonce: %s", params["nonce"])
+    log.Printf("NC: %s", params["nc"])
+    log.Printf("CNonce: %s", params["cnonce"])
+    log.Printf("QOP: %s", params["qop"])
+    log.Printf("Method: %s", method)
+    log.Printf("URI: %s", uri)
 
+    expectedResponse := MD5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
+    log.Println(expectedResponse)
+    log.Println(params["response"])
+    
     if expectedResponse != params["response"] {
+        log.Println(fmt.Errorf("invalid digest"))
         return "", fmt.Errorf("invalid digest")
     }
 

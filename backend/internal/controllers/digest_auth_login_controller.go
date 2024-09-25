@@ -15,6 +15,10 @@ func DigestLoginController(ctx *gin.Context) {
 
 	if auth == "" {
 		log.Println("challenge")
+
+		ctx.Header("Access-Control-Allow-Origin", "*")
+		ctx.Header("Access-Control-Expose-Headers", "WWW-Authenticate")
+
 		nonce := services.GenerateNonce()
 		wwwAuthenticateHeader := services.CreateWWWAuthenticateHeader(nonce)
 		ctx.Header("WWW-Authenticate", wwwAuthenticateHeader)
