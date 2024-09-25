@@ -265,10 +265,10 @@ export default function SignInWebauthn() {
             </HStack>
           </Stack>
         </Box>
-        <Text mt={1} textAlign="center">
-          または{" "}
+        <Text textAlign="center">
+          {" "}
           <ChakraLink href="/sign-in-digest" color="teal.500">
-            パスワードでログイン
+            Use password
           </ChakraLink>
         </Text>
       </Stack>
