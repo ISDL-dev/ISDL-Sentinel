@@ -266,7 +266,6 @@ export default function SignInWebauthn() {
           </Stack>
         </Box>
         <Text textAlign="center">
-          {" "}
           <ChakraLink href="/sign-in-digest" color="teal.500">
             Use password
           </ChakraLink>
