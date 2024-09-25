@@ -38,18 +38,7 @@ func ValidateDigestAuth(auth, method, uri string) (string, error) {
     ha1 := MD5Hash(fmt.Sprintf("%s:%s:%s", userName, realm, userInfo.Password))
     ha2 := MD5Hash(fmt.Sprintf("%s:%s", method, uri))
 
-    log.Printf("HA1: %s", ha1)
-    log.Printf("HA2: %s", ha2)
-    log.Printf("Nonce: %s", params["nonce"])
-    log.Printf("NC: %s", params["nc"])
-    log.Printf("CNonce: %s", params["cnonce"])
-    log.Printf("QOP: %s", params["qop"])
-    log.Printf("Method: %s", method)
-    log.Printf("URI: %s", uri)
-
     expectedResponse := MD5Hash(fmt.Sprintf("%s:%s:%s:%s:%s:%s", ha1, params["nonce"], params["nc"], params["cnonce"], params["qop"], ha2))
-    log.Println(expectedResponse)
-    log.Println(params["response"])
     
     if expectedResponse != params["response"] {
         log.Println(fmt.Errorf("invalid digest"))
