@@ -9,6 +9,6 @@ ADD . /go/src/backend
 
 RUN go mod download
 
-RUN go install github.com/cosmtrek/air@v1.44.0
+RUN go install github.com/air-verse/air@latest
 
 CMD ["air", "-c", ".air.toml"]
