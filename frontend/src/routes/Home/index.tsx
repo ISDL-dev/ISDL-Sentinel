@@ -39,7 +39,7 @@ const decodeDate = (dateString: string) => {
 const isBetween8PMandMidnight = () => {
   const currentTime = dayjs();
   const hour = currentTime.hour();
-  return hour >= 10 && hour < 24;
+  return hour >= 20 && hour < 24;
 };
 
 function Home() {
