@@ -1,4 +1,4 @@
-FROM golang:1.20.2-alpine3.17
+FROM golang:1.23.1-alpine
 
 RUN mkdir /go/src/backend
 RUN apk update && apk add git
@@ -9,6 +9,6 @@ ADD . /go/src/backend
 
 RUN go mod download
 
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.60.0
 
 CMD ["air", "-c", ".air.toml"]
