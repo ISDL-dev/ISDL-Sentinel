@@ -110,16 +110,10 @@ func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err err
 						FROM place
 						WHERE place_name = ?
 					),
-					status_id = (
-						SELECT id
-						FROM status
-						WHERE status_name = ?
-					),
 					current_entered_at = ?
 				WHERE mail_address IN (%s)`, emailPlaceholders)
 
-			// クエリの実行
-			args := append([]interface{}{room.RoomName, model.IN_ROOM, startTime.Add(9 * time.Hour)}, model.ToInterfaceSlice(room.AttendeeMail)...)
+			args := append([]interface{}{room.RoomName, startTime.Add(9 * time.Hour)}, model.ToInterfaceSlice(room.AttendeeMail)...)
 			_, err := infrastructures.DB.Exec(UpdateInRoomUserFromCalendarQuery, args...)
 			if err != nil {
 				return fmt.Errorf("failed to execute query: %v", err)
