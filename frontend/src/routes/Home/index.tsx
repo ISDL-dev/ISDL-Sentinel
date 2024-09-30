@@ -27,6 +27,11 @@ import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../features/Loading/Loading";
 
+const buttonWidth = {
+  base: "100px", 
+  md: "150px",   
+};
+
 dayjs.locale("ja");
 
 const decodeDate = (dateString: string) => {
@@ -118,36 +123,36 @@ function Home() {
           >
             {authUser.status === overnight ? (
               <>
-                <Button colorScheme="cyan" variant="solid" size="lg" isDisabled>
+                <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" isDisabled>
                   宿泊済
                 </Button>
-                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
                   入室済
                 </Button>
-                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
                   退室
                 </Button>
               </>
             ) : authUser.status === inRoom ? (
               <>
                 {isBetween8PMandMidnight() && (
-                  <Button colorScheme="cyan" variant="solid" size="lg" onClick={() => handleStatusChange(overnight)}>
+                  <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" onClick={() => handleStatusChange(overnight)}>
                     宿泊
                   </Button>
                 )}
-                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
                   入室済
                 </Button>
-                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
                   退室
                 </Button>
               </>
             ) : (
               <>
-                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(inRoom)}>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(inRoom)}>
                   入室
                 </Button>
-                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
                   退室済
                 </Button>
               </>
@@ -156,7 +161,7 @@ function Home() {
         )}
       </Grid>
 
-      <TableContainer pb={14} pr={14} pl={14} mt={8} outlineOffset={2} overflowX="unset" overflowY="scroll" height="65vh">
+      <TableContainer pb={14} pr={{ base: 4, md: 14 }} pl={{ base: 4, md: 14 }} mt={8} outlineOffset={2} overflowX="unset" overflowY="scroll" height="65vh">
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
           <Thead top={0}>
             <Tr bgColor="#E6EBED">
