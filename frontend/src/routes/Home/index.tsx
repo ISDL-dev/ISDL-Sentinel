@@ -13,12 +13,14 @@ import {
   Th,
   Thead,
   Tr,
+  Icon,
 } from "@chakra-ui/react";
+import { FaBed } from "react-icons/fa";
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { inRoom, outRoom, overnight } from "../../models/users/user";
-import { attendeesListApi } from "../../api";
+import { attendeesListApi, profileApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
 import { useUser } from "../../userContext";
@@ -37,7 +39,7 @@ const decodeDate = (dateString: string) => {
 const isBetween8PMandMidnight = () => {
   const currentTime = dayjs();
   const hour = currentTime.hour();
-  return hour >= 10 && hour < 24; 
+  return hour >= 10 && hour < 24;
 };
 
 function Home() {
@@ -51,6 +53,15 @@ function Home() {
   const fetchAttendeesList = async () => {
     try {
       setIsFetching(true);
+
+      if (authUser) {
+        const user = await profileApi.getUserById(authUser.user_id);
+        setAuthUser({
+          ...authUser,
+          status: user.data.status,
+        });
+      }
+
       const response = await attendeesListApi.getAttendeesList();
       setAttendeeList(response.data);
       setIsFetching(false);
@@ -96,10 +107,10 @@ function Home() {
             </Text>
           </Box>
         </Flex>
-  
+
         {authUser && (
           <Flex
-          justifyContent={{ base: "center", md: "flex-end" }}
+            justifyContent={{ base: "center", md: "flex-end" }}
             alignItems="center"
             gap={4}
             mt={4}
@@ -107,76 +118,36 @@ function Home() {
           >
             {authUser.status === overnight ? (
               <>
-                <Button
-                  colorScheme="cyan"
-                  variant="solid"
-                  size="lg"
-                  isDisabled={true}
-                >
+                <Button colorScheme="cyan" variant="solid" size="lg" isDisabled>
                   宿泊済
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  isDisabled={true}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
                   入室済
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  onClick={() => handleStatusChange(outRoom)}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
                   退室
                 </Button>
               </>
             ) : authUser.status === inRoom ? (
               <>
                 {isBetween8PMandMidnight() && (
-                  <Button
-                    colorScheme="cyan"
-                    variant="solid"
-                    size="lg"
-                    onClick={() => handleStatusChange(overnight)}
-                  >
+                  <Button colorScheme="cyan" variant="solid" size="lg" onClick={() => handleStatusChange(overnight)}>
                     宿泊
                   </Button>
                 )}
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  isDisabled={true}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
                   入室済
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  onClick={() => handleStatusChange(outRoom)}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
                   退室
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  onClick={() => handleStatusChange(inRoom)}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(inRoom)}>
                   入室
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  isDisabled={true}
-                >
+                <Button colorScheme="teal" variant="solid" size="lg" isDisabled>
                   退室済
                 </Button>
               </>
@@ -184,17 +155,8 @@ function Home() {
           </Flex>
         )}
       </Grid>
-  
-      <TableContainer
-        pb={14}
-        pr={14}
-        pl={14}
-        mt={8}
-        outlineOffset={2}
-        overflowX="unset"
-        overflowY="scroll"
-        height="65vh"
-      >
+
+      <TableContainer pb={14} pr={14} pl={14} mt={8} outlineOffset={2} overflowX="unset" overflowY="scroll" height="65vh">
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
           <Thead top={0}>
             <Tr bgColor="#E6EBED">
@@ -219,16 +181,27 @@ function Home() {
                 <Tr key={attendee.user_id}>
                   <Td>
                     <Flex alignItems={"center"} gap={3}>
-                      <Avatar
-                        size={"md"}
-                        src={attendee.avatar_img_path}
-                        border="2px"
-                        onClick={() =>
-                          navigate("/profile", {
-                            state: { userId: attendee.user_id },
-                          })
-                        }
-                      ></Avatar>
+                      <Box position="relative">
+                        <Avatar
+                          size={"md"}
+                          src={attendee.avatar_img_path}
+                          border="2px"
+                          onClick={() =>
+                            navigate("/profile", {
+                              state: { userId: attendee.user_id },
+                            })
+                          }
+                        />
+                        {attendee.status === overnight && (
+                          <Icon
+                            as={FaBed}
+                            color="cyan.500"
+                            position="absolute"
+                            top={-1}
+                            right={-1}
+                          />
+                        )}
+                      </Box>
                       {attendee.user_name}
                     </Flex>
                   </Td>
@@ -242,7 +215,6 @@ function Home() {
       </TableContainer>
     </div>
   );
-  
-}  
+}
 
 export default Home;
