@@ -171,7 +171,8 @@ INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, 
 ('岡畑 優佑', 'yokahata', 'okahata.yusuke@mikilab.doshisha.ac.jp', 'project443', 6890, NULL, 2, NULL, 4, 1),
 ('島本 啄実', 'tshimamoto', 'shimamoto.takumi@mikilab.doshisha.ac.jp', 'project443', 3742, NULL, 2, NULL, 4, 1),
 ('和田 陽暉', 'hwada', 'wada.haruki@mikilab.doshisha.ac.jp', 'project443', 5827, NULL, 2, NULL, 4, 1),
-('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, NULL, 2, NULL, 4, 1);
+('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 959, NULL, 2, NULL, 4, 1),
+('藤原 洋希', 'yfujiwara', 'fujiwara.yoki@mikilab.doshisha.ac.jp', 'project443', 959, NULL, 2, NULL, 4, 1);
 
 INSERT INTO entering_history (user_id, entered_at, is_first_entering) VALUES 
 (2, '2024-07-01 09:00:00', true),

@@ -3,6 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
@@ -164,113 +166,102 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 }
 
 func UpdateUserStatusToOutRoom() error {
-	if err := infrastructures.DB.Ping(); err != nil {
-		return fmt.Errorf("failed to ping database: %w", err)
-	}
-
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("fail to begin transaction: %w", err)
 	}
+	defer tx.Rollback()
 
-	var overnightCount int
-	checkOvernightQuery := `
-		SELECT COUNT(*) 
+	// Get counts and IDs for IN_ROOM users
+	var inRoomCount int
+	var inRoomIDs []int
+
+	query := `
+		SELECT 
+			s.status_name,
+			COUNT(u.id) as count,
+			GROUP_CONCAT(u.id) as ids
 		FROM user u
 		JOIN status s ON u.status_id = s.id
-		WHERE s.status_name = ?`
-	err = tx.QueryRow(checkOvernightQuery, model.OVERNIGHT).Scan(&overnightCount)
+		WHERE s.status_name = ?
+		GROUP BY s.status_name
+	`
+	rows, err := tx.Query(query, model.IN_ROOM)
 	if err != nil {
-		tx.Rollback()
-		return fmt.Errorf("failed to check overnight users: %w", err)
+		return fmt.Errorf("failed to query user counts: %w", err)
 	}
-
-	if overnightCount == 0 {
-		// 最新のidを一時テーブルに保存してから更新
-		updateLastLeavingQuery := `
-			UPDATE leaving_history
-			JOIN (
-				SELECT id 
-				FROM leaving_history 
-				ORDER BY left_at DESC 
-				LIMIT 1
-			) AS latest ON leaving_history.id = latest.id
-			SET leaving_history.is_last_leaving = true`
-
-		_, err = tx.Exec(updateLastLeavingQuery)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to update is_last_leaving: %w", err)
-		}
-	}
-
-	outRoomsStatusId, err := GetStatusId(model.OUT_ROOM)
-	if err != nil {
-		tx.Rollback()
-		return fmt.Errorf("failed to get OutRoom status id: %w", err)
-	}
-
-	getUserIdQuery := `
-		SELECT u.id 
-		FROM user u
-		JOIN status s ON u.status_id = s.id
-		WHERE s.status_name = ?`
-	rows, err := tx.Query(getUserIdQuery, model.IN_ROOM)
-	if err != nil {
-		tx.Rollback()
-		return fmt.Errorf("failed to query users: %w", err)
-	}
-	defer rows.Close() // リソース解放のために defer で rows をクローズ
+	defer rows.Close()
 
 	for rows.Next() {
-		var userId int32
-		if err := rows.Scan(&userId); err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to scan user: %w", err)
+		var statusName string
+		var count int
+		var ids string
+		if err := rows.Scan(&statusName, &count, &ids); err != nil {
+			return fmt.Errorf("failed to scan row: %w", err)
 		}
 
-		updateUserQuery := `
-		UPDATE user
-		SET status_id = ?
-		WHERE id = ?`
-		_, err = tx.Exec(updateUserQuery, outRoomsStatusId, userId)
+		if statusName == model.IN_ROOM {
+			inRoomCount = count
+			inRoomIDs = stringToIntSlice(ids)
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	// If IN_ROOM count is 0, return nil
+	if inRoomCount == 0 {
+		return tx.Commit() // Commit the empty transaction
+	}
+
+	// Get OUT_ROOM status id
+	var outRoomStatusId int
+	err = tx.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OUT_ROOM).Scan(&outRoomStatusId)
+	if err != nil {
+		return fmt.Errorf("failed to get OUT_ROOM status id: %w", err)
+	}
+
+	// Update IN_ROOM users to OUT_ROOM status
+	if inRoomCount > 0 {
+		// Convert inRoomIDs to interface{} slice for the SQL query
+		idArgs := make([]interface{}, len(inRoomIDs))
+		for i, id := range inRoomIDs {
+			idArgs[i] = id
+		}
+
+		// Construct placeholders for SQL IN clause
+		placeholders := strings.Repeat("?,", len(inRoomIDs)-1) + "?"
+
+		// Update query with generated placeholders and args
+		_, err = tx.Exec(fmt.Sprintf(`
+			UPDATE user
+			SET status_id = ?
+			WHERE id IN (%s)
+		`, placeholders), append([]interface{}{outRoomStatusId}, idArgs...)...)
 		if err != nil {
-			tx.Rollback()
 			return fmt.Errorf("failed to update user status: %w", err)
 		}
 
-		getLatestEnteringHistoryQuery := `
-		SELECT 
-			id AS enteringHistoryId, 
-			entered_at AS enteredAt 
-		FROM 
-			entering_history 
-		WHERE 
-			user_id = ?
-		ORDER BY 
-			entered_at DESC 
-		LIMIT 
-			1;`
-		var enteringHistoryId int
-		var enteredAt time.Time
-		err = tx.QueryRow(getLatestEnteringHistoryQuery, userId).Scan(&enteringHistoryId, &enteredAt)
+		// Insert into leaving_history for updated users
+		_, err = tx.Exec(fmt.Sprintf(`
+			INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+			SELECT 
+				u.id,
+				eh.id,
+				NOW(),
+				'00:00:00',
+				false
+			FROM user u
+			JOIN (
+				SELECT user_id, MAX(id) as id
+				FROM entering_history
+				WHERE user_id IN (%s)
+				GROUP BY user_id
+			) eh ON u.id = eh.user_id
+			WHERE u.id IN (%s)
+		`, placeholders, placeholders), append(idArgs, idArgs...)...)
 		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to find entering history: %w", err)
-		}
-
-		insertOutRoomQuery := `
-		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
-		VALUES (
-			?, 
-			?, 
-			?, 
-			?, 
-			?
-		);`
-		_, err = tx.Exec(insertOutRoomQuery, userId, enteringHistoryId, sql.NullTime{}, "00:00:00", false)
-		if err != nil {
-			tx.Rollback()
 			return fmt.Errorf("failed to insert into leaving_history: %w", err)
 		}
 	}
@@ -280,4 +271,14 @@ func UpdateUserStatusToOutRoom() error {
 	}
 
 	return nil
+}
+
+func stringToIntSlice(s string) []int {
+	var result []int
+	for _, idStr := range strings.Split(s, ",") {
+		if id, err := strconv.Atoi(idStr); err == nil {
+			result = append(result, id)
+		}
+	}
+	return result
 }
