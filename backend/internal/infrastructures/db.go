@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -27,6 +28,10 @@ func openDB() {
 	if err != nil {
 		log.Fatalf("main sql.Open error err:%v", err)
 	}
+
+	DB.SetMaxOpenConns(100)
+	DB.SetMaxIdleConns(100)
+	DB.SetConnMaxLifetime(10 * time.Second)
 }
 
 func CloseDB() {

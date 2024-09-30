@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Grid,
+  Box,
   Spinner,
   Table,
   TableContainer,
@@ -12,17 +13,24 @@ import {
   Th,
   Thead,
   Tr,
+  Icon,
 } from "@chakra-ui/react";
+import { FaBed } from "react-icons/fa";
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { inRoom } from "../../models/users/user";
-import { attendeesListApi } from "../../api";
+import { inRoom, outRoom, overnight } from "../../models/users/user";
+import { attendeesListApi, profileApi } from "../../api";
 import { GetAttendeesList200ResponseInner } from "../../schema";
 import { useEffect, useState } from "react";
 import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../features/Loading/Loading";
+
+const buttonWidth = {
+  base: "100px", 
+  md: "150px",   
+};
 
 dayjs.locale("ja");
 
@@ -31,6 +39,12 @@ const decodeDate = (dateString: string) => {
   return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
     "ddd"
   )}）${dayjs(date).format("HH時mm分")}`;
+};
+
+const isBetween8PMandMidnight = () => {
+  const currentTime = dayjs();
+  const hour = currentTime.hour();
+  return hour >= 20 && hour < 24;
 };
 
 function Home() {
@@ -44,6 +58,15 @@ function Home() {
   const fetchAttendeesList = async () => {
     try {
       setIsFetching(true);
+
+      if (authUser) {
+        const user = await profileApi.getUserById(authUser.user_id);
+        setAuthUser({
+          ...authUser,
+          status: user.data.status,
+        });
+      }
+
       const response = await attendeesListApi.getAttendeesList();
       setAttendeeList(response.data);
       setIsFetching(false);
@@ -52,18 +75,18 @@ function Home() {
     }
   };
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (requestedStatus: string) => {
     if (!authUser) return;
     try {
       const user = await attendeesListApi.putStatus({
         user_id: authUser.user_id,
-        status: authUser.status,
+        status: requestedStatus,
       });
       setAuthUser({
         ...authUser,
         status: user.data.status,
       });
-      await fetchAttendeesList(); // ここでリストを再取得
+      await fetchAttendeesList();
     } catch (error) {
       console.log(error);
     }
@@ -75,77 +98,70 @@ function Home() {
 
   return (
     <div>
-      <Grid
-        templateColumns="repeat(3, 1fr)"
-        alignItems={"center"}
-        w={"-moz-max-content"}
-      >
-        <h1 className="block mb-1 text-4xl font-bold text-gray-900 dark:text-white p-3 text-left">
-          出席者一覧
-        </h1>
+      <Grid templateColumns="repeat(1, 1fr)" w="100%" mt={{ base: 20, md: 0 }} p={6}>
+        <Flex justifyContent="center" alignItems="center" w="100%">
+          <Box flex="1">
+            <Text
+              fontSize={{ base: "2xl", md: "4xl" }}
+              fontWeight="bold"
+              color="gray.900"
+              mb={3}
+              whiteSpace="nowrap"
+            >
+              出席者一覧
+            </Text>
+          </Box>
+        </Flex>
+
         {authUser && (
-          <Grid
-            templateColumns="repeat(2, 1fr)"
-            alignItems={"center"}
-            w={"-moz-max-content"}
-            column={3}
+          <Flex
+            justifyContent={{ base: "center", md: "flex-end" }}
+            alignItems="center"
+            gap={4}
+            mt={4}
+            flexWrap="nowrap"
           >
-            {authUser.status === inRoom ? (
+            {authUser.status === overnight ? (
               <>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  isDisabled={true}
-                >
+                <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" isDisabled>
+                  宿泊済
+                </Button>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
                   入室済
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  onClick={handleStatusChange}
-                >
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
+                  退室
+                </Button>
+              </>
+            ) : authUser.status === inRoom ? (
+              <>
+                {isBetween8PMandMidnight() && (
+                  <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" onClick={() => handleStatusChange(overnight)}>
+                    宿泊
+                  </Button>
+                )}
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
+                  入室済
+                </Button>
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
                   退室
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  onClick={handleStatusChange}
-                >
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(inRoom)}>
                   入室
                 </Button>
-                <Button
-                  colorScheme="teal"
-                  variant="solid"
-                  size="lg"
-                  width={36}
-                  isDisabled={true}
-                >
+                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
                   退室済
                 </Button>
               </>
             )}
-          </Grid>
+          </Flex>
         )}
       </Grid>
-      <TableContainer
-        pb={14}
-        pr={14}
-        pl={14}
-        mt={8}
-        outlineOffset={2}
-        overflowX="unset"
-        overflowY="scroll"
-        height="65vh"
-      >
+
+      <TableContainer pb={14} pr={{ base: 4, md: 14 }} pl={{ base: 4, md: 14 }} mt={8} outlineOffset={2} overflowX="unset" overflowY="scroll" height="65vh">
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
           <Thead top={0}>
             <Tr bgColor="#E6EBED">
@@ -170,16 +186,27 @@ function Home() {
                 <Tr key={attendee.user_id}>
                   <Td>
                     <Flex alignItems={"center"} gap={3}>
-                      <Avatar
-                        size={"md"}
-                        src={attendee.avatar_img_path}
-                        border="2px"
-                        onClick={() =>
-                          navigate("/profile", {
-                            state: { userId: attendee.user_id },
-                          })
-                        }
-                      ></Avatar>
+                      <Box position="relative">
+                        <Avatar
+                          size={"md"}
+                          src={attendee.avatar_img_path}
+                          border="2px"
+                          onClick={() =>
+                            navigate("/profile", {
+                              state: { userId: attendee.user_id },
+                            })
+                          }
+                        />
+                        {attendee.status === overnight && (
+                          <Icon
+                            as={FaBed}
+                            color="cyan.500"
+                            position="absolute"
+                            top={-1}
+                            right={-1}
+                          />
+                        )}
+                      </Box>
                       {attendee.user_name}
                     </Flex>
                   </Td>
