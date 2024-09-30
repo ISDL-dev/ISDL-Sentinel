@@ -265,6 +265,11 @@ export default function SignInWebauthn() {
             </HStack>
           </Stack>
         </Box>
+        <Text textAlign="center">
+          <ChakraLink href="/sign-in-digest" color="teal.500">
+            Use password
+          </ChakraLink>
+        </Text>
       </Stack>
     </Container>
   );
