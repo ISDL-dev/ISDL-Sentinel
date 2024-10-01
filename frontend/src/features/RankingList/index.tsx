@@ -20,9 +20,8 @@ import { rankingApi } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 export const RankingList = (placeholder: { placeholder: string }) => {
-  const [rankingList, setRankingList] = useState<GetRanking200ResponseInner[]>(
-    []
-  );
+  type RankedItem = GetRanking200ResponseInner & { rank: number };
+  const [rankingList, setRankingList] = useState<RankedItem[]>([]);
   const navigate = useNavigate();
   const getDateFromStringFormat = (dateFormat: string) => {
     const [hours, minutes, seconds] = dateFormat.split(":").map(Number);
@@ -46,12 +45,32 @@ export const RankingList = (placeholder: { placeholder: string }) => {
         )
       : responseData.sort((a, b) => b.attendance_days - a.attendance_days);
   };
+  const assignRanks = (
+    list: GetRanking200ResponseInner[],
+    placeholder: string
+  ): RankedItem[] => {
+    const sortedList = orderByPlaceholder([...list], placeholder);
+    let currentRank = 1;
+    let previousValue: number | string =
+      placeholder === "stay_time"
+        ? sortedList[0].stay_time
+        : sortedList[0].attendance_days;
+
+    return sortedList.map((item, index) => {
+      const currentValue =
+        placeholder === "stay_time" ? item.stay_time : item.attendance_days;
+      if (index > 0 && currentValue !== previousValue) {
+        currentRank = index + 1;
+      }
+      previousValue = currentValue;
+      return { ...item, rank: currentRank };
+    });
+  };
   const fetchRankingList = async () => {
     try {
       const response = await rankingApi.getRanking();
-      setRankingList(
-        orderByPlaceholder(response.data, placeholder.placeholder)
-      );
+      const rankedList = assignRanks(response.data, placeholder.placeholder);
+      setRankingList(rankedList as RankedItem[]);
     } catch (error) {
       console.log(error);
     }
@@ -86,13 +105,13 @@ export const RankingList = (placeholder: { placeholder: string }) => {
               rowSpan={4}
               colSpan={1}
               textAlign="center"
-              key={index}
+              key={item.user_id}
               display="flex"
               flexDirection="column"
               justifyContent="center"
               alignItems="center"
             >
-              <Top3Icon rank={index}></Top3Icon>
+              <Top3Icon rank={item.rank - 1}></Top3Icon>
               <Image
                 src={item.avatar_img_path}
                 alt={`${item.avatar_id}`}
@@ -134,67 +153,63 @@ export const RankingList = (placeholder: { placeholder: string }) => {
             <Table size="sm">
               <Tbody>
                 {rankingList.length !== 0 &&
-                  rankingList
-                    .slice(awardUserIndex, endIndex)
-                    .map((item, index) => (
-                      <Tr key={item.user_id}>
-                        <Td textAlign="center" w={15}>
-                          <Card>
-                            <CardBody>
-                              <Grid
-                                templateColumns="auto auto 1fr auto"
-                                alignItems={"center"}
-                                height={"20%"}
-                                w={"-moz-max-content"}
-                                gap={4}
+                  rankingList.slice(awardUserIndex, endIndex).map((item) => (
+                    <Tr key={item.user_id}>
+                      <Td textAlign="center" w={15}>
+                        <Card>
+                          <CardBody>
+                            <Grid
+                              templateColumns="auto auto 1fr auto"
+                              alignItems={"center"}
+                              height={"20%"}
+                              w={"-moz-max-content"}
+                              gap={4}
+                            >
+                              <GridItem
+                                justifySelf="start"
+                                marginRight={{ base: 12, md: 20 }}
+                                paddingTop={14}
                               >
-                                <GridItem
-                                  justifySelf="start"
-                                  marginRight={{ base: 12, md: 20 }}
-                                  paddingTop={14}
+                                <Top10Icon rank={`${item.rank}`} />
+                              </GridItem>
+                              <GridItem
+                                justifySelf="start"
+                                marginRight={{ base: 0, md: 8 }}
+                              >
+                                <Image
+                                  src={item.avatar_img_path}
+                                  alt={`${item.avatar_id}`}
+                                  boxSize={{
+                                    base: "36px",
+                                    md: "50px",
+                                  }}
+                                  cursor="pointer"
+                                  onClick={() =>
+                                    navigate("/profile", {
+                                      state: {
+                                        userId: item.user_id,
+                                      },
+                                    })
+                                  }
+                                />
+                              </GridItem>
+                              <GridItem justifySelf="start">
+                                <Text fontSize="large">{item.user_name}</Text>
+                              </GridItem>
+                              <GridItem justifySelf="end">
+                                <Heading
+                                  fontSize={{ base: "xl", md: "2xl" }}
+                                  color="#fa8072"
                                 >
-                                  <Top10Icon
-                                    rank={`${awardUserIndex + index + 1}`}
-                                  />
-                                </GridItem>
-                                <GridItem
-                                  justifySelf="start"
-                                  marginRight={{ base: 0, md: 8 }}
-                                >
-                                  <Image
-                                    src={item.avatar_img_path}
-                                    alt={`${item.avatar_id}`}
-                                    boxSize={{
-                                      base: "36px",
-                                      md: "50px",
-                                    }}
-                                    cursor="pointer"
-                                    onClick={() =>
-                                      navigate("/profile", {
-                                        state: {
-                                          userId: item.user_id,
-                                        },
-                                      })
-                                    }
-                                  />
-                                </GridItem>
-                                <GridItem justifySelf="start">
-                                  <Text fontSize="large">{item.user_name}</Text>
-                                </GridItem>
-                                <GridItem justifySelf="end">
-                                  <Heading
-                                    fontSize={{ base: "xl", md: "2xl" }}
-                                    color="#fa8072"
-                                  >
-                                    {formatResultByPlaceholder(item)}
-                                  </Heading>
-                                </GridItem>
-                              </Grid>
-                            </CardBody>
-                          </Card>
-                        </Td>
-                      </Tr>
-                    ))}
+                                  {formatResultByPlaceholder(item)}
+                                </Heading>
+                              </GridItem>
+                            </Grid>
+                          </CardBody>
+                        </Card>
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
           </TableContainer>
