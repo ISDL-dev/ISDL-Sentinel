@@ -17,6 +17,7 @@ import {
   Button,
   Stack,
   FlexProps,
+  Image,
 } from "@chakra-ui/react";
 import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +32,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const { authUser, setAuthUser } = useUser();
   const bg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
+  const faviconPath =
+    "https://drive.google.com/thumbnail?id=1xud5OvptQUPXmaVxuk1CZ8hWXa780_jq&sz=w1000";
 
   const handleSignOut = () => {
     setAuthUser(undefined);
@@ -67,7 +70,20 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         ml={4}
         color="white"
       >
-        ISDL Sentinel
+        <Flex alignItems={"center"}>
+          <Image
+            src={faviconPath}
+            alt=""
+            boxSize={{
+              base: "64px",
+              md: "96px",
+            }}
+            objectFit="contain"
+            cursor="pointer"
+            mt={1}
+          />
+          ISDL Sentinel
+        </Flex>
       </Heading>
 
       {authUser ? (
