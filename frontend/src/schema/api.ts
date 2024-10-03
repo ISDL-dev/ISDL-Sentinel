@@ -584,15 +584,15 @@ export const AccessHistoryApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory: async (date: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'date' is not null or undefined
-            assertParamExists('getAccessHistory', 'date', date)
-            const localVarPath = `/access-history/{date}`
-                .replace(`{${"date"}}`, encodeURIComponent(String(date)));
+        getAccessHistory: async (month: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('getAccessHistory', 'month', month)
+            const localVarPath = `/access-history/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -628,12 +628,12 @@ export const AccessHistoryApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessHistory(date: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(date, options);
+        async getAccessHistory(month: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(month, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccessHistoryApi.getAccessHistory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -651,12 +651,12 @@ export const AccessHistoryApiFactory = function (configuration?: Configuration, 
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory(date: string, options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
-            return localVarFp.getAccessHistory(date, options).then((request) => request(axios, basePath));
+        getAccessHistory(month: string, options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
+            return localVarFp.getAccessHistory(month, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -671,13 +671,13 @@ export class AccessHistoryApi extends BaseAPI {
     /**
      * 
      * @summary Get access history
-     * @param {string} date 
+     * @param {string} month 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccessHistoryApi
      */
-    public getAccessHistory(date: string, options?: RawAxiosRequestConfig) {
-        return AccessHistoryApiFp(this.configuration).getAccessHistory(date, options).then((request) => request(this.axios, this.basePath));
+    public getAccessHistory(month: string, options?: RawAxiosRequestConfig) {
+        return AccessHistoryApiFp(this.configuration).getAccessHistory(month, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
