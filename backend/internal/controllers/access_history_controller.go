@@ -11,9 +11,9 @@ import (
 
 func GetAccessHistoryController(ctx *gin.Context) {
 	var accessHistrory []schema.GetAccessHistory200ResponseInner
-	date := ctx.Param("date")
+	month := ctx.Param("month")
 
-	accessHistrory, err := services.GetAccessHistoryService(date)
+	accessHistrory, err := services.GetAccessHistoryService(month)
 	if err != nil {
 		log.Println(err.Error())
 		ctx.JSON(http.StatusInternalServerError, schema.Error{

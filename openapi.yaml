@@ -49,7 +49,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /access-history/{date}:
+  /access-history/{month}:
     get:
       summary: Get access history
       operationId: get-access-history
@@ -57,7 +57,7 @@ paths:
         - Access history
       parameters:
         - in: path
-          name: date
+          name: month
           required: true
           schema:
             type: string

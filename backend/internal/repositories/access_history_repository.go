@@ -8,7 +8,7 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetAccessHistoryRepository(date string) (accessHistory []schema.GetAccessHistory200ResponseInner, err error) {
+func GetAccessHistoryRepository(month string) (accessHistory []schema.GetAccessHistory200ResponseInner, err error) {
 	var accessHistoryInner schema.GetAccessHistory200ResponseInner
 	var firstEntering schema.GetAccessHistory200ResponseInnerEntering
 	var firstEnteringList []schema.GetAccessHistory200ResponseInnerEntering
@@ -31,7 +31,7 @@ func GetAccessHistoryRepository(date string) (accessHistory []schema.GetAccessHi
 		WHERE 
 			eh.is_first_entering = true
 			AND DATE_FORMAT(eh.entered_at, '%Y-%m') = ?;`
-	getFirstEnteringRows, err := infrastructures.DB.Query(getFirstEnteringHistoryQuery, date)
+	getFirstEnteringRows, err := infrastructures.DB.Query(getFirstEnteringHistoryQuery, month)
 	if err != nil {
 		return []schema.GetAccessHistory200ResponseInner{}, fmt.Errorf("failed to execute query to get first entering history:%w", err)
 	}
@@ -64,7 +64,7 @@ func GetAccessHistoryRepository(date string) (accessHistory []schema.GetAccessHi
 		WHERE 
 			lh.is_last_leaving = true
 			AND DATE_FORMAT(lh.left_at, '%Y-%m') = ?;`
-	getLastLeavingRows, err := infrastructures.DB.Query(getLastLeavingHistoryQuery, date)
+	getLastLeavingRows, err := infrastructures.DB.Query(getLastLeavingHistoryQuery, month)
 	if err != nil {
 		return []schema.GetAccessHistory200ResponseInner{}, fmt.Errorf("failed to execute query to get last leaving history:%w", err)
 	}
