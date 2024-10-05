@@ -270,6 +270,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /grade:
+    get:
+      summary: Get grade name
+      operationId: get-grade-name
+      tags:
+        - Authentication
+      responses:
+        "200":
+          $ref: "#/components/responses/Grade"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /password:
     put:
       summary: Change password
@@ -342,28 +357,34 @@ components:
             properties:
               name:
                 type: string
+              auth_user_name:
+                type: string
               mail_address:
                 type: string
               password:
                 type: string
+              grade_name:
+                type: string
             required:
               - name
+              - auth_user_name
               - mail_address
               - password
+              - grade_name
     Password:
       content:
         application/json:
           schema:
             type: object
             properties:
-              mail_address:
+              auth_user_name:
                 type: string
               before_password:
                 type: string
               after_password:
                 type: string
             required:
-              - mail_address
+              - auth_user_name
               - before_password
               - after_password
   responses:
@@ -628,6 +649,14 @@ components:
               - status
               - avatar_id
               - avatar_img_path
+    Grade:
+      description: successful to get grade name
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
   schemas:
     Status:
       type: object

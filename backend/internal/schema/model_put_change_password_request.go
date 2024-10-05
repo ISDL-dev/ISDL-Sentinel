@@ -11,7 +11,7 @@ package schema
 
 type PutChangePasswordRequest struct {
 
-	MailAddress string `json:"mail_address"`
+	AuthUserName string `json:"auth_user_name"`
 
 	BeforePassword string `json:"before_password"`
 
