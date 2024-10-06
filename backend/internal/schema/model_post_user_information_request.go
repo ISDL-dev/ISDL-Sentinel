@@ -13,8 +13,12 @@ type PostUserInformationRequest struct {
 
 	Name string `json:"name"`
 
+	AuthUserName string `json:"auth_user_name"`
+
 	MailAddress string `json:"mail_address"`
 
 	Password string `json:"password"`
+
+	GradeName string `json:"grade_name"`
 }
 
