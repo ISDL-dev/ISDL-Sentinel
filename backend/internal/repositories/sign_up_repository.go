@@ -8,7 +8,7 @@ import (
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func SignUpRepository(user schema.PostUserSignUpRequest) error {
+func SignUpRepository(user schema.PostUserInformationRequest) error {
     getUserCredentialQuery := `
         SELECT name
         FROM user
@@ -26,12 +26,23 @@ func SignUpRepository(user schema.PostUserSignUpRequest) error {
 		return fmt.Errorf("error querying user: %v", err)
 	} 
 
-	InsertUserInformationQuery := `
+	selectUserGradeIDQuery := `SELECT id FROM grade WHERE grade_name = ?;`
+
+	row = infrastructures.DB.QueryRow(selectUserGradeIDQuery, user.GradeName)
+
+	var gradeID string
+	err = row.Scan(&gradeID)
+
+	if err != nil {
+        return fmt.Errorf("grade_name not found")
+    } 
+
+	insertUserInformationQuery := `
 		INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, current_entered_at, status_id, place_id, grade_id, avatar_id)
 		VALUES (?, ?, ?, ?, 0, NULL, 2, NULL, ?, 1);
 	`
 
-	_ , err = infrastructures.DB.Exec(InsertUserInformationQuery, user.Name, user.AuthUserName, user.MailAddress, user.Password, user.GradeID)
+	_ , err = infrastructures.DB.Exec(insertUserInformationQuery, user.Name, user.AuthUserName, user.MailAddress, user.Password, gradeID)
 
 	if err != nil {
 		return fmt.Errorf("failed to register user information: %w", err)

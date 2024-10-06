@@ -13,14 +13,12 @@ import (
 
 
 func PostSignUpController(ctx *gin.Context){
-	var user schema.PostUserSignUpRequest
+	var user schema.PostUserInformationRequest
 
 	if err := ctx.ShouldBind(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	log.Println(fmt.Errorf("Failed to get user information"))
 
 	if err := services.PostSignUpService(user); err != nil {
 		ctx.JSON(http.StatusConflict, gin.H{"error": err.Error()})
