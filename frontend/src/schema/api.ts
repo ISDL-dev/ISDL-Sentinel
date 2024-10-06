@@ -522,6 +522,12 @@ export interface PostUserInformationRequest {
      * @type {string}
      * @memberof PostUserInformationRequest
      */
+    'auth_user_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostUserInformationRequest
+     */
     'mail_address': string;
     /**
      * 
@@ -529,6 +535,12 @@ export interface PostUserInformationRequest {
      * @memberof PostUserInformationRequest
      */
     'password': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostUserInformationRequest
+     */
+    'grade_name': string;
 }
 /**
  * 
@@ -541,7 +553,7 @@ export interface PutChangePasswordRequest {
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'mail_address': string;
+    'auth_user_name': string;
     /**
      * 
      * @type {string}
@@ -584,15 +596,15 @@ export const AccessHistoryApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory: async (date: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'date' is not null or undefined
-            assertParamExists('getAccessHistory', 'date', date)
-            const localVarPath = `/access-history/{date}`
-                .replace(`{${"date"}}`, encodeURIComponent(String(date)));
+        getAccessHistory: async (month: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'month' is not null or undefined
+            assertParamExists('getAccessHistory', 'month', month)
+            const localVarPath = `/access-history/{month}`
+                .replace(`{${"month"}}`, encodeURIComponent(String(month)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -628,12 +640,12 @@ export const AccessHistoryApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessHistory(date: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(date, options);
+        async getAccessHistory(month: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAccessHistory200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessHistory(month, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccessHistoryApi.getAccessHistory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -651,12 +663,12 @@ export const AccessHistoryApiFactory = function (configuration?: Configuration, 
         /**
          * 
          * @summary Get access history
-         * @param {string} date 
+         * @param {string} month 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessHistory(date: string, options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
-            return localVarFp.getAccessHistory(date, options).then((request) => request(axios, basePath));
+        getAccessHistory(month: string, options?: any): AxiosPromise<Array<GetAccessHistory200ResponseInner>> {
+            return localVarFp.getAccessHistory(month, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -671,13 +683,13 @@ export class AccessHistoryApi extends BaseAPI {
     /**
      * 
      * @summary Get access history
-     * @param {string} date 
+     * @param {string} month 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccessHistoryApi
      */
-    public getAccessHistory(date: string, options?: RawAxiosRequestConfig) {
-        return AccessHistoryApiFp(this.configuration).getAccessHistory(date, options).then((request) => request(this.axios, this.basePath));
+    public getAccessHistory(month: string, options?: RawAxiosRequestConfig) {
+        return AccessHistoryApiFp(this.configuration).getAccessHistory(month, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -863,6 +875,36 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
     return {
         /**
          * 
+         * @summary Get grade name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGradeName: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/grade`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Sign in
          * @param {PostSignInRequest} [postSignInRequest] 
          * @param {*} [options] Override http request option.
@@ -975,6 +1017,18 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Get grade name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getGradeName(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGradeName(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.getGradeName']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Sign in
          * @param {PostSignInRequest} [postSignInRequest] 
          * @param {*} [options] Override http request option.
@@ -1024,6 +1078,15 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
     return {
         /**
          * 
+         * @summary Get grade name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGradeName(options?: any): AxiosPromise<Array<string>> {
+            return localVarFp.getGradeName(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Sign in
          * @param {PostSignInRequest} [postSignInRequest] 
          * @param {*} [options] Override http request option.
@@ -1062,6 +1125,17 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
  * @extends {BaseAPI}
  */
 export class AuthenticationApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get grade name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public getGradeName(options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).getGradeName(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Sign in
