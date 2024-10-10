@@ -512,6 +512,10 @@ components:
                 type: string
               grade:
                 type: string
+              role_list:
+                type: array
+                items:
+                  type: string
               avatar_id:
                 type: integer
                 format: uint64
@@ -540,6 +544,7 @@ components:
               - status
               - place
               - grade
+              - role_list
               - avatar_id
               - avatar_img_path
               - avatar_list
@@ -638,6 +643,10 @@ components:
                 type: string
               status:
                 type: string
+              role_list:
+                type: array
+                items:
+                  type: string
               avatar_id:
                 type: integer
                 format: uint64
@@ -647,6 +656,7 @@ components:
               - user_id
               - user_name
               - status
+              - role_list
               - avatar_id
               - avatar_img_path
     Grade:

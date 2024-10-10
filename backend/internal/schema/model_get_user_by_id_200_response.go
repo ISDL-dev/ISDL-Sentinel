@@ -29,6 +29,8 @@ type GetUserById200Response struct {
 
 	Grade string `json:"grade"`
 
+	RoleList []string `json:"role_list"`
+
 	AvatarId int32 `json:"avatar_id"`
 
 	AvatarImgPath string `json:"avatar_img_path"`
