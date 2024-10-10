@@ -16,10 +16,8 @@ const LinkItems: Array<{ name: string; icon: IconType; href: string }> = [
   { name: "Attendee List", icon: FiHome, href: "/" },
   { name: "Access History", icon: FaHistory, href: "/access-history" },
   { name: "Ranking", icon: FiBarChart2, href: "/ranking" },
-  { name: "Gacha", icon: GiPerspectiveDiceSixFacesRandom, href: "/" },
-  { name: "ISDL Map", icon: FiMapPin, href: "/" },
   { name: "LA", icon: ImLab, href: "/lab-assistant" },
-  { name: "Settings", icon: FiSettings, href: "/" },
+  { name: "Settings", icon: FiSettings, href: "/user-setting" },
 ];
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
@@ -32,7 +30,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
-      zIndex="0" // SidebarContentを前面に表示
+      zIndex="0"
       {...rest}
     >
       <Flex h="6" alignItems="center" mx="8" justifyContent="space-between">
