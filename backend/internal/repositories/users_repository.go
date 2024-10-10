@@ -11,7 +11,10 @@ import (
 func GetUsersRepository(userId int, date string) (userInformation schema.GetUserById200Response, err error) {
 	var avatar schema.GetUserById200ResponseAvatarListInner
 	var avatarList []schema.GetUserById200ResponseAvatarListInner
+	var roleName string
+	var roleList []string
 
+	// Query to get user information
 	getUserInfoQuery := `
 		SELECT 
 			user.id AS UserId,
@@ -51,6 +54,7 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get user information: %v", err)
 	}
 
+	// Query to get attendance days and stay time
 	getMonthStaytimeAndDaysQuery := `
 		SELECT 
 			COUNT(DISTINCT DATE(left_at)) AS AttendanceDays,
@@ -64,6 +68,7 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get staytime and attendance days: %v", err)
 	}
 
+	// Query to get the list of avatars
 	getAvatarListQuery := `
 		SELECT 
 			avatar.id AS AvatarId,
@@ -86,6 +91,32 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		avatarList = append(avatarList, avatar)
 	}
 	userInformation.AvatarList = avatarList
+
+	// Query to get the list of roles for the user
+	getRoleListQuery := `
+		SELECT 
+			role.role_name 
+		FROM 
+			user_possession_role
+		JOIN 
+			role ON user_possession_role.role_id = role.id
+		WHERE 
+			user_possession_role.user_id = ?;`
+	roleRows, err := infrastructures.DB.Query(getRoleListQuery, userId)
+	if err != nil {
+		return schema.GetUserById200Response{}, fmt.Errorf("getRoles db.Query error err:%w", err)
+	}
+	defer roleRows.Close()
+
+	// Append the role names to the RoleList
+	for roleRows.Next() {
+		err := roleRows.Scan(&roleName)
+		if err != nil {
+			return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get role list:%w", err)
+		}
+		roleList = append(roleList, roleName)
+	}
+	userInformation.RoleList = roleList
 
 	return userInformation, nil
 }

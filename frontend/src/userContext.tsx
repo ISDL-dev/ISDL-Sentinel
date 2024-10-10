@@ -4,9 +4,11 @@ interface AuthUser {
   user_id: number;
   user_name: string;
   status: string;
+  role_list: string[];
   avatar_id: number;
-  avatar_img_path: string;
+  avatar_img_path: string;  
 }
+
 
 interface UserContextType {
   authUser: AuthUser | undefined;

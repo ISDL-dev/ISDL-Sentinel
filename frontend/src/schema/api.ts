@@ -375,6 +375,12 @@ export interface GetUserById200Response {
     'grade': string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof GetUserById200Response
+     */
+    'role_list': Array<string>;
+    /**
+     * 
      * @type {number}
      * @memberof GetUserById200Response
      */
@@ -473,6 +479,12 @@ export interface PostSignIn200Response {
      * @memberof PostSignIn200Response
      */
     'status': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PostSignIn200Response
+     */
+    'role_list': Array<string>;
     /**
      * 
      * @type {number}

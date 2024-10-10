@@ -153,6 +153,10 @@ func insertAuthenticator(authenticator webauthn.Authenticator) (int64, error) {
 }
 
 func GetLoginUserInfo(userName string) (loginUserInfo schema.PostSignIn200Response, err error) {
+	var roleName string
+	var roleList []string
+
+	// Query to get basic user information
 	getLoginUserInfoQuery := `
         SELECT 
             u.id AS user_id,
@@ -165,6 +169,7 @@ func GetLoginUserInfo(userName string) (loginUserInfo schema.PostSignIn200Respon
         LEFT JOIN avatar a ON u.avatar_id = a.id
         WHERE u.auth_user_name = ?;`
 
+	// Execute the query to get the user information
 	if err := infrastructures.DB.QueryRow(getLoginUserInfoQuery, userName).Scan(
 		&loginUserInfo.UserId,
 		&loginUserInfo.UserName,
@@ -174,6 +179,35 @@ func GetLoginUserInfo(userName string) (loginUserInfo schema.PostSignIn200Respon
 	); err != nil {
 		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get login user info: %w", err)
 	}
+
+	// Query to get the list of roles for the user
+	getRoleListQuery := `
+        SELECT 
+            r.role_name 
+        FROM 
+            user_possession_role upr
+        JOIN 
+            role r ON upr.role_id = r.id
+        WHERE 
+            upr.user_id = ?;`
+
+	// Execute the role list query
+	roleRows, err := infrastructures.DB.Query(getRoleListQuery, loginUserInfo.UserId)
+	if err != nil {
+		return schema.PostSignIn200Response{}, fmt.Errorf("failed to get roles for user: %w", err)
+	}
+	defer roleRows.Close()
+
+	// Scan role names and append to the RoleList
+	for roleRows.Next() {
+		if err := roleRows.Scan(&roleName); err != nil {
+			return schema.PostSignIn200Response{}, fmt.Errorf("failed to scan role names: %w", err)
+		}
+		roleList = append(roleList, roleName)
+	}
+
+	// Assign the RoleList to the response
+	loginUserInfo.RoleList = roleList
 
 	return loginUserInfo, nil
 }

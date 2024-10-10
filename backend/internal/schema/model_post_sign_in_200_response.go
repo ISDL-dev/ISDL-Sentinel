@@ -17,6 +17,8 @@ type PostSignIn200Response struct {
 
 	Status string `json:"status"`
 
+	RoleList []string `json:"role_list"`
+
 	AvatarId int32 `json:"avatar_id"`
 
 	AvatarImgPath string `json:"avatar_img_path"`
