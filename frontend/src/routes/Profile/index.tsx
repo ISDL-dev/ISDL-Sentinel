@@ -107,7 +107,7 @@ export default function Profile() {
   if (!userData) return null;
 
   return (
-    <Box pt={{ base: "80px", md: "80px", xl: "10px" }}>
+    <Box pt={{ base: "80px", md: "80px", xl: "10px" }} pb={{ base: "80px", md: "80px", xl: "10px" }}>
       {/* Main Fields */}
       <Grid
         templateColumns={{
@@ -130,6 +130,7 @@ export default function Profile() {
           number_of_coin={userData.number_of_coin}
           email={userData.mail_address}
           grade={userData.grade}
+          roleList={userData.role_list}
         />
         <AvatarList
           gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}

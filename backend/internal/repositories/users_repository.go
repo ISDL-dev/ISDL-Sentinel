@@ -11,7 +11,10 @@ import (
 func GetUsersRepository(userId int, date string) (userInformation schema.GetUserById200Response, err error) {
 	var avatar schema.GetUserById200ResponseAvatarListInner
 	var avatarList []schema.GetUserById200ResponseAvatarListInner
+	var roleName string
+	var roleList []string
 
+	// Query to get user information
 	getUserInfoQuery := `
 		SELECT 
 			user.id AS UserId,
@@ -51,6 +54,7 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get user information: %v", err)
 	}
 
+	// Query to get attendance days and stay time
 	getMonthStaytimeAndDaysQuery := `
 		SELECT 
 			COUNT(DISTINCT DATE(left_at)) AS AttendanceDays,
@@ -64,6 +68,7 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get staytime and attendance days: %v", err)
 	}
 
+	// Query to get the list of avatars
 	getAvatarListQuery := `
 		SELECT 
 			avatar.id AS AvatarId,
@@ -86,6 +91,32 @@ func GetUsersRepository(userId int, date string) (userInformation schema.GetUser
 		avatarList = append(avatarList, avatar)
 	}
 	userInformation.AvatarList = avatarList
+
+	// Query to get the list of roles for the user
+	getRoleListQuery := `
+		SELECT 
+			role.role_name 
+		FROM 
+			user_possession_role
+		JOIN 
+			role ON user_possession_role.role_id = role.id
+		WHERE 
+			user_possession_role.user_id = ?;`
+	roleRows, err := infrastructures.DB.Query(getRoleListQuery, userId)
+	if err != nil {
+		return schema.GetUserById200Response{}, fmt.Errorf("getRoles db.Query error err:%w", err)
+	}
+	defer roleRows.Close()
+
+	// Append the role names to the RoleList
+	for roleRows.Next() {
+		err := roleRows.Scan(&roleName)
+		if err != nil {
+			return schema.GetUserById200Response{}, fmt.Errorf("failed to execute query to get role list:%w", err)
+		}
+		roleList = append(roleList, roleName)
+	}
+	userInformation.RoleList = roleList
 
 	return userInformation, nil
 }
@@ -121,4 +152,47 @@ func GetTeacherMailAddress() (teacherMailAddress []string, err error) {
 	}
 
 	return teacherMailAddress, nil
+}
+
+func PutUsersRepository(userId int, userInformation schema.PutUserByIdRequest) (err error) {
+	tx, err := infrastructures.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	// Single query to update user's name, mail_address, and grade_id
+	updateUserQuery := `
+		UPDATE user
+		SET name = ?, mail_address = ?, grade_id = (SELECT id FROM grade WHERE grade_name = ?)
+		WHERE id = ?;
+	`
+	_, err = tx.Exec(updateUserQuery, userInformation.UserName, userInformation.MailAddress, userInformation.Grade, userId)
+	if err != nil {
+		return fmt.Errorf("failed to update user information and grade: %v", err)
+	}
+
+	// Delete existing roles for the user in user_possession_role
+	deleteRolesQuery := `DELETE FROM user_possession_role WHERE user_id = ?;`
+	_, err = tx.Exec(deleteRolesQuery, userId)
+	if err != nil {
+		return fmt.Errorf("failed to delete user's existing roles: %v", err)
+	}
+
+	// Insert new roles by retrieving role IDs from the role table
+	insertRoleQuery := `INSERT INTO user_possession_role (user_id, role_id) VALUES (?, (SELECT id FROM role WHERE role_name = ?));`
+	for _, roleName := range userInformation.RoleList {
+		_, err = tx.Exec(insertRoleQuery, userId, roleName)
+		if err != nil {
+			return fmt.Errorf("failed to insert role for user: %v", err)
+		}
+	}
+
+	return nil
 }
