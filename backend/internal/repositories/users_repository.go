@@ -156,7 +156,6 @@ func GetTeacherMailAddress() (teacherMailAddress []string, err error) {
 }
 
 func PutUsersRepository(userId int, userInformation schema.PutUserByIdRequest) (err error) {
-	log.Printf("Grade from JSON: '%s'", userInformation.UserName)
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
