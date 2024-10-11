@@ -30,6 +30,8 @@ func SetRoutes(router *gin.Engine) {
 		v1.GET("/lab-assistant-member", controllers.GetLabAssistantMemberController)
 		v1.GET("/lab-assistant/:month", controllers.GetLabAssistantScheduleController)
 		v1.POST("/lab-assistant/:month", controllers.PostLabAssistantScheduleController)
+		v1.GET("/role", controllers.GetRoleController)
+		v1.GET("/grade", controllers.GetGradeController)
 		v1.POST("/sign-up", controllers.PostSignUpController)
 
 		oauthn := v1.Group("/oauthn")
