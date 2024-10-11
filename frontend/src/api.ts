@@ -5,6 +5,7 @@ import {
   AccessHistoryApi,
   RankingApi,
   LAApi,
+  SettingApi,
 } from "./schema";
 
 const baseURL = process.env.REACT_APP_BACKEND_ENDPOINT;
@@ -17,5 +18,13 @@ const profileApi = new ProfileApi(undefined, baseURL, api);
 const accessHistoryApi = new AccessHistoryApi(undefined, baseURL, api);
 const rankingApi = new RankingApi(undefined, baseURL, api);
 const labAssistantApi = new LAApi(undefined, baseURL, api);
+const settingApi = new SettingApi(undefined, baseURL, api);
 
-export { attendeesListApi, profileApi, accessHistoryApi, rankingApi, labAssistantApi };
+export {
+  attendeesListApi,
+  profileApi,
+  accessHistoryApi,
+  rankingApi,
+  labAssistantApi,
+  settingApi,
+};

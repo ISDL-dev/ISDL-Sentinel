@@ -3,9 +3,9 @@ import { Badge } from "@chakra-ui/react";
 export const RoleBadge = (role: { text: string }) => {
   const getColorScheme = (role: string) => {
     switch (role) {
-      case "chief":
+      case "チーフ":
         return "red";
-      case "infra":
+      case "インフラ":
         return "yellow";
       default:
         return "blue";

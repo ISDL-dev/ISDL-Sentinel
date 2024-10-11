@@ -1,26 +1,67 @@
 import {
   Avatar,
+  Box,
+  Button,
   Card,
   Divider,
   Flex,
+  Icon,
   IconButton,
+  Select,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
 import { UserInfo } from "../../routes/UserSetting";
 import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "../RoleBadge";
 import { EditIcon } from "@chakra-ui/icons";
+import { ChangeEvent, useState } from "react";
+import { FaCheck } from "react-icons/fa";
 
 interface SettingInfoProps {
   userInfo: UserInfo[];
   targetUserId: number;
+  roleList: string[];
+  gradeList: string[];
 }
+const buttonWidth = {
+  base: "100px",
+  md: "150px",
+};
 export const SettingInfo: React.FC<SettingInfoProps> = ({
   userInfo,
   targetUserId,
+  roleList,
+  gradeList,
 }) => {
   const navigate = useNavigate();
-  const targetUserInfo = userInfo.find((user) => user.user_id === targetUserId);
+  const targetUserInfo =
+    userInfo.find((user) => user.user_id === targetUserId) ?? userInfo[0];
+  const [changePendingUserInfo, setChangePendingUserInfo] = useState<UserInfo>(
+    () => ({ ...targetUserInfo })
+  );
+  const [isEditing, setIsEditing] = useState(false);
+  const handleGradeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const newInfo = { ...targetUserInfo };
+    newInfo.grade = event.target.value;
+    setChangePendingUserInfo(newInfo);
+  };
+  const handleRoleChange = (role: string) => {
+    setChangePendingUserInfo((prevInfo) => {
+      const newRoles = prevInfo.role.includes(role)
+        ? prevInfo.role.filter((r) => r !== role)
+        : [...prevInfo.role, role];
+      return { ...prevInfo, role: newRoles };
+    });
+  };
+  const checkRole = (role: string): boolean => {
+    return changePendingUserInfo.role.includes(role);
+  };
   return (
     <Card mb={{ base: "0px", lg: "20px" }} alignItems="center" p="30px">
       <Flex minHeight="15vh">
@@ -61,19 +102,45 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
           <Text fontWeight="bold" fontSize="xl" width="80px">
             学年:
           </Text>
-          <Text fontSize="xl" fontWeight="400">
-            {targetUserInfo?.grade}
-          </Text>
+          {isEditing ? (
+            <Select
+              value={changePendingUserInfo?.grade || undefined}
+              onChange={(e) => {
+                handleGradeChange(e);
+              }}
+              placeholder={targetUserInfo?.grade || "学年を選択"}
+              css={{
+                '& option[value=""]': {
+                  display: "none",
+                },
+              }}
+            >
+              {gradeList.map((grade) => (
+                <option key={grade} value={grade}>
+                  {grade}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <Text fontSize="xl" fontWeight="400">
+              {targetUserInfo?.grade}
+            </Text>
+          )}
         </Flex>
         <Flex alignItems="center" gap={10}>
           <Text fontWeight="bold" fontSize="xl" width="80px">
             役割:
           </Text>
           <Flex flexWrap="wrap" gap={2}>
-            {targetUserInfo && targetUserInfo.role.length > 0 ? (
-              targetUserInfo?.role.map((role, index) => (
-                <RoleBadge key={index} text={role} />
-              ))
+            {(
+              (isEditing
+                ? changePendingUserInfo?.role
+                : targetUserInfo?.role) ?? []
+            ).length > 0 ? (
+              (isEditing
+                ? changePendingUserInfo?.role
+                : targetUserInfo?.role
+              )?.map((role, index) => <RoleBadge key={index} text={role} />)
             ) : (
               <Text fontSize="xl" fontWeight="400">
                 担当はありません
@@ -81,19 +148,84 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
             )}
           </Flex>
         </Flex>
+        {isEditing && (
+          <Box
+            borderRadius="md"
+            borderWidth="2px"
+            borderColor="gray.200"
+            overflowY="auto"
+            height="20vh"
+            maxWidth="300px"
+            mx="auto"
+          >
+            <Table variant="unstyled" size="sm">
+              <Tbody>
+                {roleList.map((role, index) => (
+                  <Tr key={role} onClick={() => handleRoleChange(role)}>
+                    <Td width="30px" px={2}>
+                      {checkRole(role) && (
+                        <Icon
+                          as={FaCheck}
+                          color="green.500"
+                          boxSize={4}
+                          ml={3}
+                        />
+                      )}
+                    </Td>
+                    <Td>
+                      <RoleBadge key={index} text={role} />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+        )}
       </Flex>
-      <IconButton
-        aria-label="Change Avatar"
-        icon={<EditIcon />}
-        variant="ghost"
-        colorScheme="teal"
-        size="lg"
-        position="absolute"
-        bottom="2"
-        right="2"
-        fontSize="32px"
-        m={6}
-      />
+      {isEditing ? (
+        <Flex position="absolute" bottom="2" right="2" gap={4} m={6}>
+          <Button
+            w={buttonWidth}
+            colorScheme="gray"
+            variant="solid"
+            size="lg"
+            onClick={() => {
+              setChangePendingUserInfo({ ...targetUserInfo });
+              setIsEditing(false);
+            }}
+          >
+            キャンセル
+          </Button>
+          <Button
+            w={buttonWidth}
+            colorScheme="teal"
+            variant="solid"
+            size="lg"
+            onClick={() => {
+              setIsEditing(false);
+            }}
+          >
+            更新
+          </Button>
+        </Flex>
+      ) : (
+        <IconButton
+          aria-label="Change Avatar"
+          icon={<EditIcon />}
+          variant="ghost"
+          colorScheme="teal"
+          size="lg"
+          position="absolute"
+          bottom="2"
+          right="2"
+          fontSize="32px"
+          m={6}
+          onClick={() => {
+            setChangePendingUserInfo({ ...targetUserInfo });
+            setIsEditing(true);
+          }}
+        />
+      )}
     </Card>
   );
 };
