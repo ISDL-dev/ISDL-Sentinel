@@ -168,7 +168,8 @@ INSERT INTO role (role_name) VALUES
 ('知的財産'),
 ('ミーティング'),
 ('Tex'),
-('イベント');
+('イベント'),
+('KC-111');
 
 INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, current_entered_at, status_id, place_id, grade_id, avatar_id) VALUES
 ('小野 景子', 'kono', 'ono.keiko@mikilab.doshisha.ac.jp', 'project443', 5821, NULL, 2, NULL, 1, 1),
@@ -387,3 +388,11 @@ INSERT INTO user_possession_role (user_id, role_id) VALUES
 ((SELECT id FROM user WHERE auth_user_name = 'nkadoya'), 7),
 ((SELECT id FROM user WHERE auth_user_name = 'yokahata'), 7),
 ((SELECT id FROM user WHERE auth_user_name = 'tshimamoto'), 7);
+
+-- KC-111 role_id = 8
+INSERT INTO user_possession_role (user_id, role_id) VALUES
+((SELECT id FROM user WHERE auth_user_name = 'ksakabe'), 8),
+((SELECT id FROM user WHERE auth_user_name = 'kkonishi'), 8),
+((SELECT id FROM user WHERE auth_user_name = 'nmasuda'), 8),
+((SELECT id FROM user WHERE auth_user_name = 'yyamaguchi'), 8),
+((SELECT id FROM user WHERE auth_user_name = 'afujimoto'), 8);
