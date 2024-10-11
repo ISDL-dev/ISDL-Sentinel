@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
