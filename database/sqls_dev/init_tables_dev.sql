@@ -155,7 +155,8 @@ INSERT INTO grade (grade_name) VALUES
 ('D1'),
 ('M2'),
 ('M1'),
-('U4');
+('U4'),
+('OB');
 
 INSERT INTO avatar (img_path) VALUES
 ('https://drive.google.com/thumbnail?id=1E2HnYLTvg9XXVeW1gMbANAvCbl_ES6Nn&sz=w1000'),
