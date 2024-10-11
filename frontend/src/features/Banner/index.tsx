@@ -9,7 +9,7 @@ export default function Banner(props: {
   stay_time: number | string;
   email: string;
   grade: string;
-  roleList: string[];
+  roleList: string[] | null; // null の場合を考慮
   [x: string]: any;
 }) {
   const { banner, avatar, name, attendance_days, stay_time, email, grade, roleList, ...rest } = props;
@@ -49,22 +49,20 @@ export default function Banner(props: {
         </Flex>
 
         {/* Roles */}
-        <Flex justifyContent='center' alignItems='baseline' mt='5px' flexWrap='wrap'>
-          <Text color={textColorSecondary} fontSize='md' fontWeight='600' mr='2' textAlign='right' minW='120px'>
-            Roles:
-          </Text>
-          <Box flex='1'>
-            {roleList.length > 0 ? roleList.map((role, index) => (
-              <Text key={index} color={textColorPrimary} fontSize='md' fontWeight='400'>
-                {role}担当
-              </Text>
-            )) : (
-              <Text color={textColorPrimary} fontSize='md' fontWeight='400'>
-                役割がありません
-              </Text>
-            )}
-          </Box>
-        </Flex>
+        {roleList && roleList.length > 0 && (
+          <Flex justifyContent='center' alignItems='baseline' mt='5px' flexWrap='wrap'>
+            <Text color={textColorSecondary} fontSize='md' fontWeight='600' mr='2' textAlign='right' minW='120px'>
+              Roles:
+            </Text>
+            <Box flex='1'>
+              {roleList.map((role, index) => (
+                <Text key={index} color={textColorPrimary} fontSize='md' fontWeight='400'>
+                  {role}担当
+                </Text>
+              ))}
+            </Box>
+          </Flex>
+        )}
       </Box>
 
       {/* Attendance and Stay Time */}
