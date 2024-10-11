@@ -14,4 +14,5 @@ internal/schema/model_post_sign_in_200_response.go
 internal/schema/model_post_sign_in_request.go
 internal/schema/model_post_user_information_request.go
 internal/schema/model_put_change_password_request.go
+internal/schema/model_put_user_by_id_request.go
 internal/schema/model_status.go

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
@@ -152,4 +153,48 @@ func GetTeacherMailAddress() (teacherMailAddress []string, err error) {
 	}
 
 	return teacherMailAddress, nil
+}
+
+func PutUsersRepository(userId int, userInformation schema.PutUserByIdRequest) (err error) {
+	log.Printf("Grade from JSON: '%s'", userInformation.UserName)
+	tx, err := infrastructures.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	// Single query to update user's name, mail_address, and grade_id
+	updateUserQuery := `
+		UPDATE user
+		SET name = ?, mail_address = ?, grade_id = (SELECT id FROM grade WHERE grade_name = ?)
+		WHERE id = ?;
+	`
+	_, err = tx.Exec(updateUserQuery, userInformation.UserName, userInformation.MailAddress, userInformation.Grade, userId)
+	if err != nil {
+		return fmt.Errorf("failed to update user information and grade: %v", err)
+	}
+
+	// Delete existing roles for the user in user_possession_role
+	deleteRolesQuery := `DELETE FROM user_possession_role WHERE user_id = ?;`
+	_, err = tx.Exec(deleteRolesQuery, userId)
+	if err != nil {
+		return fmt.Errorf("failed to delete user's existing roles: %v", err)
+	}
+
+	// Insert new roles by retrieving role IDs from the role table
+	insertRoleQuery := `INSERT INTO user_possession_role (user_id, role_id) VALUES (?, (SELECT id FROM role WHERE role_name = ?));`
+	for _, roleName := range userInformation.RoleList {
+		_, err = tx.Exec(insertRoleQuery, userId, roleName)
+		if err != nil {
+			return fmt.Errorf("failed to insert role for user: %v", err)
+		}
+	}
+
+	return nil
 }
