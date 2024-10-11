@@ -257,6 +257,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /role:
+    get:
+      summary: Get role name
+      operationId: get-role-name
+      tags:
+        - Setting
+      responses:
+        "200":
+          $ref: "#/components/responses/Role"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /sign-in:
     post:
       summary: Sign in
@@ -707,6 +722,14 @@ components:
               - avatar_img_path
     Grade:
       description: successful to get grade name
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+    Role:
+      description: successful to get role name
       content:
         application/json:
           schema:
