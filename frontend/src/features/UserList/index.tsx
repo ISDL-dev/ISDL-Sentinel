@@ -13,12 +13,12 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { UserInfo } from "../../routes/UserSetting";
 import { useNavigate } from "react-router-dom";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { GetUsersInfo200ResponseInner } from "../../schema";
 
 interface UserListProps {
-  userInfo: UserInfo[];
+  userInfo: GetUsersInfo200ResponseInner[];
   setTargetUserId: Dispatch<SetStateAction<number>>;
 }
 
@@ -30,6 +30,18 @@ export const UserList: React.FC<UserListProps> = ({
   const changeUser = (userId: number) => {
     setTargetUserId(userId);
   };
+  const [isShowObUser, setIsShowObUser] = useState(false);
+  const filteredUserInfo = useMemo(() => {
+    return isShowObUser
+      ? userInfo
+      : userInfo.filter((user) => user.grade !== "OB");
+  }, [userInfo, isShowObUser]);
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    console.log("Checkbox checked:", checked);
+    setIsShowObUser(checked);
+  };
+
   return (
     <Card mb={{ base: "0px", lg: "20px" }} alignItems="center">
       <Box
@@ -51,7 +63,10 @@ export const UserList: React.FC<UserListProps> = ({
               ユーザ一覧
             </Text>
             <Flex alignItems="center" gap={3}>
-              <Checkbox type="checkbox" />
+              <Checkbox
+                isChecked={isShowObUser}
+                onChange={handleCheckboxChange}
+              />
               <Text fontSize="sm" fontWeight="bold">
                 卒業済みユーザの表示
               </Text>
@@ -62,7 +77,7 @@ export const UserList: React.FC<UserListProps> = ({
             borderWidth="3px"
             mb="10px"
           />
-          <Box overflowY="auto" maxHeight="65vh">
+          <Box overflowY="auto" height="65vh">
             <Table variant="simple" size={{ base: "sm", md: "md" }}>
               <Thead>
                 <Tr>
@@ -71,7 +86,7 @@ export const UserList: React.FC<UserListProps> = ({
                 </Tr>
               </Thead>
               <Tbody>
-                {userInfo.map((info, index) => (
+                {filteredUserInfo.map((info) => (
                   <Tr
                     key={info.user_id}
                     onClick={() => changeUser(info.user_id)}
@@ -83,14 +98,15 @@ export const UserList: React.FC<UserListProps> = ({
                             size={"md"}
                             src={info.avatar_img_path}
                             border="2px"
-                            onClick={() =>
+                            onClick={(e) => {
+                              e.stopPropagation();
                               navigate("/profile", {
                                 state: { userId: info.user_id },
-                              })
-                            }
+                              });
+                            }}
                           />
                         </Box>
-                        {info.name}
+                        {info.user_name}
                       </Flex>
                     </Td>
                     <Td textAlign="center">{info.grade}</Td>
