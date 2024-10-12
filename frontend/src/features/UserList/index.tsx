@@ -13,12 +13,12 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { UserInfo } from "../../routes/UserSetting";
 import { useNavigate } from "react-router-dom";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { GetUsersInfo200ResponseInner } from "../../schema";
 
 interface UserListProps {
-  userInfo: UserInfo[];
+  userInfo: GetUsersInfo200ResponseInner[];
   setTargetUserId: Dispatch<SetStateAction<number>>;
 }
 
@@ -36,7 +36,6 @@ export const UserList: React.FC<UserListProps> = ({
       ? userInfo
       : userInfo.filter((user) => user.grade !== "OB");
   }, [userInfo, isShowObUser]);
-
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     console.log("Checkbox checked:", checked);
@@ -107,7 +106,7 @@ export const UserList: React.FC<UserListProps> = ({
                             }}
                           />
                         </Box>
-                        {info.name}
+                        {info.user_name}
                       </Flex>
                     </Td>
                     <Td textAlign="center">{info.grade}</Td>

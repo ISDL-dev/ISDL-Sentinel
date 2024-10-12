@@ -14,19 +14,20 @@ import {
   Text,
   Tr,
 } from "@chakra-ui/react";
-import { UserInfo } from "../../routes/UserSetting";
 import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "../RoleBadge";
 import { EditIcon } from "@chakra-ui/icons";
 import { ChangeEvent, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { settingApi } from "../../api";
+import { GetUsersInfo200ResponseInner } from "../../schema";
 
 interface SettingInfoProps {
-  userInfo: UserInfo[];
+  userInfo: GetUsersInfo200ResponseInner[];
   targetUserId: number;
   roleList: string[];
   gradeList: string[];
+  fetchUserList: () => Promise<void>;
 }
 const buttonWidth = {
   base: "100px",
@@ -37,13 +38,16 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
   targetUserId,
   roleList,
   gradeList,
+  fetchUserList,
 }) => {
   const navigate = useNavigate();
   const targetUserInfo =
     userInfo.find((user) => user.user_id === targetUserId) ?? userInfo[0];
-  const [changePendingUserInfo, setChangePendingUserInfo] = useState<UserInfo>(
-    () => ({ ...targetUserInfo })
-  );
+  const [changePendingUserInfo, setChangePendingUserInfo] =
+    useState<GetUsersInfo200ResponseInner>(() => ({
+      ...targetUserInfo,
+      role_list: targetUserInfo.role_list || [],
+    }));
   const [isEditing, setIsEditing] = useState(false);
   const handleGradeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const newInfo = { ...targetUserInfo };
@@ -52,22 +56,23 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
   };
   const handleRoleChange = (role: string) => {
     setChangePendingUserInfo((prevInfo) => {
-      const newRoles = prevInfo.role.includes(role)
-        ? prevInfo.role.filter((r) => r !== role)
-        : [...prevInfo.role, role];
-      return { ...prevInfo, role: newRoles };
+      const newRoles = prevInfo.role_list.includes(role)
+        ? prevInfo.role_list.filter((r) => r !== role)
+        : [...prevInfo.role_list, role];
+      return { ...prevInfo, role_list: newRoles };
     });
   };
   const checkRole = (role: string): boolean => {
-    return changePendingUserInfo.role.includes(role);
+    return changePendingUserInfo.role_list.includes(role);
   };
   const submitUserInfo = async () => {
     await settingApi.putUserById(changePendingUserInfo.user_id, {
-      user_name: changePendingUserInfo.name,
+      user_name: changePendingUserInfo.user_name,
       grade: changePendingUserInfo.grade,
       mail_address: changePendingUserInfo.mail_address,
-      role_list: changePendingUserInfo.role,
+      role_list: changePendingUserInfo.role_list,
     });
+    fetchUserList();
   };
   return (
     <Card mb={{ base: "0px", lg: "20px" }} alignItems="center" p="30px">
@@ -91,7 +96,7 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
           />
           <Flex flexDirection="column" alignItems="flex-start" flex={1}>
             <Text fontWeight="bold" fontSize="2xl" mb="10px">
-              {targetUserInfo?.name}
+              {targetUserInfo?.user_name}
             </Text>
             <Text fontSize="md" fontWeight="400">
               メールアドレス: {targetUserInfo?.mail_address}
@@ -141,12 +146,12 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
           <Flex flexWrap="wrap" gap={2}>
             {(
               (isEditing
-                ? changePendingUserInfo?.role
-                : targetUserInfo?.role) ?? []
+                ? changePendingUserInfo?.role_list
+                : targetUserInfo?.role_list) ?? []
             ).length > 0 ? (
               (isEditing
-                ? changePendingUserInfo?.role
-                : targetUserInfo?.role
+                ? changePendingUserInfo?.role_list
+                : targetUserInfo?.role_list
               )?.map((role, index) => <RoleBadge key={index} text={role} />)
             ) : (
               <Text fontSize="xl" fontWeight="400">
@@ -197,7 +202,10 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
             variant="solid"
             size="lg"
             onClick={() => {
-              setChangePendingUserInfo({ ...targetUserInfo });
+              setChangePendingUserInfo({
+                ...targetUserInfo,
+                role_list: targetUserInfo.role_list || [],
+              });
               setIsEditing(false);
             }}
           >
@@ -229,7 +237,10 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
           fontSize="32px"
           m={6}
           onClick={() => {
-            setChangePendingUserInfo({ ...targetUserInfo });
+            setChangePendingUserInfo({
+              ...targetUserInfo,
+              role_list: targetUserInfo.role_list || [],
+            });
             setIsEditing(true);
           }}
         />
