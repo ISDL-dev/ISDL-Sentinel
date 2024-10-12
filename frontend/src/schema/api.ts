@@ -420,6 +420,55 @@ export interface GetUserById200ResponseAvatarListInner {
 /**
  * 
  * @export
+ * @interface GetUsersInfo200ResponseInner
+ */
+export interface GetUsersInfo200ResponseInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'user_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'mail_address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'grade': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'role_list': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'avatar_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUsersInfo200ResponseInner
+     */
+    'avatar_img_path': string;
+}
+/**
+ * 
+ * @export
  * @interface ModelError
  */
 export interface ModelError {
@@ -2040,6 +2089,36 @@ export const SettingApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Get a users info
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Put a user by ID
          * @param {number} userId 
          * @param {PutUserByIdRequest} [putUserByIdRequest] 
@@ -2100,6 +2179,18 @@ export const SettingApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get a users info
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUsersInfo(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetUsersInfo200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersInfo(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SettingApi.getUsersInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Put a user by ID
          * @param {number} userId 
          * @param {PutUserByIdRequest} [putUserByIdRequest] 
@@ -2133,6 +2224,15 @@ export const SettingApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Get a users info
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersInfo(options?: any): AxiosPromise<Array<GetUsersInfo200ResponseInner>> {
+            return localVarFp.getUsersInfo(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Put a user by ID
          * @param {number} userId 
          * @param {PutUserByIdRequest} [putUserByIdRequest] 
@@ -2161,6 +2261,17 @@ export class SettingApi extends BaseAPI {
      */
     public getRoleName(options?: RawAxiosRequestConfig) {
         return SettingApiFp(this.configuration).getRoleName(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get a users info
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SettingApi
+     */
+    public getUsersInfo(options?: RawAxiosRequestConfig) {
+        return SettingApiFp(this.configuration).getUsersInfo(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
