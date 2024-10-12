@@ -70,6 +70,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /users:
+    get:
+      summary: Get a users info
+      operationId: get-users-info
+      tags:
+        - Setting
+      responses:
+        "200":
+          $ref: "#/components/responses/AllUserInformation"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /users/{user_id}:
     get:
       summary: Get a user by ID
@@ -545,6 +560,41 @@ components:
                 - date
                 - entering
                 - leaving
+    AllUserInformation:
+      description: Successful to get all users info
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: uint64
+                user_name:
+                  type: string
+                mail_address:
+                  type: string
+                grade:
+                  type: string
+                role_list:
+                  type: array
+                  items:
+                    type: string
+                avatar_id:
+                  type: integer
+                  format: uint64
+                avatar_img_path:
+                  type: string
+              required:
+                - user_id
+                - user_name
+                - mail_address
+                - grade
+                - role_list
+                - avatar_id
+                - avatar_img_path
     UserInformation:
       description: Successful to get a user by ID
       content:
