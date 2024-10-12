@@ -13,6 +13,7 @@ import {
   Thead,
   Tr,
   Icon,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { FaBed } from "react-icons/fa";
 import "./Home.css";
@@ -35,9 +36,7 @@ dayjs.locale("ja");
 
 const decodeDate = (dateString: string) => {
   const date = dayjs(dateString);
-  return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
-    "ddd"
-  )}）${dayjs(date).format("HH時mm分")}`;
+  return dayjs(date).format("MM/DD HH:mm");
 };
 
 const isBetween8PMandMidnight = () => {
@@ -53,6 +52,7 @@ function Home() {
     GetAttendeesList200ResponseInner[] | null
   >(null);
   const navigate = useNavigate();
+  const avatarSize = useBreakpointValue({ base: "sm", md: "md" });
 
   const fetchAttendeesList = async () => {
     try {
@@ -215,8 +215,8 @@ function Home() {
 
       <TableContainer
         pb={14}
-        pr={{ base: 4, md: 14 }}
-        pl={{ base: 4, md: 14 }}
+        pr={{ base: 1, md: 14 }}
+        pl={{ base: 1, md: 14 }}
         mt={8}
         outlineOffset={2}
         overflowX="unset"
@@ -226,9 +226,9 @@ function Home() {
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
           <Thead top={0}>
             <Tr bgColor="#E6EBED">
-              <Th w="33%">出席者</Th>
-              <Th w="33%">部屋</Th>
-              <Th w="33%">入室時刻</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>出席者</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>部屋</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>入室時刻</Th>
             </Tr>
           </Thead>
           <Tbody outline="1px">
@@ -245,10 +245,11 @@ function Home() {
             ) : (
               attendeeList.map((attendee) => (
                 <Tr key={attendee.user_id}>
-                  <Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>
                     <Flex alignItems={"center"} gap={3}>
                       <Box position="relative">
                         <Avatar
+                          display={{ base: "none", md: "block" }}
                           size={"md"}
                           src={attendee.avatar_img_path}
                           border="2px"
@@ -271,8 +272,8 @@ function Home() {
                       {attendee.user_name}
                     </Flex>
                   </Td>
-                  <Td>{attendee.place}</Td>
-                  <Td>{decodeDate(attendee.entered_at)}</Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>{attendee.place}</Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>{decodeDate(attendee.entered_at)}</Td>
                 </Tr>
               ))
             )}
