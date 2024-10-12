@@ -9,11 +9,9 @@ import {
   IconButton,
   Select,
   Table,
-  TableContainer,
   Tbody,
   Td,
   Text,
-  Thead,
   Tr,
 } from "@chakra-ui/react";
 import { UserInfo } from "../../routes/UserSetting";
@@ -22,6 +20,7 @@ import { RoleBadge } from "../RoleBadge";
 import { EditIcon } from "@chakra-ui/icons";
 import { ChangeEvent, useState } from "react";
 import { FaCheck } from "react-icons/fa";
+import { settingApi } from "../../api";
 
 interface SettingInfoProps {
   userInfo: UserInfo[];
@@ -61,6 +60,14 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
   };
   const checkRole = (role: string): boolean => {
     return changePendingUserInfo.role.includes(role);
+  };
+  const submitUserInfo = async () => {
+    await settingApi.putUserById(changePendingUserInfo.user_id, {
+      user_name: changePendingUserInfo.name,
+      grade: changePendingUserInfo.grade,
+      mail_address: changePendingUserInfo.mail_address,
+      role_list: changePendingUserInfo.role,
+    });
   };
   return (
     <Card mb={{ base: "0px", lg: "20px" }} alignItems="center" p="30px">
@@ -203,6 +210,7 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
             size="lg"
             onClick={() => {
               setIsEditing(false);
+              submitUserInfo();
             }}
           >
             更新

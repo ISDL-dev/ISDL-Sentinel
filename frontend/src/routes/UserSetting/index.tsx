@@ -16,7 +16,7 @@ export type UserInfo = {
 };
 const userInfo: UserInfo[] = [
   {
-    user_id: 100,
+    user_id: 10,
     name: "酒部健太郎",
     mail_address: "sakabe.kentaro@mikilab.doshisha.ac.jp",
     grade: "M2",
@@ -97,16 +97,6 @@ const userInfo: UserInfo[] = [
     role: ["infra"],
   },
 ];
-const roleListMock: string[] = [
-  "チーフ",
-  "メディア",
-  "インフラ",
-  "知的財産",
-  "ミーティング",
-  "Tex",
-  "イベント",
-  "KC-111",
-];
 const gradeListMock: string[] = [
   "Teacher",
   "D3",
@@ -123,8 +113,8 @@ export const UserSetting = () => {
   const [roleList, setRoleList] = useState<string[]>([]);
   const [gradeList, setGradeList] = useState<string[]>([]);
   const fetchRoleList = async () => {
-    // const roleResponse = await settingApi.getRoleName();
-    setRoleList(roleListMock);
+    const roleResponse = await settingApi.getRoleName();
+    setRoleList(roleResponse.data);
   };
   const fetchGradeList = async () => {
     // const roleResponse = await settingApi.getRoleName();
