@@ -145,16 +145,6 @@ export default function SignInDigest() {
     }
   };
 
-  const handleRegister = () => {
-    toast({
-      title: 'Register functionality',
-      description: 'Register functionality is not implemented yet.',
-      status: 'info',
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-
   return (
     <Container maxW="lg" py={{ base: '32', md: '62' }} px={{ base: '0', sm: '8' }}>
       <Stack spacing="8">
@@ -162,7 +152,7 @@ export default function SignInDigest() {
           <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
             <Heading size={{ base: '1xl', md: "2xl" }}>Log in to your account</Heading>
             <Text color="gray.600">
-              Don't have an account? <ChakraLink href="#">Sign up</ChakraLink>
+              Don't have an account? <ChakraLink href="sign-up">Sign up</ChakraLink>
             </Text>
           </Stack>
         </Stack>
@@ -195,7 +185,7 @@ export default function SignInDigest() {
               </FormControl>
             </Stack>
             <HStack justify="space-between">
-              <Button colorScheme="teal" variant="solid" size="md" onClick={handleRegister}>
+              <Button   as="a" href="/sign-up" colorScheme="teal" variant="solid" size="md">
                 Register
               </Button>
               <Button colorScheme="teal" variant="solid" size="md" onClick={handleLogin}>

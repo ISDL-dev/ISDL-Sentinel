@@ -232,7 +232,7 @@ export default function SignInWebauthn() {
           <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
             <Heading size={{ base: '1xl', md: "2xl" }}>Log in to your account</Heading>
             <Text color="gray.600">
-              Don't have an account? <ChakraLink href="#">Sign up</ChakraLink>
+              Don't have an account? <ChakraLink href="/sign-up">Sign up</ChakraLink>
             </Text>
           </Stack>
         </Stack>

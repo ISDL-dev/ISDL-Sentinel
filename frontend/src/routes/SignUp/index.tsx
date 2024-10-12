@@ -12,29 +12,36 @@ import {
   Text,
   useToast,
   Link as ChakraLink,
-  RadioGroup,
-  Radio,
-  HStack,
+  Select,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../userContext';
 
 const baseURL = process.env.REACT_APP_BACKEND_ENDPOINT;
 
-type Grade = 'B4' | 'M1' | 'M2' | 'Teacher';
+const Grades = ['U4', 'M1', 'M2', 'D1', 'D2', 'D3', 'Teacher'] as const;
+type Grade = typeof Grades[number];
+
+interface SignUpData {
+  name: string;
+  auth_user_name: string;
+  mail_address: string;
+  password: string;
+  grade_name: string;
+}
 
 export default function SignUp() {
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [grade, setGrade] = useState<Grade>('B4');
+  const [name, setName] = useState('');
+  const [authUserName, setAuthUserName] = useState('');
+  const [mailAddress, setMailAddress] = useState('');
+  const [grade, setGrade] = useState<Grade>('U4');
   const [password, setPassword] = useState('');
   const toast = useToast();
   const navigate = useNavigate();
   const { setAuthUser } = useUser();
 
   const handleRegister = async () => {
-    if (!fullName || !username || !email || !password) {
+    if (!name || !authUserName || !mailAddress || !password) {
       toast({
         title: 'Input required',
         description: 'Please fill in all fields',
@@ -45,19 +52,21 @@ export default function SignUp() {
       return;
     }
 
+    const signUpData: SignUpData = {
+      name,
+      auth_user_name: authUserName,
+      mail_address: mailAddress,
+      password,
+      grade_name: grade,
+    };
+
     try {
-      const response = await axios.post(`${baseURL}/register`, {
-        fullName,
-        username,
-        email,
-        grade,
-        password,
-      });
+      const response = await axios.post(`${baseURL}/sign-up`, signUpData);
 
       setAuthUser(response.data);
       toast({
         title: 'Registration successful',
-        description: `Welcome, ${fullName}!`,
+        description: `Welcome, ${name}!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -72,7 +81,7 @@ export default function SignUp() {
         if (error.response?.status === 400) {
           errorMessage = 'Invalid input. Please check your information.';
         } else if (error.response?.status === 409) {
-          errorMessage = 'Username or email already exists.';
+          errorMessage = 'User already exists.';
         } else if (error.response?.status === 500) {
           errorMessage = 'Server error. Please try again later.';
         } else if (!error.response) {
@@ -90,6 +99,7 @@ export default function SignUp() {
     }
   };
 
+
   return (
     <Container maxW="lg" py={{ base: '32', md: '62' }} px={{ base: '0', sm: '8' }}>
       <Stack spacing="8">
@@ -97,7 +107,7 @@ export default function SignUp() {
           <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
             <Heading size={{ base: '1xl', md: "2xl" }}>Create your account</Heading>
             <Text color="gray.600">
-              Already have an account? <ChakraLink href="#">Log in</ChakraLink>
+              Already have an account? <ChakraLink href="/sign-in-webauthn">Sign in</ChakraLink>
             </Text>
           </Stack>
         </Stack>
@@ -111,42 +121,45 @@ export default function SignUp() {
           <Stack spacing="6">
             <Stack spacing="5">
               <FormControl>
-                <FormLabel htmlFor="fullName">Full Name</FormLabel>
+                <FormLabel htmlFor="name">Full Name</FormLabel>
                 <Input
-                  id="fullName"
+                  id="name"
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="username">Username</FormLabel>
+                <FormLabel htmlFor="authUserName">Username</FormLabel>
                 <Input
-                  id="username"
+                  id="authUserName"
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={authUserName}
+                  onChange={(e) => setAuthUserName(e.target.value)}
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="email">Email address</FormLabel>
+                <FormLabel htmlFor="mailAddress">Email address</FormLabel>
                 <Input
-                  id="email"
+                  id="mailAddress"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={mailAddress}
+                  onChange={(e) => setMailAddress(e.target.value)}
                 />
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="grade">Grade</FormLabel>
-                <RadioGroup onChange={(value) => setGrade(value as Grade)} value={grade}>
-                  <HStack spacing="24px">
-                    <Radio value="B4">B4</Radio>
-                    <Radio value="M1">M1</Radio>
-                    <Radio value="M2">M2</Radio>
-                    <Radio value="Teacher">Teacher</Radio>
-                  </HStack>
-                </RadioGroup>
+                <Select
+                  id="grade"
+                  value={grade}
+                  onChange={(e) => setGrade(e.target.value as Grade)}
+                >
+                  {Grades.map((gradeOption) => (
+                    <option key={gradeOption} value={gradeOption}>
+                      {gradeOption}
+                    </option>
+                  ))}
+                </Select>
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="password">Password</FormLabel>
