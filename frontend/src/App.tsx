@@ -63,6 +63,7 @@ const App = () => {
                 <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
                 <Route path="/lab-assistant" element={<LabAssistant />} />
                 <Route path="/sign-in-digest" element={<SignInDigest />} />
+                <Route path="/sign-up" element={<SignUp />} />
               </Routes>
             </Box>
           </Box>
