@@ -8,6 +8,15 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
+func GetAllUsersService() (userInformationList []schema.GetUsersInfo200ResponseInner, err error) {
+	userInformationList, err = repositories.GetAllUsersRepository()
+	if err != nil {
+		return []schema.GetUsersInfo200ResponseInner{}, fmt.Errorf("failed to execute query to get all users info: %v", err)
+	}
+
+	return userInformationList, nil
+}
+
 func GetUsersByIdService(userId int) (userInformation schema.GetUserById200Response, err error) {
 	now := time.Now()
 	date := now.Format("2006-01")

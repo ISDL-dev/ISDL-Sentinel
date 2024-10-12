@@ -2,11 +2,62 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
+
+func GetAllUsersRepository() (userInformationList []schema.GetUsersInfo200ResponseInner, err error) {
+	// Query to get all users and their associated grade, avatar, and roles
+	getAllUsersInfoQuery := `
+		SELECT u.id, u.name, u.mail_address, g.grade_name, a.img_path,
+		       IFNULL(GROUP_CONCAT(r.role_name), '') AS roles
+		FROM user u
+		LEFT JOIN grade g ON u.grade_id = g.id
+		LEFT JOIN avatar a ON u.avatar_id = a.id
+		LEFT JOIN user_possession_role upr ON u.id = upr.user_id
+		LEFT JOIN role r ON upr.role_id = r.id
+		GROUP BY u.id;
+	`
+
+	// Execute the query
+	rows, err := infrastructures.DB.Query(getAllUsersInfoQuery)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve users: %v", err)
+	}
+	defer rows.Close()
+
+	// Process each row
+	for rows.Next() {
+		var userInformation schema.GetUsersInfo200ResponseInner
+		var roleList string // to temporarily hold the comma-separated role names
+
+		// Scan the row data into the userInformation struct and roleList
+		err := rows.Scan(&userInformation.UserId, &userInformation.UserName, &userInformation.MailAddress, &userInformation.Grade, &userInformation.AvatarImgPath, &roleList)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan user row: %v", err)
+		}
+
+		// Split the roleList into a slice and assign to RoleList
+		if roleList != "" {
+			userInformation.RoleList = strings.Split(roleList, ",")
+		} else {
+			userInformation.RoleList = nil
+		}
+
+		// Append the userInformation to the list
+		userInformationList = append(userInformationList, userInformation)
+	}
+
+	// Check for any errors encountered during iteration
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("row iteration error: %v", err)
+	}
+
+	return userInformationList, nil
+}
 
 func GetUsersRepository(userId int, date string) (userInformation schema.GetUserById200Response, err error) {
 	var avatar schema.GetUserById200ResponseAvatarListInner
