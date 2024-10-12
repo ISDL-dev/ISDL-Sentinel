@@ -46,7 +46,7 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
   const [changePendingUserInfo, setChangePendingUserInfo] =
     useState<GetUsersInfo200ResponseInner>(() => ({
       ...targetUserInfo,
-      role_list: targetUserInfo.role_list || [],
+      role_list: targetUserInfo?.role_list ?? [],
     }));
   const [isEditing, setIsEditing] = useState(false);
   const handleGradeChange = (event: ChangeEvent<HTMLSelectElement>) => {
