@@ -11,6 +11,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetAllUsersController(ctx *gin.Context) {
+	userInformationList, err := services.GetAllUsersService()
+	if err != nil {
+		log.Println(fmt.Errorf("failed to get all user information:%w", err))
+		ctx.JSON(http.StatusInternalServerError, schema.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+	} else {
+		ctx.JSON(http.StatusOK, userInformationList)
+	}
+}
+
 func GetUsersByIdController(ctx *gin.Context) {
 	userIdStr := ctx.Param("user_id")
 	userId, err := strconv.Atoi(userIdStr)

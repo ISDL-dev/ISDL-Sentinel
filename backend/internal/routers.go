@@ -18,6 +18,7 @@ func SetRoutes(router *gin.Engine) {
 
 	v1 := router.Group("/v1")
 	{
+		v1.GET("/users", controllers.GetAllUsersController)
 		v1.GET("/users/:user_id", controllers.GetUsersByIdController)
 		v1.PUT("/users/:user_id", controllers.PutUsersByIdController)
 		v1.POST("/avatar", controllers.PostAvatarController)
