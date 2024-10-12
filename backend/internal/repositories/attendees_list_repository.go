@@ -60,7 +60,8 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 				user_id
 		) eh ON u.id = eh.user_id
 	WHERE 
-		s.status_name IN (?, ?);`
+		s.status_name IN (?, ?)
+		AND g.grade_name != 'OB';`
 	getRows, err := infrastructures.DB.Query(getInRoomUserListQuery, model.KC104, model.IN_ROOM, model.OVERNIGHT)
 	if err != nil {
 		return []schema.GetAttendeesList200ResponseInner{}, fmt.Errorf("getRows getInRoomUserList Query error err:%w", err)
