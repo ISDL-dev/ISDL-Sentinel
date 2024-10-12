@@ -9,18 +9,14 @@
 
 package schema
 
-type PostSignIn200Response struct {
-
-	UserId int32 `json:"user_id"`
+type PutUserByIdRequest struct {
 
 	UserName string `json:"user_name"`
 
-	Status string `json:"status"`
+	MailAddress string `json:"mail_address"`
+
+	Grade string `json:"grade"`
 
 	RoleList []string `json:"role_list"`
-
-	AvatarId int32 `json:"avatar_id"`
-
-	AvatarImgPath string `json:"avatar_img_path"`
 }
 

@@ -19,6 +19,7 @@ import MobileNav from "./features/MobileNav";
 import { useDisclosure } from "@chakra-ui/react";
 import { Ranking } from "./routes/Ranking";
 import { UserProvider } from "./userContext"; // Import UserProvider
+import { UserSetting } from "./routes/UserSetting";
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,7 +64,7 @@ const App = () => {
                 <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
                 <Route path="/lab-assistant" element={<LabAssistant />} />
                 <Route path="/sign-in-digest" element={<SignInDigest />} />
-                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/user-setting" element={<UserSetting />} />
               </Routes>
             </Box>
           </Box>

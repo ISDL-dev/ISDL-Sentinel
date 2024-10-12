@@ -4,7 +4,6 @@ import {
   Flex,
   Grid,
   Box,
-  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -14,6 +13,7 @@ import {
   Thead,
   Tr,
   Icon,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { FaBed } from "react-icons/fa";
 import "./Home.css";
@@ -28,17 +28,15 @@ import { useNavigate } from "react-router-dom";
 import { Loading } from "../../features/Loading/Loading";
 
 const buttonWidth = {
-  base: "100px", 
-  md: "150px",   
+  base: "100px",
+  md: "150px",
 };
 
 dayjs.locale("ja");
 
 const decodeDate = (dateString: string) => {
   const date = dayjs(dateString);
-  return `${dayjs(date).format("MM月DD日")}（${dayjs(date).format(
-    "ddd"
-  )}）${dayjs(date).format("HH時mm分")}`;
+  return dayjs(date).format("MM/DD HH:mm");
 };
 
 const isBetween8PMandMidnight = () => {
@@ -54,6 +52,7 @@ function Home() {
     GetAttendeesList200ResponseInner[] | null
   >(null);
   const navigate = useNavigate();
+  const avatarSize = useBreakpointValue({ base: "sm", md: "md" });
 
   const fetchAttendeesList = async () => {
     try {
@@ -98,7 +97,12 @@ function Home() {
 
   return (
     <div>
-      <Grid templateColumns="repeat(1, 1fr)" w="100%" mt={{ base: 20, md: 0 }} p={6}>
+      <Grid
+        templateColumns="repeat(1, 1fr)"
+        w="100%"
+        mt={{ base: 20, md: 0 }}
+        p={6}
+      >
         <Flex justifyContent="center" alignItems="center" w="100%">
           <Box flex="1">
             <Text
@@ -123,36 +127,84 @@ function Home() {
           >
             {authUser.status === overnight ? (
               <>
-                <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" isDisabled>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="cyan"
+                  variant="solid"
+                  size="lg"
+                  isDisabled
+                >
                   宿泊済
                 </Button>
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  isDisabled
+                >
                   入室済
                 </Button>
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  onClick={() => handleStatusChange(outRoom)}
+                >
                   退室
                 </Button>
               </>
             ) : authUser.status === inRoom ? (
               <>
                 {isBetween8PMandMidnight() && (
-                  <Button w={buttonWidth} colorScheme="cyan" variant="solid" size="lg" onClick={() => handleStatusChange(overnight)}>
+                  <Button
+                    w={buttonWidth}
+                    colorScheme="cyan"
+                    variant="solid"
+                    size="lg"
+                    onClick={() => handleStatusChange(overnight)}
+                  >
                     宿泊
                   </Button>
                 )}
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  isDisabled
+                >
                   入室済
                 </Button>
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(outRoom)}>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  onClick={() => handleStatusChange(outRoom)}
+                >
                   退室
                 </Button>
               </>
             ) : (
               <>
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" onClick={() => handleStatusChange(inRoom)}>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  onClick={() => handleStatusChange(inRoom)}
+                >
                   入室
                 </Button>
-                <Button w={buttonWidth} colorScheme="teal" variant="solid" size="lg" isDisabled>
+                <Button
+                  w={buttonWidth}
+                  colorScheme="teal"
+                  variant="solid"
+                  size="lg"
+                  isDisabled
+                >
                   退室済
                 </Button>
               </>
@@ -161,13 +213,22 @@ function Home() {
         )}
       </Grid>
 
-      <TableContainer pb={14} pr={{ base: 4, md: 14 }} pl={{ base: 4, md: 14 }} mt={8} outlineOffset={2} overflowX="unset" overflowY="scroll" height="65vh">
+      <TableContainer
+        pb={14}
+        pr={{ base: 1, md: 14 }}
+        pl={{ base: 1, md: 14 }}
+        mt={8}
+        outlineOffset={2}
+        overflowX="unset"
+        overflowY="scroll"
+        height="65vh"
+      >
         <Table size="lg" border="2px" borderColor="gray.200" variant="simple">
           <Thead top={0}>
             <Tr bgColor="#E6EBED">
-              <Th w="33%">出席者</Th>
-              <Th w="33%">部屋</Th>
-              <Th w="33%">入室時刻</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>出席者</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>部屋</Th>
+              <Th textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>入室時刻</Th>
             </Tr>
           </Thead>
           <Tbody outline="1px">
@@ -184,10 +245,11 @@ function Home() {
             ) : (
               attendeeList.map((attendee) => (
                 <Tr key={attendee.user_id}>
-                  <Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>
                     <Flex alignItems={"center"} gap={3}>
                       <Box position="relative">
                         <Avatar
+                          display={{ base: "none", md: "block" }}
                           size={"md"}
                           src={attendee.avatar_img_path}
                           border="2px"
@@ -210,8 +272,8 @@ function Home() {
                       {attendee.user_name}
                     </Flex>
                   </Td>
-                  <Td>{attendee.place}</Td>
-                  <Td>{decodeDate(attendee.entered_at)}</Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>{attendee.place}</Td>
+                  <Td textAlign="center" pl={{ base: 3, md: 10 }} pr={{ base: 3, md: 10 }}>{decodeDate(attendee.entered_at)}</Td>
                 </Tr>
               ))
             )}

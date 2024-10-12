@@ -92,6 +92,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    put:
+      summary: Put a user by ID
+      operationId: put-user-by-id
+      tags:
+        - Setting
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+            format: uint64
+      requestBody:
+        description: request body of user info
+        required: true
+        $ref: '#/components/requestBodies/UserInformation'
+      responses:
+        "200":
+          description: successful to update user info  
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /avatar:
     post:
       summary: Upload my avatar
@@ -232,6 +257,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /role:
+    get:
+      summary: Get role name
+      operationId: get-role-name
+      tags:
+        - Setting
+      responses:
+        "200":
+          $ref: "#/components/responses/Role"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /sign-in:
     post:
       summary: Sign in
@@ -306,6 +346,27 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   requestBodies:
+    UserInformation:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_name:
+                type: string
+              mail_address:
+                type: string
+              grade:
+                type: string
+              role_list:
+                type: array
+                items:
+                  type: string
+            required:
+              - user_name
+              - mail_address
+              - grade
+              - role_list
     UploadAvatar:
       content:
         multipart/form-data:
@@ -512,6 +573,10 @@ components:
                 type: string
               grade:
                 type: string
+              role_list:
+                type: array
+                items:
+                  type: string
               avatar_id:
                 type: integer
                 format: uint64
@@ -540,6 +605,7 @@ components:
               - status
               - place
               - grade
+              - role_list
               - avatar_id
               - avatar_img_path
               - avatar_list
@@ -638,6 +704,10 @@ components:
                 type: string
               status:
                 type: string
+              role_list:
+                type: array
+                items:
+                  type: string
               avatar_id:
                 type: integer
                 format: uint64
@@ -647,10 +717,19 @@ components:
               - user_id
               - user_name
               - status
+              - role_list
               - avatar_id
               - avatar_img_path
     Grade:
       description: successful to get grade name
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+    Role:
+      description: successful to get role name
       content:
         application/json:
           schema:

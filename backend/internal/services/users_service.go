@@ -19,3 +19,12 @@ func GetUsersByIdService(userId int) (userInformation schema.GetUserById200Respo
 
 	return userInformation, nil
 }
+
+func PutUsersByIdService(userId int, userInformation schema.PutUserByIdRequest) (err error) {
+	err = repositories.PutUsersRepository(userId, userInformation)
+	if err != nil {
+		return fmt.Errorf("failed to execute query to put user info: %v", err)
+	}
+
+	return nil
+}
