@@ -37,7 +37,7 @@ export const UserSetting = () => {
           lg: "0.6fr 1fr",
         }}
         templateRows={{
-          base: "repeat(2, 1fr)",
+          base: "0.6fr 1.35fr",
           lg: "1fr",
         }}
         gap={{ base: "20px", xl: "20px" }}
