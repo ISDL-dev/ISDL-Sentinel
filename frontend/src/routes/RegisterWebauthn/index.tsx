@@ -50,43 +50,42 @@ const bufferEncode = (value: ArrayBuffer) => {
     .replace(/=/g, "");
 };
 
-const loginUser = async (username: string, toast: any, navigate: any, setAuthUser: any) => {
+const registerUser = async (username: string, toast: any, navigate: any, setAuthUser: any) => {
   try {
-    const response = await axios.get(`${baseURL}/webauthn/login-begin/${username}`, {
+    const response = await axios.get(`${baseURL}/webauthn/register-begin/${username}`, {
       withCredentials: true,
     });
-    const credentialRequestOptions = response.data;
+    const credentialCreationOptions = response.data;
 
-    credentialRequestOptions.publicKey.challenge = bufferDecode(
-      credentialRequestOptions.publicKey.challenge
+    credentialCreationOptions.publicKey.challenge = bufferDecode(
+      credentialCreationOptions.publicKey.challenge
     );
-    if (credentialRequestOptions.publicKey.allowCredentials) {
-      credentialRequestOptions.publicKey.allowCredentials.forEach((item: any) => {
+    credentialCreationOptions.publicKey.user.id = bufferDecode(
+      credentialCreationOptions.publicKey.user.id
+    );
+    if (credentialCreationOptions.publicKey.excludeCredentials) {
+      credentialCreationOptions.publicKey.excludeCredentials.forEach((item: any) => {
         item.id = bufferDecode(item.id);
       });
     }
 
-    const assertion = await navigator.credentials.get({
-      publicKey: credentialRequestOptions.publicKey,
+    const credential = await navigator.credentials.create({
+      publicKey: credentialCreationOptions.publicKey,
     });
 
-    if (!assertion) throw new Error('Error getting credential');
+    if (!credential) throw new Error('Error creating credential');
 
-    const authData = (assertion as any).response.authenticatorData;
-    const clientDataJSON = (assertion as any).response.clientDataJSON;
-    const rawId = (assertion as any).rawId;
-    const sig = (assertion as any).response.signature;
-    const userHandle = (assertion as any).response.userHandle;
+    const attestationObject = (credential as any).response.attestationObject;
+    const clientDataJSON = (credential as any).response.clientDataJSON;
+    const rawId = (credential as any).rawId;
 
-    const finishResponse = await axios.post(`${baseURL}/webauthn/login-finish/${username}`, {
-      id: assertion.id,
+    const finishResponse = await axios.post(`${baseURL}/webauthn/register-finish/${username}`, {
+      id: credential.id,
       rawId: bufferEncode(rawId),
-      type: assertion.type,
+      type: credential.type,
       response: {
-        authenticatorData: bufferEncode(authData),
+        attestationObject: bufferEncode(attestationObject),
         clientDataJSON: bufferEncode(clientDataJSON),
-        signature: bufferEncode(sig),
-        userHandle: bufferEncode(userHandle),
       },
     }, {
       headers: {
@@ -96,13 +95,13 @@ const loginUser = async (username: string, toast: any, navigate: any, setAuthUse
     });
 
     const finishData = finishResponse.data;
-    console.log("Login finish response data:", finishData);
+    console.log("Register finish response data:", finishData);
 
     setAuthUser(finishData);
 
     toast({
-      title: "Login successful",
-      description: `Successfully logged in ${username}!`,
+      title: "Registration successful",
+      description: `Successfully registered ${username}!`,
       status: "success",
       duration: 5000,
       isClosable: true,
@@ -110,10 +109,10 @@ const loginUser = async (username: string, toast: any, navigate: any, setAuthUse
 
     navigate('/');
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Register error:", error);
     toast({
-      title: "Login failed",
-      description: `Failed to login ${username}`,
+      title: "Registration failed",
+      description: `Failed to register ${username}`,
       status: "error",
       duration: 5000,
       isClosable: true,
@@ -121,13 +120,13 @@ const loginUser = async (username: string, toast: any, navigate: any, setAuthUse
   }
 };
 
-export default function SignInWebauthn() {
+export default function RegisterWebauthn() {
   const [username, setUsername] = React.useState("");
   const toast = useToast();
   const navigate = useNavigate(); 
   const { setAuthUser } = useUser();
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     if (username === "") {
       toast({
         title: "Username required",
@@ -138,7 +137,7 @@ export default function SignInWebauthn() {
       });
       return;
     }
-    loginUser(username, toast, navigate, setAuthUser);
+    registerUser(username, toast, navigate, setAuthUser);
   };
 
   return (
@@ -172,17 +171,12 @@ export default function SignInWebauthn() {
               </FormControl>
             </Stack>
             <Box textAlign="center">
-              <Button colorScheme="teal" variant="solid" size="md" onClick={handleLogin}>
-                Login
+              <Button colorScheme="teal" variant="solid" size="md" onClick={handleRegister}>
+                Register
               </Button>
             </Box>
           </Stack>
         </Box>
-        <Text textAlign="center">
-          <ChakraLink href="/sign-in-digest" color="teal.500">
-            Use password
-          </ChakraLink>
-        </Text>
       </Stack>
     </Container>
   );
