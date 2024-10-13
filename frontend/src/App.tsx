@@ -12,6 +12,7 @@ import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
 import SignInWebauthn from "./routes/SignInWebauthn";
 import SignInDigest from "./routes/SignInDigest";
+import SignUp from "./routes/SignUp";
 import LabAssistant from "./routes/LabAssistant";
 import Footer from "./features/Footer";
 import SidebarContent from "./features/SidebarContent";
@@ -65,6 +66,7 @@ const App = () => {
                 <Route path="/lab-assistant" element={<LabAssistant />} />
                 <Route path="/sign-in-digest" element={<SignInDigest />} />
                 <Route path="/user-setting" element={<UserSetting />} />
+                <Route path="/sign-up" element={<SignUp />} />
               </Routes>
             </Box>
           </Box>

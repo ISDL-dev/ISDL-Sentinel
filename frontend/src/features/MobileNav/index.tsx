@@ -144,7 +144,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
+            href={"/sign-up"}
           >
             Sign Up
           </Button>

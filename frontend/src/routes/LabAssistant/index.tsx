@@ -35,6 +35,8 @@ import {
   PostLabAssistantScheduleRequestInner,
 } from "../../schema";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../userContext";
+import { isInfra } from "../../models/role/role";
 
 dayjs.locale("ja");
 
@@ -113,6 +115,7 @@ const fetchLabAssistantData = async (
 };
 
 export default function Profile() {
+  const { authUser } = useUser();
   const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
   const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
   const [shifts, setShifts] = useState<Shift[]>(
@@ -295,9 +298,11 @@ export default function Profile() {
                 <Button colorScheme="blue" onClick={handlePdfDownload}>
                   PDF化
                 </Button>
-                <Button colorScheme="teal" onClick={handleSubmit}>
-                  登録
-                </Button>
+                {isInfra(authUser) && (
+                  <Button colorScheme="teal" onClick={handleSubmit}>
+                    登録
+                  </Button>
+                )}
               </Flex>
             </Flex>
 
@@ -333,20 +338,26 @@ export default function Profile() {
                         <Text mb={2} textAlign="center">
                           {shift.date}日
                         </Text>
-                        <Select
-                          value={shift.user_name}
-                          onChange={(event) => handleNameChange(index, event)}
-                          placeholder=" "
-                        >
-                          {labAssistantMember.map((member) => (
-                            <option
-                              key={member.user_id}
-                              value={member.user_name}
-                            >
-                              {member.user_name}
-                            </option>
-                          ))}
-                        </Select>
+                        {isInfra(authUser) ? (
+                          <Select
+                            value={shift.user_name}
+                            onChange={(event) => handleNameChange(index, event)}
+                            placeholder=" "
+                          >
+                            {labAssistantMember.map((member) => (
+                              <option
+                                key={member.user_id}
+                                value={member.user_name}
+                              >
+                                {member.user_name}
+                              </option>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Text mb={2} textAlign="center">
+                            {shift.user_name}
+                          </Text>
+                        )}
                       </>
                     )}
                   </Box>

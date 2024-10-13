@@ -22,6 +22,8 @@ import { ChangeEvent, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { settingApi } from "../../api";
 import { GetUsersInfo200ResponseInner } from "../../schema";
+import { useUser } from "../../userContext";
+import { isChief } from "../../models/role/role";
 
 interface SettingInfoProps {
   userInfo: GetUsersInfo200ResponseInner[];
@@ -43,6 +45,7 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
 }) => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { authUser } = useUser();
   const targetUserInfo =
     userInfo.find((user) => user.user_id === targetUserId) ?? userInfo[0];
   const [changePendingUserInfo, setChangePendingUserInfo] =
@@ -230,65 +233,66 @@ export const SettingInfo: React.FC<SettingInfoProps> = ({
           </Box>
         )}
       </Flex>
-      {isEditing ? (
-        <Flex
-          position="absolute"
-          bottom="2"
-          right="2"
-          gap={4}
-          m={{ base: 3, md: 6 }}
-        >
-          <Button
-            w={buttonWidth}
-            colorScheme="gray"
-            variant="solid"
-            size={{ base: "xs", md: "lg" }}
-            fontSize={{ base: "xs", md: "md" }}
+      {isChief(authUser) &&
+        (isEditing ? (
+          <Flex
+            position="absolute"
+            bottom="2"
+            right="2"
+            gap={4}
+            m={{ base: 3, md: 6 }}
+          >
+            <Button
+              w={buttonWidth}
+              colorScheme="gray"
+              variant="solid"
+              size={{ base: "xs", md: "lg" }}
+              fontSize={{ base: "xs", md: "md" }}
+              onClick={() => {
+                setChangePendingUserInfo({
+                  ...targetUserInfo,
+                  role_list: targetUserInfo.role_list || [],
+                });
+                setIsEditing(false);
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              w={buttonWidth}
+              colorScheme="teal"
+              variant="solid"
+              size={{ base: "xs", md: "lg" }}
+              fontSize={{ base: "xs", md: "md" }}
+              onClick={() => {
+                setIsEditing(false);
+                submitUserInfo();
+              }}
+            >
+              更新
+            </Button>
+          </Flex>
+        ) : (
+          <IconButton
+            aria-label="Change Avatar"
+            icon={<EditIcon />}
+            variant="ghost"
+            colorScheme="teal"
+            size="lg"
+            position="absolute"
+            bottom="2"
+            right="2"
+            fontSize="32px"
+            m={6}
             onClick={() => {
               setChangePendingUserInfo({
                 ...targetUserInfo,
                 role_list: targetUserInfo.role_list || [],
               });
-              setIsEditing(false);
+              setIsEditing(true);
             }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            w={buttonWidth}
-            colorScheme="teal"
-            variant="solid"
-            size={{ base: "xs", md: "lg" }}
-            fontSize={{ base: "xs", md: "md" }}
-            onClick={() => {
-              setIsEditing(false);
-              submitUserInfo();
-            }}
-          >
-            更新
-          </Button>
-        </Flex>
-      ) : (
-        <IconButton
-          aria-label="Change Avatar"
-          icon={<EditIcon />}
-          variant="ghost"
-          colorScheme="teal"
-          size="lg"
-          position="absolute"
-          bottom="2"
-          right="2"
-          fontSize="32px"
-          m={6}
-          onClick={() => {
-            setChangePendingUserInfo({
-              ...targetUserInfo,
-              role_list: targetUserInfo.role_list || [],
-            });
-            setIsEditing(true);
-          }}
-        />
-      )}
+          />
+        ))}
     </Card>
   );
 };

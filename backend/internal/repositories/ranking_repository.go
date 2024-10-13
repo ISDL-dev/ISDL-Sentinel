@@ -40,6 +40,8 @@ func GetRankingRepository() (rankingList []schema.GetRanking200ResponseInner, er
 			entering_history
 		GROUP BY 
 			user_id) e ON u.id = e.user_id
+	WHERE
+		g.grade_name != 'OB'
 	ORDER BY 
 		u.id;`
 
