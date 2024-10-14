@@ -52,6 +52,16 @@ func forceLeavingRoomScheduler() {
 	log.Printf("Ending forced exit process")
 }
 
+func moveUpGradeScheduler() {
+	log.Printf("Updating grades...")
+	err = repositories.MoveUpGradeRepository()
+	if err != nil {
+		log.Fatalf("failed to execute query to move up a grade schedule: %v", err)
+		return
+	}
+	log.Printf("Completed grade updates")
+}
+
 func InitializeTaskScheduler() {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
@@ -82,6 +92,18 @@ func InitializeTaskScheduler() {
 		gocron.CronJob("0 0 * * *", false),
 		gocron.NewTask(func() {
 			forceLeavingRoomScheduler()
+		}),
+	)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	_, err = ns.NewJob(
+		// (分 時 日 月 曜日)
+		gocron.CronJob("0 0 1 4 *", false),
+		gocron.NewTask(func() {
+			moveUpGradeScheduler()
 		}),
 	)
 	if err != nil {
