@@ -34,6 +34,13 @@ func PostLabAssistantScheduleService(month string, labAssistantScheduleRequest [
 		return []schema.GetLabAssistantSchedule200ResponseInner{}, fmt.Errorf("failed to execute query to get lab assistant schedule: %v", err)
 	}
 
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	SetLabAssistantScheduler(jst)
+
 	return labAssistantSchedule, nil
 }
 
