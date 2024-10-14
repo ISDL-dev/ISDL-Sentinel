@@ -77,7 +77,7 @@ func InitializeTaskScheduler() {
 
 	_, err = ns.NewJob(
 		// (分 時 日 月 曜日)
-		gocron.CronJob("*/3 * * * *", false),
+		gocron.CronJob("0 0 1 * *", false),
 		gocron.NewTask(func() {
 			SetLabAssistantScheduler(jst)
 		}),
