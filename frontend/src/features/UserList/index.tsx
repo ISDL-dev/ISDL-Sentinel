@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { GetUsersInfo200ResponseInner } from "../../schema";
+import { sortUsersByGrade } from "../../models/grade/grade";
 
 interface UserListProps {
   userInfo: GetUsersInfo200ResponseInner[];
@@ -31,17 +32,17 @@ export const UserList: React.FC<UserListProps> = ({
     setTargetUserId(userId);
   };
   const [isShowObUser, setIsShowObUser] = useState(false);
+  const sortedUserInfo = sortUsersByGrade(userInfo);
   const filteredUserInfo = useMemo(() => {
     return isShowObUser
-      ? userInfo
-      : userInfo.filter((user) => user.grade !== "OB");
-  }, [userInfo, isShowObUser]);
+      ? sortedUserInfo
+      : sortedUserInfo.filter((user) => user.grade !== "OB");
+  }, [sortedUserInfo, isShowObUser]);
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     console.log("Checkbox checked:", checked);
     setIsShowObUser(checked);
   };
-
   return (
     <Card mb={{ base: "0px", lg: "20px" }} alignItems="center">
       <Box
@@ -59,7 +60,7 @@ export const UserList: React.FC<UserListProps> = ({
             width="100%"
             mb="10px"
           >
-            <Text fontSize="2xl" fontWeight="bold">
+            <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold">
               ユーザ一覧
             </Text>
             <Flex alignItems="center" gap={3}>
@@ -77,7 +78,7 @@ export const UserList: React.FC<UserListProps> = ({
             borderWidth="3px"
             mb="10px"
           />
-          <Box overflowY="auto" height="65vh">
+          <Box overflowY="auto" height={{ base: "25vh", md: "65vh" }}>
             <Table variant="simple" size={{ base: "sm", md: "md" }}>
               <Thead>
                 <Tr>
