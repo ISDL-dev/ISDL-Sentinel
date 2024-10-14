@@ -11,6 +11,7 @@ import Home from "./routes/Home";
 import AccessHistory from "./routes/AccessHistory";
 import Profile from "./routes/Profile";
 import SignInWebauthn from "./routes/SignInWebauthn";
+import RegisterWebauthn from "./routes/RegisterWebauthn";
 import SignInDigest from "./routes/SignInDigest";
 import SignUp from "./routes/SignUp";
 import LabAssistant from "./routes/LabAssistant";
@@ -63,6 +64,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/ranking" element={<Ranking />} />
                 <Route path="/sign-in-webauthn" element={<SignInWebauthn />} />
+                <Route path="/register-webauthn" element={<RegisterWebauthn />} />
                 <Route path="/lab-assistant" element={<LabAssistant />} />
                 <Route path="/sign-in-digest" element={<SignInDigest />} />
                 <Route path="/user-setting" element={<UserSetting />} />
