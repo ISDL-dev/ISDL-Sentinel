@@ -16,16 +16,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { GetUsersInfo200ResponseInner } from "../../schema";
-import { sortUsersByGrade } from "../../models/grade/grade";
+import { GradeList, sortUsersByGrade } from "../../models/grade/grade";
 
 interface UserListProps {
   userInfo: GetUsersInfo200ResponseInner[];
+  targetUserId: number;
   setTargetUserId: Dispatch<SetStateAction<number>>;
 }
 
 export const UserList: React.FC<UserListProps> = ({
   userInfo,
   setTargetUserId,
+  targetUserId,
 }) => {
   const navigate = useNavigate();
   const changeUser = (userId: number) => {
@@ -36,7 +38,7 @@ export const UserList: React.FC<UserListProps> = ({
   const filteredUserInfo = useMemo(() => {
     return isShowObUser
       ? sortedUserInfo
-      : sortedUserInfo.filter((user) => user.grade !== "OB");
+      : sortedUserInfo.filter((user) => user.grade !== GradeList.OB);
   }, [sortedUserInfo, isShowObUser]);
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -91,6 +93,13 @@ export const UserList: React.FC<UserListProps> = ({
                   <Tr
                     key={info.user_id}
                     onClick={() => changeUser(info.user_id)}
+                    backgroundColor={
+                      info.user_id === targetUserId ? "teal.100" : "transparent"
+                    }
+                    _hover={{
+                      backgroundColor:
+                        info.user_id === targetUserId ? "teal.200" : "gray.100",
+                    }}
                   >
                     <Td textAlign="center">
                       <Flex alignItems={"center"} gap={3}>
