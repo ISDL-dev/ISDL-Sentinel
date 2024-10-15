@@ -8,7 +8,7 @@ import (
 	"github.com/go-co-op/gocron/v2"
 )
 
-func setLabAssistantScheduler(jst *time.Location) {
+func SetLabAssistantScheduler(jst *time.Location) {
 	log.Printf("Updating lab assistant schedule...")
 	now := time.Now()
 	month := now.Format("2006-01")
@@ -32,7 +32,7 @@ func setLabAssistantScheduler(jst *time.Location) {
 
 		if now.Truncate(time.Minute).Before(scheduledTime.Truncate(time.Minute)) {
 			duration := time.Until(scheduledTime)
-			log.Printf("Task scheduled for: %v (will execute after %v)\n", scheduledTime, duration)
+			log.Printf("Task scheduled for: %v (will execute after %v)：%v\n", scheduledTime, duration, userName)
 			time.AfterFunc(duration, func() {
 				go NotificationLabAssistantScheduleWithTeams(shiftDate, userName)
 			})
@@ -79,7 +79,7 @@ func InitializeTaskScheduler() {
 		// (分 時 日 月 曜日)
 		gocron.CronJob("0 0 1 * *", false),
 		gocron.NewTask(func() {
-			setLabAssistantScheduler(jst)
+			SetLabAssistantScheduler(jst)
 		}),
 	)
 	if err != nil {
