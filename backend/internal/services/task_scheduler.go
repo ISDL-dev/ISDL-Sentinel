@@ -8,7 +8,7 @@ import (
 	"github.com/go-co-op/gocron/v2"
 )
 
-func setLabAssistantScheduler(jst *time.Location) {
+func SetLabAssistantScheduler(jst *time.Location) {
 	log.Printf("Updating lab assistant schedule...")
 	now := time.Now()
 	month := now.Format("2006-01")
@@ -32,7 +32,7 @@ func setLabAssistantScheduler(jst *time.Location) {
 
 		if now.Truncate(time.Minute).Before(scheduledTime.Truncate(time.Minute)) {
 			duration := time.Until(scheduledTime)
-			log.Printf("Task scheduled for: %v (will execute after %v)\n", scheduledTime, duration)
+			log.Printf("Task scheduled for: %v (will execute after %v)：%v\n", scheduledTime, duration, userName)
 			time.AfterFunc(duration, func() {
 				go NotificationLabAssistantScheduleWithTeams(shiftDate, userName)
 			})
@@ -52,6 +52,16 @@ func forceLeavingRoomScheduler() {
 	log.Printf("Ending forced exit process")
 }
 
+func moveUpGradeScheduler() {
+	log.Printf("Updating grades...")
+	err = repositories.MoveUpGradeRepository()
+	if err != nil {
+		log.Fatalf("failed to execute query to move up a grade schedule: %v", err)
+		return
+	}
+	log.Printf("Completed grade updates")
+}
+
 func InitializeTaskScheduler() {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
@@ -69,7 +79,7 @@ func InitializeTaskScheduler() {
 		// (分 時 日 月 曜日)
 		gocron.CronJob("0 0 1 * *", false),
 		gocron.NewTask(func() {
-			setLabAssistantScheduler(jst)
+			SetLabAssistantScheduler(jst)
 		}),
 	)
 	if err != nil {
@@ -82,6 +92,18 @@ func InitializeTaskScheduler() {
 		gocron.CronJob("0 0 * * *", false),
 		gocron.NewTask(func() {
 			forceLeavingRoomScheduler()
+		}),
+	)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	_, err = ns.NewJob(
+		// (分 時 日 月 曜日)
+		gocron.CronJob("0 0 1 4 *", false),
+		gocron.NewTask(func() {
+			moveUpGradeScheduler()
 		}),
 	)
 	if err != nil {

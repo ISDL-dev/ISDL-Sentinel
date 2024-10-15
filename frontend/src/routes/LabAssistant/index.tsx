@@ -71,11 +71,18 @@ const generateDaysInMonth = (year: number, month: number): Shift[] => {
 };
 
 const decodeDate = (dateString: string) => {
+  if (!dateString) {
+    return "最終LA日程はありません．";
+  }
+
   const date = dayjs(dateString);
-  return `${dayjs(date).format("YYYY年MM月DD日")}（${dayjs(date).format(
-    "ddd"
-  )})`;
+  if (!date.isValid()) {
+    return "無効な日付です．";
+  }
+
+  return `${dayjs(date).format("YYYY年MM月DD日")}（${dayjs(date).format("ddd")}）`;
 };
+
 
 const formatMonth = (date: Date) => {
   const year = date.getFullYear();
@@ -209,45 +216,42 @@ export default function Profile() {
   const handlePdfDownload = async () => {
     const titleElement = titleRef.current;
     const gridElement = gridRef.current;
-
+  
     if (!titleElement || !gridElement) {
       console.error("Element not found");
       return;
     }
-
+  
     const titleCanvas = await html2canvas(titleElement, { scale: 2 });
-
     const gridCanvas = await html2canvas(gridElement, { scale: 2 });
-
+  
     const titleImgData = titleCanvas.toDataURL("image/png");
     const gridImgData = gridCanvas.toDataURL("image/png");
-    const pdf = new jsPDF("landscape");
-
-    const titleFontSize = 16;
-    pdf.setFontSize(titleFontSize);
-
-    const titleWidth = 50;
-    const titleHeight = 10;
-
-    const titleX = (pdf.internal.pageSize.width - 210) / 2;
-    const titleY = 40;
-
+  
+    const pdf = new jsPDF("landscape", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.width;
+    const pageHeight = pdf.internal.pageSize.height;
+  
+    const titleWidth = pageWidth * 0.6;
+    const titleHeight = (titleCanvas.height * titleWidth) / titleCanvas.width;
+  
+    const titleX = 20; 
+    const titleY = 20;
+  
     pdf.addImage(titleImgData, "PNG", titleX, titleY, titleWidth, titleHeight);
-
-    const imgWidth = 210;
+  
+    const imgWidth = pageWidth - 40;
     const imgHeight = (gridCanvas.height * imgWidth) / gridCanvas.width;
-
-    const gridX = (pdf.internal.pageSize.width - imgWidth) / 2;
-    const gridY = titleY + titleHeight;
-
+  
+    const gridX = (pageWidth - imgWidth) / 2;
+    const gridY = titleY + titleHeight + 10;
+  
     pdf.addImage(gridImgData, "PNG", gridX, gridY, imgWidth, imgHeight);
-
-    const filename = `${selectedYear}${String(selectedMonth + 1).padStart(
-      2,
-      "0"
-    )}.pdf`;
+  
+    const filename = `${selectedYear}${String(selectedMonth + 1).padStart(2, "0")}.pdf`;
     pdf.save(filename);
   };
+  
 
   return (
     <Box>
@@ -264,7 +268,7 @@ export default function Profile() {
               mb={3}
               alignItems="center"
               justifyContent="space-between"
-              flexWrap="wrap" // モバイル対応
+              flexWrap="wrap"
             >
               <Box ref={titleRef} flex="1">
                 <Text
@@ -279,10 +283,10 @@ export default function Profile() {
               <Flex
                 alignItems="center"
                 gap={4}
-                justifyContent={{ base: "center", md: "flex-end" }} // 中央揃え
+                justifyContent={{ base: "center", md: "flex-end" }}
                 flex="1"
-                mt={{ base: 4, md: 0 }} // モバイルでの余白調整
-                flexWrap="wrap" // モバイル対応
+                mt={{ base: 4, md: 0 }}
+                flexWrap="wrap"
               >
                 <chakra.label htmlFor="month-picker" fontWeight="bold">
                   月を選択:
@@ -375,7 +379,7 @@ export default function Profile() {
               outlineOffset={2}
               overflowY="auto"
               height="65vh"
-              maxWidth="100%" // テーブルをPCに合わせる
+              maxWidth="100%"
             >
               <Table
                 size="lg"

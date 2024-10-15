@@ -35,6 +35,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const faviconPath =
     "https://drive.google.com/thumbnail?id=1xud5OvptQUPXmaVxuk1CZ8hWXa780_jq&sz=w1000";
 
+
+  const handleRegisterWebAuthn = () => {
+    navigate("/register-webauthn");
+  };
   const handleSignOut = () => {
     setAuthUser(undefined);
     navigate("/sign-in-webauthn");
@@ -124,6 +128,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 >
                   Profile
                 </MenuItem>
+                <MenuItem onClick={handleRegisterWebAuthn}>Register biometric metrics</MenuItem>
                 <MenuItem>Change Password</MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={handleSignOut}>Sign out</MenuItem>

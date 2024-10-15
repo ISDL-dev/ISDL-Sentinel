@@ -15,7 +15,7 @@ export const RoleBadge = (role: { text: string }) => {
     <Badge
       m={1}
       borderRadius="full"
-      fontSize="16px"
+      fontSize={{ base: "10px", md: "16px" }}
       px="10px"
       py="4px"
       colorScheme={getColorScheme(role.text)}
