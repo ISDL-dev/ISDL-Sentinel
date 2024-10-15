@@ -34,6 +34,7 @@ func SetRoutes(router *gin.Engine) {
 		v1.GET("/role", controllers.GetRoleController)
 		v1.GET("/grade", controllers.GetGradeController)
 		v1.POST("/sign-up", controllers.PostSignUpController)
+		v1.PUT("/change-password", controllers.PutChangePasswordController)
 
 		oauthn := v1.Group("/oauthn")
 		{
