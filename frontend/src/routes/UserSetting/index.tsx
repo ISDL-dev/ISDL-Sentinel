@@ -44,6 +44,7 @@ export const UserSetting = () => {
       >
         <UserList
           userInfo={userInfoList}
+          targetUserId={targetUserId}
           setTargetUserId={setTargetUserId}
         ></UserList>
         <SettingInfo
