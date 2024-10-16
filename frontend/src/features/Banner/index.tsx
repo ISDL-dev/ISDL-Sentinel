@@ -1,5 +1,6 @@
 import { Avatar, Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import Card from '../../features/Card';
+import { RoleBadge } from "../RoleBadge";
 
 export default function Banner(props: {
   banner: string;
@@ -27,7 +28,7 @@ export default function Banner(props: {
       </Text>
 
       {/* Centered Block with Aligned Labels */}
-      <Box mt='10px' w='100%' maxW='400px' mx='auto'>
+      <Box mt='10px' w='100%' maxW='500px' mx='auto'>
         {/* Email */}
         <Flex justifyContent='center' alignItems='baseline' flexWrap='wrap'>
           <Text color={textColorSecondary} fontSize='md' fontWeight='600' mr='2' textAlign='right' minW='120px'>
@@ -55,11 +56,7 @@ export default function Banner(props: {
               Roles:
             </Text>
             <Box flex='1'>
-              {roleList.map((role, index) => (
-                <Text key={index} color={textColorPrimary} fontSize='md' fontWeight='400'>
-                  {role}担当
-                </Text>
-              ))}
+              {roleList.map((role, index) => <RoleBadge key={index} text={role} />)}
             </Box>
           </Flex>
         )}
