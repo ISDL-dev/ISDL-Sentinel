@@ -197,12 +197,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /ranking:
+  /ranking/{term}:
     get:
       summary: Get ranking
       operationId: get-ranking
       tags:
         - Ranking
+      parameters:
+        - in: path
+          name: term
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           $ref: "#/components/responses/RankingList"

@@ -1959,11 +1959,15 @@ export const RankingApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Get ranking
+         * @param {string} term 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRanking: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/ranking`;
+        getRanking: async (term: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'term' is not null or undefined
+            assertParamExists('getRanking', 'term', term)
+            const localVarPath = `/ranking/{term}`
+                .replace(`{${"term"}}`, encodeURIComponent(String(term)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1999,11 +2003,12 @@ export const RankingApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get ranking
+         * @param {string} term 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getRanking(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetRanking200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRanking(options);
+        async getRanking(term: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetRanking200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRanking(term, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['RankingApi.getRanking']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -2021,11 +2026,12 @@ export const RankingApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary Get ranking
+         * @param {string} term 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRanking(options?: any): AxiosPromise<Array<GetRanking200ResponseInner>> {
-            return localVarFp.getRanking(options).then((request) => request(axios, basePath));
+        getRanking(term: string, options?: any): AxiosPromise<Array<GetRanking200ResponseInner>> {
+            return localVarFp.getRanking(term, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2040,12 +2046,13 @@ export class RankingApi extends BaseAPI {
     /**
      * 
      * @summary Get ranking
+     * @param {string} term 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RankingApi
      */
-    public getRanking(options?: RawAxiosRequestConfig) {
-        return RankingApiFp(this.configuration).getRanking(options).then((request) => request(this.axios, this.basePath));
+    public getRanking(term: string, options?: RawAxiosRequestConfig) {
+        return RankingApiFp(this.configuration).getRanking(term, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
