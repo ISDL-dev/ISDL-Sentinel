@@ -6,5 +6,5 @@ import (
 )
 
 func PutChangePasswordService(user schema.PutChangePasswordRequest) error {
-	return repositories.ChangePasswordRepository(user)
+    return repositories.ChangePasswordRepository(user)
 }

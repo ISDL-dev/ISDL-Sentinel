@@ -1,11 +1,11 @@
 package repositories
 
 import (
-	"database/sql"
-	"fmt"
+    "database/sql"
+    "fmt"
 
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
-	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+    "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
+    "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
@@ -15,16 +15,16 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
         WHERE auth_user_name = ? OR mail_address = ?;`
 
     row := infrastructures.DB.QueryRow(getUserCredentialQuery, user.AuthUserName,user.AuthUserName)
-	
-	var authUserName string
-	var mailAddress string
-	var password string
-	
+    
+    var authUserName string
+    var mailAddress string
+    var password string
+    
     err := row.Scan(
         &authUserName,
-		&mailAddress,
-		&password,
-	)
+        &mailAddress,
+        &password,
+    )
     if err != nil {
         if err == sql.ErrNoRows {
             return fmt.Errorf("user not found: %w", err)
@@ -32,16 +32,16 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
         return fmt.Errorf("failed to get user credential: %w", err)
     }
 
-	if !((authUserName == user.AuthUserName || mailAddress == user.AuthUserName) && password == user.BeforePassword) {
-		return fmt.Errorf("worng username or password")
-	}
+    if !((authUserName == user.AuthUserName || mailAddress == user.AuthUserName) && password == user.BeforePassword) {
+        return fmt.Errorf("worng username or password")
+    }
 
-	UpdateUserPasswordQuery := `update user set password = ? where auth_user_name = ?;`
+    UpdateUserPasswordQuery := `update user set password = ? where auth_user_name = ?;`
 
-	_ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, authUserName)
-	if err != nil {
-		return fmt.Errorf("failed to change password: %w", err)
-	}
+    _ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, authUserName)
+    if err != nil {
+        return fmt.Errorf("failed to change password: %w", err)
+    }
 
-	return nil
+    return nil
 }
