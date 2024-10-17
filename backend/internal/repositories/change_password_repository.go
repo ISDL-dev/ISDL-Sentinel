@@ -12,12 +12,10 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
     getUserCredentialQuery := `
         SELECT auth_user_name, mail_address, password
         FROM user
-        WHERE auth_user_name = ? OR mail_address = ?;
-    `
+        WHERE auth_user_name = ? OR mail_address = ?;`
 
     row := infrastructures.DB.QueryRow(getUserCredentialQuery, user.AuthUserName,user.AuthUserName)
 	
-
 	var authUserName string
 	var mailAddress string
 	var password string
@@ -26,8 +24,7 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
         &authUserName,
 		&mailAddress,
 		&password,
-    )
-
+	)
     if err != nil {
         if err == sql.ErrNoRows {
             return fmt.Errorf("user not found: %w", err)
@@ -42,7 +39,6 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
 	UpdateUserPasswordQuery := `update user set password = ? where auth_user_name = ?;`
 
 	_ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, authUserName)
-
 	if err != nil {
 		return fmt.Errorf("failed to change password: %w", err)
 	}
