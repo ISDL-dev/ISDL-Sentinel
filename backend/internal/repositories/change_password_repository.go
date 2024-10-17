@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
-    "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
 func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
