@@ -2,50 +2,66 @@ package repositories
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func GetRankingRepository() (rankingList []schema.GetRanking200ResponseInner, err error) {
-	var user schema.GetRanking200ResponseInner
-	getRankingListQuery := `
-	SELECT 
-		u.id AS user_id,
-		u.name AS user_name,
-		g.grade_name,
-		u.avatar_id,
-		a.img_path,
-		COALESCE(t.total_stay_time, '00:00:00') AS total_stay_time,
-		COALESCE(e.unique_enter_days, 0) AS unique_enter_days
-	FROM 
-		user u
-	LEFT JOIN 
-		grade g ON u.grade_id = g.id
-	LEFT JOIN 
-		avatar a ON u.avatar_id = a.id
-	LEFT JOIN 
-		(SELECT 
-			user_id, 
-			SEC_TO_TIME(SUM(TIME_TO_SEC(stay_time))) AS total_stay_time
-		FROM 
-			leaving_history
-		GROUP BY 
-			user_id) t ON u.id = t.user_id
-	LEFT JOIN 
-		(SELECT 
-			user_id, 
-			COUNT(DISTINCT DATE(entered_at)) AS unique_enter_days
-		FROM 
-			entering_history
-		GROUP BY 
-			user_id) e ON u.id = e.user_id
-	WHERE
-		g.grade_name != 'OB'
-	ORDER BY 
-		u.id;`
+func convertToDateRange(termValue string) (startDate, endDate time.Time) {
+	if strings.Contains(termValue, "-") {
+		t, err := time.Parse("2006-01", termValue)
+		if err != nil {
+			year, month, _ := time.Now().Date()
+			startDate = time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+			endDate = startDate.AddDate(0, 1, -1).Add(23*time.Hour + 59*time.Minute + 59*time.Second)
+		} else {
+			year, month, _ := t.Date()
+			startDate = time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+			endDate = startDate.AddDate(0, 1, -1).Add(23*time.Hour + 59*time.Minute + 59*time.Second)
+		}
+	} else {
+		year, err := strconv.Atoi(termValue)
+		if err != nil {
+			year = time.Now().Year()
+		}
+		startDate = time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
+		endDate = time.Date(year, 12, 31, 23, 59, 59, 0, time.UTC)
+	}
+	return
+}
 
-	getRows, err := infrastructures.DB.Query(getRankingListQuery)
+func GetRankingRepository(term string) (rankingList []schema.GetRanking200ResponseInner, err error) {
+	var user schema.GetRanking200ResponseInner
+	startDate, endDate := convertToDateRange(term)
+	log.Printf("startDate: %v, endDate: %v", startDate, endDate)
+	getRankingListQuery := `
+		SELECT 
+			u.id AS user_id,
+			u.name AS user_name,
+			g.grade_name,
+			u.avatar_id,
+			a.img_path,
+			COALESCE(SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, e.entered_at, IFNULL(l.left_at, ?)))), '00:00:00') AS total_stay_time,
+			COALESCE(COUNT(DISTINCT DATE(e.entered_at)), 0) AS unique_enter_days
+		FROM 
+			user u
+		LEFT JOIN 
+			grade g ON u.grade_id = g.id
+		LEFT JOIN 
+			avatar a ON u.avatar_id = a.id
+		LEFT JOIN 
+			entering_history e ON u.id = e.user_id AND e.entered_at BETWEEN ? AND ?
+		LEFT JOIN 
+			leaving_history l ON e.id = l.entering_history_id
+		GROUP BY 
+			u.id, u.name, g.grade_name, u.avatar_id, a.img_path
+		ORDER BY 
+			u.id;`
+	getRows, err := infrastructures.DB.Query(getRankingListQuery, endDate, startDate, endDate)
 	if err != nil {
 		return []schema.GetRanking200ResponseInner{}, fmt.Errorf("getRows getRankingListQuery Query error err:%w", err)
 	}

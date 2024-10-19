@@ -11,7 +11,8 @@ import (
 )
 
 func GetRankingController(ctx *gin.Context) {
-	rankingList, err := services.GetRankingService()
+	term := ctx.Param("term")
+	rankingList, err := services.GetRankingService(term)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to get ranking list:%w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{

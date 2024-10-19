@@ -1,8 +1,8 @@
-import { Spinner, Text } from "@chakra-ui/react";
+import { Box, Spinner, Text } from "@chakra-ui/react";
 
 export const Loading = (loadingItemText: { loadingItemText: string }) => {
   return (
-    <>
+    <Box alignContent="center">
       <Text pb={3} fontWeight={800} fontSize={{ base: 16, md: 20 }}>
         {loadingItemText.loadingItemText}を読込中です
       </Text>
@@ -14,6 +14,6 @@ export const Loading = (loadingItemText: { loadingItemText: string }) => {
         size="xl"
         alignContent={"center"}
       />
-    </>
+    </Box>
   );
 };
