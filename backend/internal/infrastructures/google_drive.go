@@ -2,7 +2,6 @@ package infrastructures
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -39,21 +38,21 @@ func GoogleDriveCallback(ctx *gin.Context) {
 func InitializeGoogleDriveClient() {
 	log.Println("initialize Google Drive client")
 	ctx := context.Background()
-	b, err := os.ReadFile("internal/infrastructures/credentials/google_drive_credentials.json")
+	b, err := os.ReadFile("/go/src/app/internal/infrastructures/credentials/google_drive_credentials.json")
 	if err != nil {
-		fmt.Errorf("Failed to read the client secret file: %w", err)
+		log.Fatalf("Failed to read the client secret file: %w", err)
 	}
 
 	GoogleDriveConfig, err = google.ConfigFromJSON(b, drive.DriveFileScope)
 	if err != nil {
-		fmt.Errorf("Failed to parse the client secret file: %w", err)
+		log.Fatalf("Failed to parse the client secret file: %w", err)
 	}
 
-	tokFile := "internal/infrastructures/credentials/google_drive_token.json"
+	tokFile := "/go/src/app/internal/infrastructures/credentials/google_drive_token.json"
 	client := GetClient(GoogleDriveConfig, tokFile)
 
 	GoogleDriveService, err = drive.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
-		fmt.Errorf("Failed to initialize Google Drive client: %w", err)
+		log.Fatalf("Failed to initialize Google Drive client: %w", err)
 	}
 }
