@@ -25,14 +25,22 @@ import { rankingApi } from "../../api";
 import { GetRanking200ResponseInner } from "../../schema";
 import { Loading } from "../../features/Loading/Loading";
 
+const getCurrentYearMonth = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  return `${year}-${month}`;
+};
+
 export const Ranking = () => {
+  const currentTerm = getCurrentYearMonth();
   const colors = useColorModeValue(
     ["red.50", "blue.50"],
     ["red.900", "blue.900"]
   );
   const [tabIndex, setTabIndex] = useState(0);
-  const [term, setTerm] = useState("2024-10");
-  const [displayTerm, setDisplayTerm] = useState("2024-10");
+  const [term, setTerm] = useState(currentTerm);
+  const [displayTerm, setDisplayTerm] = useState(currentTerm);
   const [getRankList, setGetRankList] = useState<GetRanking200ResponseInner[]>(
     []
   );
@@ -62,19 +70,22 @@ export const Ranking = () => {
         setDisplayTerm(term);
       }
     }
-    fetchRankingList();
   };
   const adjustDate = async (amount: number, unit: "month" | "year") => {
     const date = new Date(displayTerm + "-01");
+    let newTerm: string;
     if (unit === "month") {
       date.setMonth(date.getMonth() + amount);
+      newTerm = date.toISOString().slice(0, 7);
     } else if (unit === "year") {
       date.setFullYear(date.getFullYear() + amount);
+      newTerm = date.getFullYear().toString();
+    } else {
+      console.error("Invalid unit specified");
+      return;
     }
-    const newTerm = date.toISOString().slice(0, 7);
     setDisplayTerm(newTerm);
     setTerm(newTerm);
-    fetchRankingList();
   };
   useEffect(() => {
     fetchRankingList();
