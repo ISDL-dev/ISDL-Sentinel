@@ -17,7 +17,6 @@ import { Top10Icon } from "../RankIcon/Top10Icon";
 import { useEffect, useState } from "react";
 import { GetRanking200ResponseInner } from "../../schema";
 import { useNavigate } from "react-router-dom";
-import { Loading } from "../Loading/Loading";
 
 interface RankingListProps {
   getRankList: GetRanking200ResponseInner[];
