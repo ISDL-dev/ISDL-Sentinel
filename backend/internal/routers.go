@@ -27,7 +27,7 @@ func SetRoutes(router *gin.Engine) {
 		v1.GET("/attendees-list", controllers.GetAttendeesListController)
 		v1.PUT("/status", controllers.PutStatusController)
 		v1.GET("/access-history/:month", controllers.GetAccessHistoryController)
-		v1.GET("/ranking", controllers.GetRankingController)
+		v1.GET("/ranking/:term", controllers.GetRankingController)
 		v1.GET("/lab-assistant-member", controllers.GetLabAssistantMemberController)
 		v1.GET("/lab-assistant/:month", controllers.GetLabAssistantScheduleController)
 		v1.POST("/lab-assistant/:month", controllers.PostLabAssistantScheduleController)

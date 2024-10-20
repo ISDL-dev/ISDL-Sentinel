@@ -16,10 +16,17 @@ import { Top3Icon } from "../RankIcon/Top3Icon";
 import { Top10Icon } from "../RankIcon/Top10Icon";
 import { useEffect, useState } from "react";
 import { GetRanking200ResponseInner } from "../../schema";
-import { rankingApi } from "../../api";
 import { useNavigate } from "react-router-dom";
 
-export const RankingList = (placeholder: { placeholder: string }) => {
+interface RankingListProps {
+  getRankList: GetRanking200ResponseInner[];
+  placeholder: string;
+}
+
+export const RankingList: React.FC<RankingListProps> = ({
+  getRankList,
+  placeholder,
+}) => {
   type RankedItem = GetRanking200ResponseInner & { rank: number };
   const [rankingList, setRankingList] = useState<RankedItem[]>([]);
   const navigate = useNavigate();
@@ -55,7 +62,6 @@ export const RankingList = (placeholder: { placeholder: string }) => {
       placeholder === "stay_time"
         ? sortedList[0].stay_time
         : sortedList[0].attendance_days;
-
     return sortedList.map((item, index) => {
       const currentValue =
         placeholder === "stay_time" ? item.stay_time : item.attendance_days;
@@ -66,26 +72,18 @@ export const RankingList = (placeholder: { placeholder: string }) => {
       return { ...item, rank: currentRank };
     });
   };
-  const fetchRankingList = async () => {
-    try {
-      const response = await rankingApi.getRanking();
-      const rankedList = assignRanks(response.data, placeholder.placeholder);
-      setRankingList(rankedList as RankedItem[]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const formatResultByPlaceholder = (item: GetRanking200ResponseInner) => {
-    return placeholder.placeholder === "stay_time"
+    return placeholder === "stay_time"
       ? item.stay_time
       : `${item.attendance_days}日`;
   };
-  useEffect(() => {
-    fetchRankingList();
-  }, []);
   const LIMIT_DISPLAY_RANK = 10;
   const awardUserIndex = 3;
   const endIndex = LIMIT_DISPLAY_RANK ?? rankingList.length;
+  useEffect(() => {
+    const rankedList = assignRanks(getRankList, placeholder);
+    setRankingList(rankedList as RankedItem[]);
+  }, [getRankList, placeholder]);
   return (
     <div>
       <Grid
@@ -142,7 +140,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
             overflowX="auto"
             overflowY="scroll"
             height={{
-              base: "50vh",
+              base: "47vh",
               md: "48vh",
             }}
             width={{
@@ -152,7 +150,7 @@ export const RankingList = (placeholder: { placeholder: string }) => {
           >
             <Table size="sm">
               <Tbody>
-                {rankingList.length !== 0 &&
+                {rankingList.length > 0 &&
                   rankingList.slice(awardUserIndex, endIndex).map((item) => (
                     <Tr key={item.user_id}>
                       <Td textAlign="center" w={15}>
