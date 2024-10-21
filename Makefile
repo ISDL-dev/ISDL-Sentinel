@@ -18,3 +18,6 @@ stop:
 
 down:
 	docker-compose --env-file .env.$(lastword $(MAKECMDGOALS)) down
+
+%:
+	@:

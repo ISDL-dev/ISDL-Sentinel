@@ -38,23 +38,28 @@ func GoogleCalendarCallback(ctx *gin.Context) {
 
 func InitializeGoogleCalendarClient() {
 	log.Println("initialize Google Calendar client")
+	googleCredentialsPath := os.Getenv("GOOGLE_CREDENTIALS_PATH")
+
 	ctx := context.Background()
-	b, err := os.ReadFile("internal/infrastructures/credentials/google_calendar_credentials.json")
+	b, err := os.ReadFile(fmt.Sprintf("%s/google_calendar_credentials.json", googleCredentialsPath))
 	if err != nil {
-		fmt.Errorf("Failed to read the client secret file: %w", err)
+		log.Fatalf("Failed to read the client secret file: %w", err)
 	}
 
 	calendarReadonlyScope := "https://www.googleapis.com/auth/calendar.readonly"
 	GoogleCalendarConfig, err = google.ConfigFromJSON(b, calendarReadonlyScope)
 	if err != nil {
-		fmt.Errorf("Failed to parse the client secret file: %w", err)
+		log.Fatalf("Failed to parse the client secret file: %w", err)
 	}
 
-	tokFile := "internal/infrastructures/credentials/google_calendar_token.json"
+	tokFile := fmt.Sprintf("%s/google_calendar_token.json", googleCredentialsPath)
 	client := GetClient(GoogleCalendarConfig, tokFile)
+	if err != nil {
+		log.Fatalf("Failed to get client: %v", err)
+	}
 
 	GoogleCalendarService, err = calendar.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
-		fmt.Errorf("Failed to initialize Google Calendar client: %w", err)
+		log.Fatalf("Failed to initialize Google Calendar client: %w", err)
 	}
 }
