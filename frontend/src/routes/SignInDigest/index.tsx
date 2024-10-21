@@ -77,7 +77,6 @@ export default function SignInDigest() {
     }
 
     try {
-      console.log(baseURL)
       // First request to get the challenge
       const challengeResponse = await axios.post(`${baseURL}/digest/login`, {}, {
         validateStatus: (status) => status === 401,
