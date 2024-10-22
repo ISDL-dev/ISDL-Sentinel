@@ -1,8 +1,14 @@
 name: Deploy to Rental Server
 
+# 一時的にコメントアウト
+# on:
+#   release:
+#     types: [published]
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -22,4 +28,5 @@ jobs:
           script: |
             cd ISDL-Sentinel
             git pull origin main
+            make down prod
             make build-up prod
