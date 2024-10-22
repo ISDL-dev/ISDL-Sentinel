@@ -614,12 +614,6 @@ export interface PutChangePasswordRequest {
      * @type {string}
      * @memberof PutChangePasswordRequest
      */
-    'auth_user_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PutChangePasswordRequest
-     */
     'before_password': string;
     /**
      * 
@@ -1066,12 +1060,16 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 
          * @summary Change password
+         * @param {number} userId 
          * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putChangePassword: async (putChangePasswordRequest?: PutChangePasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/password`;
+        putChangePassword: async (userId: number, putChangePasswordRequest?: PutChangePasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('putChangePassword', 'userId', userId)
+            const localVarPath = `/password/{user_id}`
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1148,12 +1146,13 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Change password
+         * @param {number} userId 
          * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putChangePassword(putChangePasswordRequest, options);
+        async putChangePassword(userId: number, putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putChangePassword(userId, putChangePasswordRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthenticationApi.putChangePassword']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1200,12 +1199,13 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
         /**
          * 
          * @summary Change password
+         * @param {number} userId 
          * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.putChangePassword(putChangePasswordRequest, options).then((request) => request(axios, basePath));
+        putChangePassword(userId: number, putChangePasswordRequest?: PutChangePasswordRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.putChangePassword(userId, putChangePasswordRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1255,13 +1255,14 @@ export class AuthenticationApi extends BaseAPI {
     /**
      * 
      * @summary Change password
+     * @param {number} userId 
      * @param {PutChangePasswordRequest} [putChangePasswordRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthenticationApi
      */
-    public putChangePassword(putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig) {
-        return AuthenticationApiFp(this.configuration).putChangePassword(putChangePasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public putChangePassword(userId: number, putChangePasswordRequest?: PutChangePasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).putChangePassword(userId, putChangePasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
