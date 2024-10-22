@@ -20,6 +20,6 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script_stop: true
           script: |
-            cd ISDL_Sentinel
+            cd ISDL-Sentinel
             git pull origin main
             make build-up prod
