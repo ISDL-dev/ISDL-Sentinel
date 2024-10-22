@@ -1,9 +1,8 @@
 name: Deploy to Rental Server
 
-# 一時的にコメントアウト
-# on:
-#   release:
-#     types: [published]
+on:
+  release:
+    types: [published]
 
 on:
   push:
