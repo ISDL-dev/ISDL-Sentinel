@@ -31,13 +31,13 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest, userID int) 
         return fmt.Errorf("failed to get user credential: %w", err)
     }
 
-    if !(id == userID && password == user.BeforePassword) {
+    if !(userId == userID && password == user.BeforePassword) {
         return fmt.Errorf("worng username or password")
     }
 
     UpdateUserPasswordQuery := `update user set password = ? where id = ?;`
 
-    _ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, id)
+    _ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, userId)
     if err != nil {
         return fmt.Errorf("failed to change password: %w", err)
     }
