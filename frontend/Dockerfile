@@ -9,7 +9,7 @@ ARG BACKEND_ENDPOINT
 ENV REACT_APP_BACKEND_ENDPOINT=$BACKEND_ENDPOINT
 
 # 開発環境ステージ
-FROM base AS dev
+FROM base AS prod
 COPY . .
 CMD ["yarn", "start"]
 
@@ -19,7 +19,7 @@ COPY . .
 RUN yarn build
 
 # 本番環境用
-FROM nginx:alpine AS prod
+FROM nginx:alpine AS dev
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 CMD ["nginx", "-g", "daemon off;"]
