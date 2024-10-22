@@ -8,23 +8,22 @@ import (
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
+func ChangePasswordRepository(user schema.PutChangePasswordRequest, userID int) error {
     getUserCredentialQuery := `
-        SELECT auth_user_name, mail_address, password
+        SELECT id, password
         FROM user
-        WHERE auth_user_name = ? OR mail_address = ?;`
+        WHERE id = ?;`
 
-    row := infrastructures.DB.QueryRow(getUserCredentialQuery, user.AuthUserName,user.AuthUserName)
+    row := infrastructures.DB.QueryRow(getUserCredentialQuery, userID)
     
-    var authUserName string
-    var mailAddress string
+    var id int
     var password string
     
     err := row.Scan(
-        &authUserName,
-        &mailAddress,
+        &id,
         &password,
     )
+
     if err != nil {
         if err == sql.ErrNoRows {
             return fmt.Errorf("user not found: %w", err)
@@ -32,13 +31,13 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest) error {
         return fmt.Errorf("failed to get user credential: %w", err)
     }
 
-    if !((authUserName == user.AuthUserName || mailAddress == user.AuthUserName) && password == user.BeforePassword) {
+    if !(id == userID && password == user.BeforePassword) {
         return fmt.Errorf("worng username or password")
     }
 
-    UpdateUserPasswordQuery := `update user set password = ? where auth_user_name = ?;`
+    UpdateUserPasswordQuery := `update user set password = ? where id = ?;`
 
-    _ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, authUserName)
+    _ , err = infrastructures.DB.Exec(UpdateUserPasswordQuery, user.AfterPassword, id)
     if err != nil {
         return fmt.Errorf("failed to change password: %w", err)
     }
