@@ -346,12 +346,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /password:
+  /password/{user_id}:
     put:
       summary: Change password
       operationId: put-change-password
       tags:
         - Authentication
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+            format: uint64
       requestBody:
         description: request body of change password
         required: true
@@ -459,14 +466,11 @@ components:
           schema:
             type: object
             properties:
-              auth_user_name:
-                type: string
               before_password:
                 type: string
               after_password:
                 type: string
             required:
-              - auth_user_name
               - before_password
               - after_password
   responses:
