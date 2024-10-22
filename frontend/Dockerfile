@@ -4,6 +4,10 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
+# 環境変数の設定
+ARG BACKEND_ENDPOINT
+ENV REACT_APP_BACKEND_ENDPOINT=$BACKEND_ENDPOINT
+
 # 開発環境ステージ
 FROM base AS dev
 COPY . .

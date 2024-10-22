@@ -51,7 +51,7 @@ func InitializeGoogleDriveClient() {
 		log.Fatalf("Failed to parse the client secret file: %w", err)
 	}
 
-	tokFile := fmt.Sprintf("%s/google_drive_credentials.json", googleCredentialsPath)
+	tokFile := fmt.Sprintf("%s/google_drive_token.json", googleCredentialsPath)
 	client := GetClient(GoogleDriveConfig, tokFile)
 
 	GoogleDriveService, err = drive.NewService(ctx, option.WithHTTPClient(client))

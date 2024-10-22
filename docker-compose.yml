@@ -8,16 +8,13 @@ services:
       target: ${ENV_TYPE:-dev}
       args:
         - ENV_TYPE=${ENV_TYPE:-dev}
-    environment:
-      - REACT_APP_BACKEND_ENDPOINT=${BACKEND_ENDPOINT}
-      - ENV_TYPE=${ENV_TYPE:-dev}
+        - BACKEND_ENDPOINT=${BACKEND_ENDPOINT}
     env_file:
       - .env.${ENV_TYPE:-dev}
     tty: true
     stdin_open: true
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     ports:
       - 4000:4000
     
@@ -53,8 +50,11 @@ services:
     tty: true
     stdin_open: true
     volumes:
-        - ./database/data_${ENV_TYPE:-dev}:/var/lib/mysql
+        - mysql_data:/var/lib/mysql
         - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
         - ./database/sqls_${ENV_TYPE:-dev}:/docker-entrypoint-initdb.d
     ports:
         - 3306:3306
+volumes:
+  mysql_data:
+    name: isdl_sentinel_data_${ENV_TYPE:-dev}
