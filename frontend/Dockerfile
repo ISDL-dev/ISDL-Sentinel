@@ -2,7 +2,7 @@
 FROM node:18.12.1-alpine AS base
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 # 環境変数の設定
 ARG BACKEND_ENDPOINT
