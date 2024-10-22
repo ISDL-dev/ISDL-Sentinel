@@ -5,6 +5,6 @@ import (
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func PutChangePasswordService(user schema.PutChangePasswordRequest) error {
-    return repositories.ChangePasswordRepository(user)
+func PutChangePasswordService(user schema.PutChangePasswordRequest, userID int) error {
+    return repositories.ChangePasswordRepository(user, userID)
 }
