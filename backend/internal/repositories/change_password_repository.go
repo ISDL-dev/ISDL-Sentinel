@@ -16,11 +16,11 @@ func ChangePasswordRepository(user schema.PutChangePasswordRequest, userID int) 
 
     row := infrastructures.DB.QueryRow(getUserCredentialQuery, userID)
     
-    var id int
+    var userId int
     var password string
     
     err := row.Scan(
-        &id,
+        &userId,
         &password,
     )
 

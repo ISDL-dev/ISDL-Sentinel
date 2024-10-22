@@ -2,7 +2,7 @@ package controllers
 
 import (
     "net/http"
-	"strconv"
+    "strconv"
 
     "github.com/gin-gonic/gin"
     "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
@@ -11,14 +11,14 @@ import (
 
 func PutChangePasswordController(ctx *gin.Context){
     
-	userIDStr := ctx.Param("id")
+    userIDStr := ctx.Param("user_id")
     userID, err := strconv.Atoi(userIDStr)
     if err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
         return
     }
-	
-	var user schema.PutChangePasswordRequest
+    
+    var user schema.PutChangePasswordRequest
     if err := ctx.ShouldBind(&user); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
