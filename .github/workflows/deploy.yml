@@ -3,6 +3,9 @@ name: Deploy to Rental Server
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -22,4 +25,5 @@ jobs:
           script: |
             cd ISDL-Sentinel
             git pull origin main
+            make down prod
             make build-up prod
