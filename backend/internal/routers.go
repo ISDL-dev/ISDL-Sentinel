@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"os"
+
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/controllers"
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/infrastructures"
 	"github.com/gin-contrib/cors"
@@ -9,7 +11,7 @@ import (
 
 func SetRoutes(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     []string{"http://" + os.Getenv("SERVER_NAME")},
 		AllowOriginFunc:  func(origin string) bool { return true },
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
