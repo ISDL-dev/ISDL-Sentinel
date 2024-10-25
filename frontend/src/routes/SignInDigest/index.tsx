@@ -83,7 +83,7 @@ export default function SignInDigest() {
         headers: { 'Authorization': '' },
       });
 
-      const wwwAuthenticate = challengeResponse.headers['www-authenticate'];
+      const wwwAuthenticate = challengeResponse.headers['x-www-authenticate'];
       if (!wwwAuthenticate) {
         throw new Error('WWW-Authenticate header is missing');
       }

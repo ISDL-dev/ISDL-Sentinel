@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	model "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/models"
@@ -21,8 +22,8 @@ var (
 func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http.Request) (*protocol.CredentialCreation, error) {
 	Wc, err = webauthn.New(&webauthn.Config{
 		RPDisplayName: "ISDL-Sentinel",
-		RPID:          "localhost",
-		RPOrigin:      "http://localhost:4000",
+		RPID:          os.Getenv("SERVER_NAME"),
+		RPOrigin:      "http://" + os.Getenv("SERVER_NAME"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create WebAuthn from config: %w", err)
