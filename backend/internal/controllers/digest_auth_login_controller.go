@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"fmt"
-    "net/http"
 	"log"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
-    "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
-    "github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
+	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/services"
+	"github.com/gin-gonic/gin"
 )
 
 func DigestLoginController(ctx *gin.Context) {
@@ -21,7 +21,7 @@ func DigestLoginController(ctx *gin.Context) {
 
 		nonce := services.GenerateNonce()
 		wwwAuthenticateHeader := services.CreateWWWAuthenticateHeader(nonce)
-		ctx.Header("WWW-Authenticate", wwwAuthenticateHeader)
+		ctx.Header("X-WWW-Authenticate", wwwAuthenticateHeader)
 		ctx.JSON(http.StatusUnauthorized, schema.Error{
 			Code:    http.StatusUnauthorized,
 			Message: "Authentication required",
