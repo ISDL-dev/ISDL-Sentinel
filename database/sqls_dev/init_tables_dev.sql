@@ -298,14 +298,11 @@ INSERT INTO user_possession_avatar (user_id, avatar_id) VALUES
 (7, 1),
 (8, 1),
 (9, 1),
-(9, 2),
 (10, 1),
-(10, 2),
 (11, 1),
 (12, 1),
 (13, 1),
 (14, 1),
-(14, 2),
 (15, 1),
 (16, 1),
 (17, 1),
@@ -318,7 +315,8 @@ INSERT INTO user_possession_avatar (user_id, avatar_id) VALUES
 (24, 1),
 (25, 1),
 (26, 1),
-(27, 1);
+(27, 1),
+(28, 1);
 
 -- チーフ role_id = 1
 INSERT INTO user_possession_role (user_id, role_id) VALUES
