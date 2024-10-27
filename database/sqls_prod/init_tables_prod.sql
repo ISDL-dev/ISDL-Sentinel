@@ -201,6 +201,36 @@ INSERT INTO user (name, auth_user_name, mail_address, password, number_of_coin, 
 ('吉田 玲音', 'ryoshida', 'yoshida.reon@mikilab.doshisha.ac.jp', 'project443', 0, NULL, 2, NULL, 7, 1),
 ('藤原 洋希', 'yfujiwara', 'fujiwara.yoki@mikilab.doshisha.ac.jp', 'project443', 0, NULL, 2, NULL, 7, 1);
 
+INSERT INTO user_possession_avatar (user_id, avatar_id) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1),
+(11, 1),
+(12, 1),
+(13, 1),
+(14, 1),
+(15, 1),
+(16, 1),
+(17, 1),
+(18, 1),
+(19, 1),
+(20, 1),
+(21, 1),
+(22, 1),
+(23, 1),
+(24, 1),
+(25, 1),
+(26, 1),
+(27, 1),
+(28, 1);
+
 -- チーフ role_id = 1
 INSERT INTO user_possession_role (user_id, role_id) VALUES
 ((SELECT id FROM user WHERE auth_user_name = 'smurozuka'), 1),
