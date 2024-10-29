@@ -14,14 +14,16 @@ import {
   Tr,
   Icon,
   useBreakpointValue,
+  useToast,
 } from "@chakra-ui/react";
+import { AxiosError } from 'axios';
 import { FaBed } from "react-icons/fa";
 import "./Home.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { inRoom, outRoom, overnight } from "../../models/users/user";
 import { attendeesListApi, profileApi } from "../../api";
-import { GetAttendeesList200ResponseInner } from "../../schema";
+import { GetAttendeesList200ResponseInner, ModelError } from "../../schema";
 import { useEffect, useState } from "react";
 import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +55,7 @@ function Home() {
   >(null);
   const navigate = useNavigate();
   const avatarSize = useBreakpointValue({ base: "sm", md: "md" });
+  const toast = useToast();
 
   const fetchAttendeesList = async () => {
     try {
@@ -88,6 +91,15 @@ function Home() {
       await fetchAttendeesList();
     } catch (error) {
       console.log(error);
+      const axiosError = error as AxiosError<ModelError>;
+      const errorMessage = axiosError.response?.data?.message || "ステータス更新に失敗しました。";
+      toast({
+        title: "error",
+        description: errorMessage,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
