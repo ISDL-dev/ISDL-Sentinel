@@ -42,6 +42,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     setAuthUser(undefined);
     navigate("/sign-in-webauthn");
   };
+  const handleChangePassword = () => {
+    navigate("/change-password");
+  };
 
   return (
     <Flex
@@ -130,7 +133,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 <MenuItem onClick={handleRegisterWebAuthn}>
                   Register biometric metrics
                 </MenuItem>
-                <MenuItem>Change Password</MenuItem>
+                <MenuItem onClick={handleChangePassword}>
+                  Change Password
+                </MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
               </MenuList>
