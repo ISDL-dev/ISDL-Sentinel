@@ -63,7 +63,7 @@ export default function ChangePassword() {
     } catch (error) {
       console.error("Password change error:", error);
 
-      let errorMessage = "An unexpected error occurred";
+      let errorMessage = "Password change failed. Please check your Password";
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 400) {
           errorMessage = "Invalid input. Please check your information.";
