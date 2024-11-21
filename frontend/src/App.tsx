@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import Home from "./routes/Home";
 import AccessHistory from "./routes/AccessHistory";
+import ChangePassword from "./routes/ChangePassword";
 import Profile from "./routes/Profile";
 import SignInWebauthn from "./routes/SignInWebauthn";
 import RegisterWebauthn from "./routes/RegisterWebauthn";
@@ -69,6 +70,7 @@ const App = () => {
                 <Route path="/sign-in-digest" element={<SignInDigest />} />
                 <Route path="/user-setting" element={<UserSetting />} />
                 <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/change-password" element={<ChangePassword />} />
               </Routes>
             </Box>
           </Box>
