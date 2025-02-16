@@ -11,7 +11,7 @@ import (
 
 func SetRoutes(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://" + os.Getenv("SERVER_NAME")},
+		AllowOrigins:     []string{"http://" + os.Getenv("SERVER_NAME")},
 		AllowOriginFunc:  func(origin string) bool { return true },
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
