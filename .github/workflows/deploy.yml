@@ -18,9 +18,15 @@ jobs:
           echo "${{ secrets.SSL_CERT_NOPASS_KEY_BASE64 }}" | base64 -d > ~/ISDL-Sentinel/proxy/ssl/www.isdl-sentinel.com.nopass.key
 
       - name: Copy SSL files to the server
-        run: |
-          scp ~/ISDL-Sentinel/proxy/ssl/www.isdl-sentinel.com.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/ISDL-Sentinel/proxy/ssl/
-          scp ~/ISDL-Sentinel/proxy/ssl/www.isdl-sentinel.com.nopass.key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/ISDL-Sentinel/proxy/ssl/
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "~/ISDL-Sentinel/proxy/ssl/*"
+          target: "~/ISDL-Sentinel/proxy/ssl/"
+          strip_components: 4
   
       - name: Deploy to rental server
         uses: appleboy/ssh-action@master
