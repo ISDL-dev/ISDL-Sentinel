@@ -1,11 +1,9 @@
 name: Deploy to Rental Server
 
 on:
-  pull_request:
+  push:
     branches:
       - hotfix/actions
-    types: 
-      - synchronize
   release:
     types: [published]
 
