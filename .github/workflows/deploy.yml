@@ -1,6 +1,9 @@
 name: Deploy to Rental Server
 
 on:
+  push:
+    branches:
+      - hotfix/actions
   release:
     types: [published]
 
