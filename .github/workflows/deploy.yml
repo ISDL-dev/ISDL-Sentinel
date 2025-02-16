@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Decode and place the SSL certificate
+        run: |
+          echo "${{ secrets.SSL_CERT_PEM_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.pem
+          echo "${{ secrets.SSL_CERT_NOPASS_KEY_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.key
   
       - name: Deploy to rental server
         uses: appleboy/ssh-action@master
@@ -21,6 +26,8 @@ jobs:
           script_stop: true
           script: |
             cd ISDL-Sentinel
+            echo "${{ secrets.SSL_CERT_PEM_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.pem
+            echo "${{ secrets.SSL_CERT_NOPASS_KEY_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.nopass.key
             git pull origin main
             make down prod
             make build-up prod
