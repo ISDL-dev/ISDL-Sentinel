@@ -1,7 +1,7 @@
 FROM nginx:latest
 
-COPY ./ssl/www.isdl-sentinel.com.pem /etc/nginx/ssl/www.isdl-sentinel.com.pem
-COPY ./ssl/www.isdl-sentinel.com.nopass.key /etc/nginx/ssl/www.isdl-sentinel.com.nopass.key
+COPY ./ssl/proxy/ssl/www.isdl-sentinel.com.pem /etc/nginx/ssl/www.isdl-sentinel.com.pem
+COPY ./ssl/proxy/ssl/www.isdl-sentinel.com.nopass.key /etc/nginx/ssl/www.isdl-sentinel.com.nopass.key
 
 RUN apt-get update && apt-get install -y gettext-base
 
