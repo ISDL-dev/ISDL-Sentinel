@@ -39,7 +39,7 @@ func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http
 		RPOrigin:      rpOrigin,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create WebAuthn from config: %w%w", err, rpID)
+		return nil, fmt.Errorf("failed to create WebAuthn from config: %w:%s:%s", err, serverHost, rpID)
 	}
 
 	userCredential, err := repositories.GetUserCredential(userName)
