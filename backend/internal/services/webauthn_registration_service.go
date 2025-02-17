@@ -20,13 +20,22 @@ var (
 )
 
 func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http.Request) (*protocol.CredentialCreation, error) {
+	serverHost := os.Getenv("SERVER_HOST")
+	envType := os.Getenv("ENV_TYPE")
+
+	rpID, rpOrigin := serverHost, "http://"+serverHost
+	if envType == "prod" {
+		rpID = "www.isdl-sentinel.com"
+		rpOrigin = "https://" + rpID
+	}
+
 	Wc, err = webauthn.New(&webauthn.Config{
 		RPDisplayName: "ISDL-Sentinel",
-		RPID:          os.Getenv("SERVER_NAME"),
-		RPOrigin:      "http://" + os.Getenv("SERVER_NAME"),
+		RPID:          rpID,
+		RPOrigin:      rpOrigin,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create WebAuthn from config: %w", err)
+		return nil, fmt.Errorf("failed to create WebAuthn from config %w", err)
 	}
 
 	userCredential, err := repositories.GetUserCredential(userName)
