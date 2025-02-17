@@ -22,19 +22,16 @@ var (
 func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http.Request) (*protocol.CredentialCreation, error) {
 	serverHost := os.Getenv("SERVER_HOST")
 	envType := os.Getenv("ENV_TYPE")
-	log.Printf("SERVER_HOST: %q", serverHost)
-	log.Printf("envType: %q", envType)
 
 	rpID, rpOrigin := serverHost, "http://"+serverHost
 	if envType == "prod" {
 		rpID = "www.isdl-sentinel.com"
 		rpOrigin = "https://" + rpID
 	}
-	log.Printf("rpID: %q", rpID)
 
 	Wc, err = webauthn.New(&webauthn.Config{
 		RPDisplayName: "ISDL-Sentinel",
-		RPID:          serverHost,
+		RPID:          rpID,
 		RPOrigin:      rpOrigin,
 	})
 	if err != nil {
