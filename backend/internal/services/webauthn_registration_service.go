@@ -23,10 +23,6 @@ func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http
 	serverHost := os.Getenv("SERVER_HOST")
 	envType := os.Getenv("ENV_TYPE")
 
-	if serverHost == "" {
-		return nil, fmt.Errorf("SERVER_HOST environment variable is not set")
-	}
-
 	rpID, rpOrigin := serverHost, "http://"+serverHost
 	if envType == "prod" {
 		rpID = "www.isdl-sentinel.com"
@@ -39,7 +35,7 @@ func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http
 		RPOrigin:      rpOrigin,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed1 to create WebAuthn from config %s:%s:: %w", serverHost, rpID, err)
+		return nil, fmt.Errorf("failed to create WebAuthn from config %w", err)
 	}
 
 	userCredential, err := repositories.GetUserCredential(userName)
