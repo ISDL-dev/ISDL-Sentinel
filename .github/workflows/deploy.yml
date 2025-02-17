@@ -17,15 +17,15 @@ jobs:
       - name: Create .env.prod file
         run: |
           cat << EOF > .env.prod
-          ENV_TYPE=${{ secrets.ENV_TYPE }}
+          ENV_TYPE="prod"
           MYSQL_HOSTNAME=${{ secrets.MYSQL_HOSTNAME }}
           MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
           MYSQL_USER=${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-          TZ=${{ secrets.TZ }}
-          BACKEND_ENDPOINT=${{ secrets.BACKEND_ENDPOINT }}
-          GOOGLE_CREDENTIALS_PATH=${{ secrets.GOOGLE_CREDENTIALS_PATH }}
+          TZ="Asia/Tokyo"
+          BACKEND_ENDPOINT="https://www.isdl-sentinel.com/v1"
+          GOOGLE_CREDENTIALS_PATH="/go/src/app/internal/infrastructures/credentials"
           GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
           WEBHOOKURL=${{ secrets.WEBHOOKURL }}
           SERVER_HOST=${{ secrets.SERVER_HOST }}
