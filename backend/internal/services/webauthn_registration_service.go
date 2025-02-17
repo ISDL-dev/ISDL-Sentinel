@@ -22,8 +22,8 @@ var (
 func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http.Request) (*protocol.CredentialCreation, error) {
 	Wc, err = webauthn.New(&webauthn.Config{
 		RPDisplayName: "ISDL-Sentinel",
-		RPID:          os.Getenv("SERVER_NAME"),
-		RPOrigin:      "http://" + os.Getenv("SERVER_NAME"),
+		RPID:          os.Getenv("SERVER_HOST"),
+		RPOrigin:      "http://" + os.Getenv("SERVER_HOST"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create WebAuthn from config: %w", err)

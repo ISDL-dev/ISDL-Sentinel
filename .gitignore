@@ -1,3 +1,5 @@
 .vscode/
 .DS_Store
 /backend/tmp
+.env.prod
+.env.dev

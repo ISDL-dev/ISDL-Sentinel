@@ -13,13 +13,40 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Create .env.prod file
+        run: |
+          cat << EOF > .env.prod
+          ENV_TYPE=${{ secrets.ENV_TYPE }}
+          MYSQL_HOSTNAME=${{ secrets.MYSQL_HOSTNAME }}
+          MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER=${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+          TZ=${{ secrets.TZ }}
+          BACKEND_ENDPOINT=${{ secrets.BACKEND_ENDPOINT }}
+          GOOGLE_CREDENTIALS_PATH=${{ secrets.GOOGLE_CREDENTIALS_PATH }}
+          GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          WEBHOOKURL=${{ secrets.WEBHOOKURL }}
+          SERVER_HOST=${{ secrets.SERVER_HOST }}
+          LAB_NETWORK_IP=${{ secrets.LAB_NETWORK_IP }}
+          EOF
+
+      - name: Copy .env.prod file to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: ".env.prod"
+          target: "~/ISDL-Sentinel/"
 
       - name: Decode the SSL certificate
         run: |
           mkdir -p ./proxy/ssl
           echo "${{ secrets.SSL_CERT_PEM_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.pem
           echo "${{ secrets.SSL_CERT_NOPASS_KEY_BASE64 }}" | base64 -d > ./proxy/ssl/www.isdl-sentinel.com.nopass.key
-          ls -l ./proxy/ssl
 
       - name: Copy SSL files to the server
         uses: appleboy/scp-action@master
@@ -29,7 +56,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           source: "./proxy/ssl/*"
-          target: "~/ISDL-Sentinel/proxy/ssl/"
+          target: "~/ISDL-Sentinel/"
 
       - name: Deploy to rental server
         uses: appleboy/ssh-action@master
