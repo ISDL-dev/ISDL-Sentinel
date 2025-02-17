@@ -23,9 +23,10 @@ func GetBeginRegistrationService(userName string, w http.ResponseWriter, r *http
 	serverHost := os.Getenv("SERVER_HOST")
 	envType := os.Getenv("ENV_TYPE")
 
-	rpOrigin := "http://" + serverHost
+	rpID, rpOrigin := serverHost, "http://"+serverHost
 	if envType == "prod" {
-		rpOrigin = "https://" + serverHost
+		rpID = "www.isdl-sentinel.com"
+		rpOrigin = "https://" + rpID
 	}
 
 	Wc, err = webauthn.New(&webauthn.Config{
