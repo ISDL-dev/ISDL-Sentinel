@@ -44,7 +44,7 @@ func PutStatusController(ctx *gin.Context) {
 		log.Println(fmt.Errorf("failed to get user status: %w", err))
 		ctx.JSON(http.StatusInternalServerError, schema.Error{
 			Code:    http.StatusInternalServerError,
-			Message: "failed to get user status",
+			Message: err.Error(),
 		})
 		return
 	}
