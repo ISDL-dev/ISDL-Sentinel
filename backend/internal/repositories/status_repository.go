@@ -12,11 +12,12 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func JudgeNoMemberInRoom(kc104PlaceId int32) (isFirstEntering bool, err error) {
-	getRows, err := infrastructures.DB.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
+func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, err error) {
+	getRows, err := tx.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
 	if err != nil {
 		return false, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
 	}
+
 	return !getRows.Next(), nil
 }
 
@@ -74,6 +75,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
 		}
+
 		getLatestEnteringHistoryQuery := `
 		SELECT 
 			id AS enteringHistoryId, 
@@ -86,7 +88,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			entered_at DESC 
 		LIMIT 
 			1;`
-		getRows, err := infrastructures.DB.Query(getLatestEnteringHistoryQuery, status.UserId)
+		getRows, err := tx.Query(getLatestEnteringHistoryQuery, status.UserId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("getLatestEnteringHistoryQuery error err:%w", err)
@@ -102,11 +104,12 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			tx.Rollback()
 			return fmt.Errorf("putInRoomQuery error err:%w", err)
 		}
-		isLastLeaving, err := JudgeNoMemberInRoom(placeId)
+		isLastLeaving, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("failed to find user id from leaving history:%w", err)
 		}
+
 		insertOutRoomQuery := `
 		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
 		VALUES (
@@ -122,7 +125,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			return fmt.Errorf("insertOutRoomQuery error err:%w", err)
 		}
 	} else if status.Status == model.IN_ROOM {
-		isFirstEntering, err := JudgeNoMemberInRoom(placeId)
+		isFirstEntering, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("failed to find user id from entering history table:%w", err)

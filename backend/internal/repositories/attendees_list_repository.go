@@ -87,6 +87,14 @@ func GetInRoomUserListRepository(inRoomStatusId int32) (userList []schema.GetAtt
 func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err error) {
 	now := time.Now().UTC()
 	layout := time.RFC3339
+
+	// Get OUT_ROOM status ID
+	var outRoomStatusId int
+	err = infrastructures.DB.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OUT_ROOM).Scan(&outRoomStatusId)
+	if err != nil {
+		return fmt.Errorf("failed to get OUT_ROOM status id: %w", err)
+	}
+
 	for _, room := range eventList {
 		startTime, err := time.Parse(layout, room.StartDate)
 		if err != nil {
@@ -104,17 +112,19 @@ func UpdateInRoomUserFromCalendarRepository(eventList []model.Calendar) (err err
 			emailPlaceholders = strings.TrimSuffix(emailPlaceholders, ",")
 
 			UpdateInRoomUserFromCalendarQuery := fmt.Sprintf(`
-				UPDATE user
-				SET 
-					place_id = (
-						SELECT id
-						FROM place
-						WHERE place_name = ?
-					),
-					current_entered_at = ?
-				WHERE mail_address IN (%s)`, emailPlaceholders)
+                UPDATE user
+                SET 
+                    place_id = (
+                        SELECT id
+                        FROM place
+                        WHERE place_name = ?
+                    ),
+                    current_entered_at = ?
+                WHERE mail_address IN (%s)
+                AND status_id != ?`, emailPlaceholders)
 
 			args := append([]interface{}{room.RoomName, startTime.Add(9 * time.Hour)}, model.ToInterfaceSlice(room.AttendeeMail)...)
+			args = append(args, outRoomStatusId)
 			_, err := infrastructures.DB.Exec(UpdateInRoomUserFromCalendarQuery, args...)
 			if err != nil {
 				return fmt.Errorf("failed to execute query: %v", err)
