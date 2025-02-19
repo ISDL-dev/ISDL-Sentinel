@@ -12,13 +12,14 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, err error) {
+func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, retrunTx *sql.Tx, err error) {
 	getRows, err := tx.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
 	if err != nil {
-		return false, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
+		return false, retrunTx, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
 	}
+	defer getRows.Close()
 
-	return !getRows.Next(), nil
+	return !getRows.Next(), retrunTx, nil
 }
 
 func GetStatusId(status string) (statusId int32, err error) {
@@ -86,7 +87,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			return fmt.Errorf("failed to find entering history: %v", err)
 		}
 
-		isLastLeaving, err := JudgeNoMemberInRoom(tx, placeId)
+		isLastLeaving, tx, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			return fmt.Errorf("failed to check if last leaving: %w", err)
 		}
@@ -98,7 +99,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			return fmt.Errorf("insertOutRoomQuery error err:%w", err)
 		}
 	} else if status.Status == model.IN_ROOM {
-		isFirstEntering, err := JudgeNoMemberInRoom(tx, placeId)
+		isFirstEntering, tx, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			return fmt.Errorf("failed to check first entering: %w", err)
 		}
