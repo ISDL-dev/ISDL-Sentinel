@@ -17,6 +17,7 @@ func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, 
 	if err != nil {
 		return false, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
 	}
+	defer getRows.Close()
 
 	return !getRows.Next(), nil
 }
@@ -26,7 +27,9 @@ func GetStatusId(status string) (statusId int32, err error) {
 	if err != nil {
 		return 0, fmt.Errorf("getRows db.Query error err:%w", err)
 	}
-	for getRows.Next() {
+	defer getRows.Close()
+
+	if getRows.Next() {
 		err := getRows.Scan(&statusId)
 		if err != nil {
 			return 0, fmt.Errorf("failed to find target status id: %v", err)
@@ -40,7 +43,9 @@ func GetPlaceId() (placeId int32, err error) {
 	if err != nil {
 		return 0, fmt.Errorf("getRows GetInRoomStatusId Query error err:%w", err)
 	}
-	for getRows.Next() {
+	defer getRows.Close()
+
+	if getRows.Next() {
 		err := getRows.Scan(&placeId)
 		if err != nil {
 			return 0, fmt.Errorf("failed to find target status id: %v", err)
@@ -60,111 +65,106 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 
 	tx, err := infrastructures.DB.Begin()
 	if err != nil {
-		return fmt.Errorf("fail to begin transaction error err:%w", err)
+		return fmt.Errorf("fail to begin transaction: %w", err)
 	}
+
+	// トランザクションの確実なクローズを保証
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p) // panicの再スロー
+		} else if err != nil {
+			tx.Rollback()
+		}
+	}()
+
 	if status.Status == model.OUT_ROOM {
 		putOutRoomQuery := `
-		UPDATE user 
-		SET 
-			place_id = ?, 
-			status_id = ?
-		WHERE 
-			id = ?;`
-		_, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, status.UserId)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("putInRoomQuery error err:%w", err)
+        UPDATE user 
+        SET 
+            place_id = ?, 
+            status_id = ?
+        WHERE 
+            id = ?;`
+		if _, err = tx.Exec(putOutRoomQuery, sql.NullInt32{}, statusId, status.UserId); err != nil {
+			return fmt.Errorf("putOutRoomQuery error: %w", err)
 		}
 
 		getLatestEnteringHistoryQuery := `
-		SELECT 
-			id AS enteringHistoryId, 
-			entered_at AS enteredAt 
-		FROM 
-			entering_history 
-		WHERE 
-			user_id = ?
-		ORDER BY 
-			entered_at DESC 
-		LIMIT 
-			1;`
+        SELECT 
+            id AS enteringHistoryId, 
+            entered_at AS enteredAt 
+        FROM 
+            entering_history 
+        WHERE 
+            user_id = ?
+        ORDER BY 
+            entered_at DESC 
+        LIMIT 
+            1;`
 		getRows, err := tx.Query(getLatestEnteringHistoryQuery, status.UserId)
 		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("getLatestEnteringHistoryQuery error err:%w", err)
+			return fmt.Errorf("getLatestEnteringHistoryQuery error: %w", err)
 		}
-		for getRows.Next() {
-			err := getRows.Scan(&enteringHistoryId, &enteredAt)
-			if err != nil {
-				tx.Rollback()
-				return fmt.Errorf("failed to find entering history: %v", err)
+		defer getRows.Close()
+
+		if getRows.Next() {
+			if err := getRows.Scan(&enteringHistoryId, &enteredAt); err != nil {
+				return fmt.Errorf("failed to scan entering history: %w", err)
 			}
 		}
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("putInRoomQuery error err:%w", err)
-		}
+
 		isLastLeaving, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to find user id from leaving history:%w", err)
+			return fmt.Errorf("failed to judge no member in room: %w", err)
 		}
 
 		insertOutRoomQuery := `
-		INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
-		VALUES (
-			?, 
-			?, 
-			NOW(), 
-			TIMEDIFF(NOW(), ?),
-			?
-		);`
-		_, err = tx.Exec(insertOutRoomQuery, status.UserId, enteringHistoryId, enteredAt, isLastLeaving)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("insertOutRoomQuery error err:%w", err)
+        INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+        VALUES (?, ?, NOW(), TIMEDIFF(NOW(), ?), ?);`
+		if _, err = tx.Exec(insertOutRoomQuery, status.UserId, enteringHistoryId, enteredAt, isLastLeaving); err != nil {
+			return fmt.Errorf("insertOutRoomQuery error: %w", err)
 		}
+
 	} else if status.Status == model.IN_ROOM {
 		isFirstEntering, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to find user id from entering history table:%w", err)
+			return fmt.Errorf("failed to judge no member in room: %w", err)
 		}
+
 		putInRoomQuery := `
-		UPDATE user 
-		SET 
-			place_id = ?, 
-			status_id = ?,
-			current_entered_at = NOW()
-		WHERE 
-			id = ?;`
-		_, err = tx.Exec(putInRoomQuery, placeId, statusId, status.UserId)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("putInRoomQuery error err:%w", err)
+        UPDATE user 
+        SET 
+            place_id = ?, 
+            status_id = ?,
+            current_entered_at = NOW()
+        WHERE 
+            id = ?;`
+		if _, err = tx.Exec(putInRoomQuery, placeId, statusId, status.UserId); err != nil {
+			return fmt.Errorf("putInRoomQuery error: %w", err)
 		}
+
 		insertInRoomQuery := `
-		INSERT INTO entering_history (user_id, entered_at, is_first_entering)
-		VALUES (?, NOW(), ?);`
-		_, err = tx.Exec(insertInRoomQuery, status.UserId, isFirstEntering)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("insertInRoomQuery error err:%w", err)
+        INSERT INTO entering_history (user_id, entered_at, is_first_entering)
+        VALUES (?, NOW(), ?);`
+		if _, err = tx.Exec(insertInRoomQuery, status.UserId, isFirstEntering); err != nil {
+			return fmt.Errorf("insertInRoomQuery error: %w", err)
 		}
+
 	} else {
 		putOvernightQuery := `
-		UPDATE user
-		SET status_id = ?
-		WHERE id = ?`
-		_, err = tx.Exec(putOvernightQuery, statusId, status.UserId)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("putOvernightQuery error err:%w", err)
+        UPDATE user
+        SET status_id = ?
+        WHERE id = ?`
+		if _, err = tx.Exec(putOvernightQuery, statusId, status.UserId); err != nil {
+			return fmt.Errorf("putOvernightQuery error: %w", err)
 		}
 	}
-	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("fail to commit transaction error err:%w", err)
+
+	if err = tx.Commit(); err != nil {
+		return fmt.Errorf("fail to commit transaction: %w", err)
 	}
+
 	return nil
 }
 
