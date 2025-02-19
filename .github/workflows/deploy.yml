@@ -1,6 +1,9 @@
 name: Deploy to Rental Server
 
 on:
+  push:
+    branches:
+      - hotfix/status
   release:
     types: [published]
 
@@ -65,6 +68,6 @@ jobs:
           script_stop: true
           script: |
             cd ~/ISDL-Sentinel
-            git pull origin main
+            git pull origin hotfix/status
             make down prod
             make build-up prod
