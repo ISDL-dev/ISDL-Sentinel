@@ -41,6 +41,25 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           source: ".env.prod"
           target: "~/ISDL-Sentinel/"
+      
+      - name: Create Google credentials files
+        run: |
+          mkdir -p ./backend/internal/infrastructures/credentials
+
+          echo "${{ secrets.GOOGLE_CALENDAR_CREDENTIALS_JSON_BASE64 }}" | base64 -d > ./backend/internal/infrastructures/credentials/google_calendar_credentials.json
+          echo "${{ secrets.GOOGLE_CALENDAR_TOKEN_JSON_BASE64 }}" | base64 -d > ./backend/internal/infrastructures/credentials/google_calendar_token.json
+          echo "${{ secrets.GOOGLE_DRIVE_CREDENTIALS_JSON_BASE64 }}" | base64 -d > ./backend/internal/infrastructures/credentials/google_drive_credentials.json
+          echo "${{ secrets.GOOGLE_DRIVE_TOKEN_JSON_BASE64 }}" | base64 -d > ./backend/internal/infrastructures/credentials/google_drive_token.json
+
+      - name: Copy Google credentials files to the server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "./backend/internal/infrastructures/credentials/google_*"
+          target: "~/ISDL-Sentinel/"
 
       - name: Decode the SSL certificate
         run: |
