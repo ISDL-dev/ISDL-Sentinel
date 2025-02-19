@@ -15,11 +15,11 @@ import (
 func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, retrunTx *sql.Tx, err error) {
 	getRows, err := tx.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
 	if err != nil {
-		return false, retrunTx, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
+		return false, tx, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
 	}
 	defer getRows.Close()
 
-	return !getRows.Next(), retrunTx, nil
+	return !getRows.Next(), tx, nil
 }
 
 func GetStatusId(status string) (statusId int32, err error) {
