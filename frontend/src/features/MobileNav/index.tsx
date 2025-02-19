@@ -131,7 +131,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   Profile
                 </MenuItem>
                 <MenuItem onClick={handleRegisterWebAuthn}>
-                  Register biometric metrics
+                  Register biometrics
                 </MenuItem>
                 <MenuItem onClick={handleChangePassword}>
                   Change Password
