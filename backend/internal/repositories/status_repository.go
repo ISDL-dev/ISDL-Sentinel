@@ -12,8 +12,8 @@ import (
 	"github.com/ISDL-dev/ISDL-Sentinel/backend/internal/schema"
 )
 
-func JudgeNoMemberInRoom(kc104PlaceId int32) (isFirstEntering bool, err error) {
-	getRows, err := infrastructures.DB.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
+func JudgeNoMemberInRoom(tx *sql.Tx, kc104PlaceId int32) (isFirstEntering bool, err error) {
+	getRows, err := tx.Query("SELECT id FROM user WHERE place_id = ?;", kc104PlaceId)
 	if err != nil {
 		return false, fmt.Errorf("getRows JudgeNoMemberInRoom Query error err:%w", err)
 	}
@@ -114,7 +114,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 			}
 		}
 
-		isLastLeaving, err := JudgeNoMemberInRoom(placeId)
+		isLastLeaving, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			return fmt.Errorf("failed to judge no member in room: %w", err)
 		}
@@ -127,7 +127,7 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 		}
 
 	} else if status.Status == model.IN_ROOM {
-		isFirstEntering, err := JudgeNoMemberInRoom(placeId)
+		isFirstEntering, err := JudgeNoMemberInRoom(tx, placeId)
 		if err != nil {
 			return fmt.Errorf("failed to judge no member in room: %w", err)
 		}
