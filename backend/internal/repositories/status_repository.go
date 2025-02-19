@@ -239,7 +239,8 @@ func UpdateUserStatusToOutRoom() error {
 		// Update query with generated placeholders and args
 		_, err = tx.Exec(fmt.Sprintf(`
 			UPDATE user
-			SET status_id = ?
+				SET status_id = ?, 
+				place_id = NULL
 			WHERE id IN (%s)
 		`, placeholders), append([]interface{}{outRoomStatusId}, idArgs...)...)
 		if err != nil {
