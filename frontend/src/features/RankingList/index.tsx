@@ -1,10 +1,10 @@
 import {
+  Avatar,
   Card,
   CardBody,
   Grid,
   GridItem,
   Heading,
-  Image,
   Table,
   TableContainer,
   Tbody,
@@ -110,14 +110,13 @@ export const RankingList: React.FC<RankingListProps> = ({
               alignItems="center"
             >
               <Top3Icon rank={item.rank - 1}></Top3Icon>
-              <Image
-                src={item.avatar_img_path}
-                alt={`${item.avatar_id}`}
-                boxSize={{
-                  base: "48px",
-                  md: "64px",
+              <Avatar
+                size={{
+                  base: "md",
+                  md: "lg",
                 }}
-                cursor="pointer"
+                src={item.avatar_img_path}
+                border="2px"
                 onClick={() =>
                   navigate("/profile", {
                     state: { userId: item.user_id },
@@ -174,19 +173,16 @@ export const RankingList: React.FC<RankingListProps> = ({
                                 justifySelf="start"
                                 marginRight={{ base: 0, md: 8 }}
                               >
-                                <Image
-                                  src={item.avatar_img_path}
-                                  alt={`${item.avatar_id}`}
-                                  boxSize={{
-                                    base: "36px",
-                                    md: "50px",
+                                <Avatar
+                                  size={{
+                                    base: "sm",
+                                    md: "md",
                                   }}
-                                  cursor="pointer"
+                                  src={item.avatar_img_path}
+                                  border="2px"
                                   onClick={() =>
                                     navigate("/profile", {
-                                      state: {
-                                        userId: item.user_id,
-                                      },
+                                      state: { userId: item.user_id },
                                     })
                                   }
                                 />
