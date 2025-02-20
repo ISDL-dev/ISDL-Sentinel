@@ -45,7 +45,7 @@ func GetRankingRepository(term string) (rankingList []schema.GetRanking200Respon
 			g.grade_name,
 			u.avatar_id,
 			a.img_path,
-			COALESCE(SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, e.entered_at, IFNULL(l.left_at, ?)))), '00:00:00') AS total_stay_time,
+			SEC_TO_TIME(SUM(TIME_TO_SEC(IFNULL(l.stay_time, '00:00:00')))) AS total_stay_time,
 			COALESCE(COUNT(DISTINCT DATE(e.entered_at)), 0) AS unique_enter_days
 		FROM 
 			user u
@@ -61,7 +61,7 @@ func GetRankingRepository(term string) (rankingList []schema.GetRanking200Respon
 			u.id, u.name, g.grade_name, u.avatar_id, a.img_path
 		ORDER BY 
 			u.id;`
-	getRows, err := infrastructures.DB.Query(getRankingListQuery, endDate, startDate, endDate)
+	getRows, err := infrastructures.DB.Query(getRankingListQuery, startDate, endDate)
 	if err != nil {
 		return []schema.GetRanking200ResponseInner{}, fmt.Errorf("getRows getRankingListQuery Query error err:%w", err)
 	}
