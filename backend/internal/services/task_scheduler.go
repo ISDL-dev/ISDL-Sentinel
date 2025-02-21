@@ -89,7 +89,7 @@ func InitializeTaskScheduler() {
 
 	_, err = ns.NewJob(
 		// (分 時 日 月 曜日)
-		gocron.CronJob("0 0 * * *", false),
+		gocron.CronJob("59 23 * * *", false),
 		gocron.NewTask(func() {
 			forceLeavingRoomScheduler()
 		}),

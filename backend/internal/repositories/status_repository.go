@@ -134,13 +134,6 @@ func PutStatusRepository(status schema.Status, placeId int32) (err error) {
 }
 
 func UpdateUserStatusToOutRoom() error {
-	tx, err := infrastructures.DB.Begin()
-	if err != nil {
-		return fmt.Errorf("fail to begin transaction: %w", err)
-	}
-	defer tx.Rollback()
-
-	// Get counts and IDs for IN_ROOM users
 	var inRoomCount int
 	var inRoomIDs []int
 
@@ -154,7 +147,7 @@ func UpdateUserStatusToOutRoom() error {
 		WHERE s.status_name = ?
 		GROUP BY s.status_name
 	`
-	rows, err := tx.Query(query, model.IN_ROOM)
+	rows, err := infrastructures.DB.Query(query, model.IN_ROOM)
 	if err != nil {
 		return fmt.Errorf("failed to query user counts: %w", err)
 	}
@@ -178,17 +171,22 @@ func UpdateUserStatusToOutRoom() error {
 		return fmt.Errorf("error iterating rows: %w", err)
 	}
 
-	// If IN_ROOM count is 0, return nil
-	if inRoomCount == 0 {
-		return tx.Commit() // Commit the empty transaction
-	}
-
 	// Get OUT_ROOM status id
 	var outRoomStatusId int
-	err = tx.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OUT_ROOM).Scan(&outRoomStatusId)
+	err = infrastructures.DB.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OUT_ROOM).Scan(&outRoomStatusId)
 	if err != nil {
 		return fmt.Errorf("failed to get OUT_ROOM status id: %w", err)
 	}
+
+	tx, err := infrastructures.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("fail to begin transaction: %w", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
 
 	// Update IN_ROOM users to OUT_ROOM status
 	if inRoomCount > 0 {
@@ -204,22 +202,32 @@ func UpdateUserStatusToOutRoom() error {
 		// Update query with generated placeholders and args
 		_, err = tx.Exec(fmt.Sprintf(`
 			UPDATE user
-			SET status_id = ?
+			SET 
+				status_id = ?,
+				place_id = NULL
 			WHERE id IN (%s)
 		`, placeholders), append([]interface{}{outRoomStatusId}, idArgs...)...)
 		if err != nil {
 			return fmt.Errorf("failed to update user status: %w", err)
 		}
 
-		// Insert into leaving_history for updated users
+		// Modified INSERT into leaving_history to handle is_last_leaving
 		_, err = tx.Exec(fmt.Sprintf(`
 			INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+			WITH LastUser AS (
+				SELECT MAX(u.id) as last_user_id
+				FROM user u
+				WHERE u.id IN (%s)
+			)
 			SELECT 
 				u.id,
 				eh.id,
 				NOW(),
 				'00:00:00',
-				false
+				CASE 
+					WHEN u.id = (SELECT last_user_id FROM LastUser) THEN true
+					ELSE false
+				END
 			FROM user u
 			JOIN (
 				SELECT user_id, MAX(id) as id
@@ -228,7 +236,7 @@ func UpdateUserStatusToOutRoom() error {
 				GROUP BY user_id
 			) eh ON u.id = eh.user_id
 			WHERE u.id IN (%s)
-		`, placeholders, placeholders), append(idArgs, idArgs...)...)
+		`, placeholders, placeholders, placeholders), append(append(idArgs, idArgs...), idArgs...)...)
 		if err != nil {
 			return fmt.Errorf("failed to insert into leaving_history: %w", err)
 		}
