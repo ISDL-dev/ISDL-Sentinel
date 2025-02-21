@@ -46,7 +46,7 @@ func forceLeavingRoomScheduler() {
 	log.Printf("Executing forced exit process...")
 	err = repositories.UpdateUserStatusToOutRoom()
 	if err != nil {
-		log.Fatalf("failed to execute query to get lab assistant schedule: %v", err)
+		log.Fatalf("failed to execute force logout query: %v", err)
 		return
 	}
 	log.Printf("Ending forced exit process")

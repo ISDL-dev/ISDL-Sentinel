@@ -171,11 +171,16 @@ func UpdateUserStatusToOutRoom() error {
 		return fmt.Errorf("error iterating rows: %w", err)
 	}
 
-	// Get OUT_ROOM status id
 	var outRoomStatusId int
 	err = infrastructures.DB.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OUT_ROOM).Scan(&outRoomStatusId)
 	if err != nil {
 		return fmt.Errorf("failed to get OUT_ROOM status id: %w", err)
+	}
+
+	var overnightStatusId int
+	err = infrastructures.DB.QueryRow("SELECT id FROM status WHERE status_name = ?", model.OVERNIGHT).Scan(&overnightStatusId)
+	if err != nil {
+		return fmt.Errorf("failed to get OVERNIGHT status id: %w", err)
 	}
 
 	tx, err := infrastructures.DB.Begin()
@@ -188,18 +193,26 @@ func UpdateUserStatusToOutRoom() error {
 		}
 	}()
 
-	// Update IN_ROOM users to OUT_ROOM status
 	if inRoomCount > 0 {
-		// Convert inRoomIDs to interface{} slice for the SQL query
 		idArgs := make([]interface{}, len(inRoomIDs))
 		for i, id := range inRoomIDs {
 			idArgs[i] = id
 		}
 
-		// Construct placeholders for SQL IN clause
 		placeholders := strings.Repeat("?,", len(inRoomIDs)-1) + "?"
 
-		// Update query with generated placeholders and args
+		var hasOvernightUsers bool
+		err = tx.QueryRow(`
+			SELECT EXISTS (
+				SELECT 1 
+				FROM user 
+				WHERE status_id = ? 
+				LIMIT 1
+			)`, overnightStatusId).Scan(&hasOvernightUsers)
+		if err != nil {
+			return fmt.Errorf("failed to check OVERNIGHT users: %w", err)
+		}
+
 		_, err = tx.Exec(fmt.Sprintf(`
 			UPDATE user
 			SET 
@@ -211,32 +224,57 @@ func UpdateUserStatusToOutRoom() error {
 			return fmt.Errorf("failed to update user status: %w", err)
 		}
 
-		// Modified INSERT into leaving_history to handle is_last_leaving
-		_, err = tx.Exec(fmt.Sprintf(`
-			INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
-			WITH LastUser AS (
-				SELECT MAX(u.id) as last_user_id
+		var insertQuery string
+		if hasOvernightUsers {
+			insertQuery = fmt.Sprintf(`
+				INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+				SELECT 
+					u.id,
+					eh.id,
+					NOW(),
+					'00:00:00',
+					false
 				FROM user u
+				JOIN (
+					SELECT user_id, MAX(id) as id
+					FROM entering_history
+					WHERE user_id IN (%s)
+					GROUP BY user_id
+				) eh ON u.id = eh.user_id
 				WHERE u.id IN (%s)
-			)
-			SELECT 
-				u.id,
-				eh.id,
-				NOW(),
-				'00:00:00',
-				CASE 
-					WHEN u.id = (SELECT last_user_id FROM LastUser) THEN true
-					ELSE false
-				END
-			FROM user u
-			JOIN (
-				SELECT user_id, MAX(id) as id
-				FROM entering_history
-				WHERE user_id IN (%s)
-				GROUP BY user_id
-			) eh ON u.id = eh.user_id
-			WHERE u.id IN (%s)
-		`, placeholders, placeholders, placeholders), append(append(idArgs, idArgs...), idArgs...)...)
+			`, placeholders, placeholders)
+
+			_, err = tx.Exec(insertQuery, append(idArgs, idArgs...)...)
+		} else {
+			insertQuery = fmt.Sprintf(`
+				INSERT INTO leaving_history (user_id, entering_history_id, left_at, stay_time, is_last_leaving)
+				WITH LastUser AS (
+					SELECT MAX(u.id) as last_user_id
+					FROM user u
+					WHERE u.id IN (%s)
+				)
+				SELECT 
+					u.id,
+					eh.id,
+					NOW(),
+					'00:00:00',
+					CASE 
+						WHEN u.id = (SELECT last_user_id FROM LastUser) THEN true
+						ELSE false
+					END
+				FROM user u
+				JOIN (
+					SELECT user_id, MAX(id) as id
+					FROM entering_history
+					WHERE user_id IN (%s)
+					GROUP BY user_id
+				) eh ON u.id = eh.user_id
+				WHERE u.id IN (%s)
+			`, placeholders, placeholders, placeholders)
+
+			_, err = tx.Exec(insertQuery, append(append(idArgs, idArgs...), idArgs...)...)
+		}
+
 		if err != nil {
 			return fmt.Errorf("failed to insert into leaving_history: %w", err)
 		}
