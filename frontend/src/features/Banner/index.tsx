@@ -41,7 +41,7 @@ export default function Banner(props: {
 
         {/* Grade */}
         <Flex justifyContent='center' alignItems='baseline' mt='5px' flexWrap='wrap'>
-          <Text color={textColorSecondary} fontSize='md' fontWeight='600' mr='2' textAlign='right' minW='120px'>
+          <Text color={textColorSecondary} fontSize='md' fontWeight='595' mr='2' textAlign='right' minW='120px'>
             Grade:
           </Text>
           <Text color={textColorPrimary} fontSize='md' fontWeight='400' wordBreak='break-word' flex='1'>
